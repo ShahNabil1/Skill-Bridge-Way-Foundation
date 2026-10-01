@@ -43,9 +43,9 @@ export const createAdmissionUploadUrl = createServerFn({ method: "POST" })
   );
 
 const mediaInput = z.object({
-  folder: z.enum(["avatars", "courses", "gallery"]),
+  folder: z.enum(["avatars", "courses", "gallery", "certificates"]),
   fileName: z.string().min(1).max(200),
-  contentType: z.enum(IMAGE_TYPES),
+  contentType: z.enum(ALLOWED_DOC_TYPES),
   size: z.number().int().positive().max(MAX_DOC_BYTES),
 });
 
@@ -54,6 +54,8 @@ export const createMediaUploadUrl = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => mediaInput.parse(d))
   .handler(async ({ data, context }) => {
+    const isPdf = data.contentType === "application/pdf";
+    if (isPdf !== (data.folder === "certificates")) throw new Error("Unsupported file type for this folder");
     if (data.folder !== "avatars") {
       const { data: ok } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
       if (!ok) throw new Error("Forbidden");
