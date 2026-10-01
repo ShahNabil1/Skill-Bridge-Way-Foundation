@@ -10,9 +10,8 @@ import { cdnUrl } from "@/lib/cdn";
 import { formatDate } from "@/lib/public-data";
 
 export const Route = createFileRoute("/verify")({
-  validateSearch: (s: Record<string, unknown>) => ({
-    serial: typeof s["serial"] === "string" ? s["serial"].slice(0, 60) : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>): { serial?: string } =>
+    typeof s["serial"] === "string" && s["serial"] ? { serial: s["serial"].slice(0, 60) } : {},
   head: () => seo("Verify Certificate | Skill Bridgeway Foundation", "Verify a Skill Bridgeway Foundation certificate by serial number or QR code."),
   component: VerifyPage,
 });

@@ -48,7 +48,7 @@ function StudentsAdmin() {
   const certOf = (r: Row) => (Array.isArray(r.certificates) ? r.certificates[0] : r.certificates) ?? null;
 
   async function issue(r: Row) {
-    if (!r.students || !r.courses) return toast.error("Missing student or course");
+    if (!r.students || !r.courses) { toast.error("Missing student or course"); return; }
     if (!certOf(r) && !confirm(`Mark "${r.courses.title}" completed for ${r.students.full_name} and issue a certificate?`)) return;
     setBusyId(r.id);
     try {
