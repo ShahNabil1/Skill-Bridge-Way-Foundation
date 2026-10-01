@@ -15,3 +15,6 @@
 - [x] Add password visibility and live strength feedback to auth and profile
 - [x] Improve navigation responsiveness across the site and verify
 - [x] Add clearly labeled preview courses, notices, and gallery photography in admin-managed content; keep demo courses out of real admissions
+- [x] Make password recovery account-safe with explicit code entry and navigation back
+- [x] Polish responsive auth/profile forms with English-only validation, numeric OTP, Caps Lock hints, and motion
+- [x] Add crop-and-resize avatar upload; signed-in upload verification needs an authenticated test session

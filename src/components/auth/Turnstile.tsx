@@ -58,5 +58,5 @@ export function Turnstile({ onToken, resetKey }: { onToken: (t: string | null) =
   if (!isLoading && !siteKey) {
     return <p className="text-xs text-destructive">Security check is not configured yet.</p>;
   }
-  return <div ref={ref} className="min-h-[65px]" />;
+  return <div className="min-h-[65px] max-w-full overflow-hidden"><div ref={ref} className="turnstile-widget min-h-[65px]" /></div>;
 }

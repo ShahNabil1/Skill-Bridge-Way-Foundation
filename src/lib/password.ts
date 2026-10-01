@@ -1,13 +1,16 @@
 import { z } from "zod";
+import { printableEnglish, ENGLISH_WARNING } from "@/lib/form-input";
 
 export const strongPassword = z
   .string()
   .min(6, "Use at least 6 characters")
   .max(72, "Too long")
+  .regex(/^[\x20-\x7E]*$/, "English characters only are supported")
+  .regex(printableEnglish, ENGLISH_WARNING)
   .regex(/[a-z]/, "Add a lowercase letter")
   .regex(/[A-Z]/, "Add an uppercase letter")
   .regex(/\d/, "Add a number")
-  .regex(/[^A-Za-z0-9]/, "Add a symbol");
+  .regex(/[^A-Za-z0-9\s]/, "Add a symbol");
 
 /** Returns the first problem with a new password, or null if it's acceptable. */
 export function checkNewPassword(pw: string, confirm: string, current?: string) {

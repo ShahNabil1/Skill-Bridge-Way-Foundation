@@ -21,4 +21,7 @@
 - Public site chrome is rendered only for public routes; admin navigation uses a fixed overlay drawer, not a content-shifting sidebar; why: auth/admin need a focused interface at every screen size.
 - Route links preload on intent and public query data stays fresh briefly; why: repeat navigation avoids unnecessary network work while admin data remains independently refreshed.
 - Password visibility and live complexity feedback share one auth component; why: login, recovery, invitation and profile use the same validated password rules.
+- Account recovery never reveals whether an email is registered and requires explicit code entry after the generic send response; why: Supabase deliberately masks account existence.
+- Auth and profile fields share ASCII validation and digit normalization; why: consistent input feedback prevents mixed-script account details.
+- Avatar images are cropped and resized in-browser before direct R2 upload; why: predictable square images avoid oversized media and keep the existing signed-upload boundary.
 - Preview content lives in existing admin-managed Supabase rows and R2 media keys, identified by `demo-` course slugs; why: editors can replace it without replacing page code and sample courses must not imply open enrollment.

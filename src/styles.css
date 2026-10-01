@@ -106,3 +106,7 @@
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
+
+@media (max-width: 380px) {
+  .turnstile-widget { transform: scale(0.82); transform-origin: top left; }
+}
