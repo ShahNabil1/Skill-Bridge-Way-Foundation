@@ -116,7 +116,7 @@ function AuthPage() {
   return (
     <div className="bg-grid flex min-h-dvh w-full items-center justify-center px-4 py-8 sm:px-6">
       <AnimatePresence mode="wait" initial={false}>
-      <motion.div key={mode} className="w-full max-w-[430px]" initial={reduceMotion ? false : { opacity: 0, y: 12, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={reduceMotion ? undefined : { opacity: 0, y: -8, scale: .99 }} transition={{ duration: .22, ease: "easeOut" }}>
+      <motion.div key={mode} className="w-full max-w-[430px]" initial={reduceMotion ? false : { opacity: 0, y: 12, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={reduceMotion ? {} : { opacity: 0, y: -8, scale: .99 }} transition={{ duration: .22, ease: "easeOut" }}>
       {mode === "login" && (
         <form onSubmit={login} className={card}>
           <h1 className="section-title text-2xl">Admin Sign In</h1>
