@@ -47,6 +47,7 @@ function CourseDetails() {
     );
   }
   const img = mediaUrl(c.cover_image_key);
+  const isDemo = c.slug.startsWith("demo-");
   return (
     <>
       <section className="bg-grid border-b">
@@ -69,7 +70,7 @@ function CourseDetails() {
             {c.duration && <li className="flex gap-2"><Clock className="h-4 w-4 text-primary" />{c.duration}</li>}
             {c.level && <li className="flex gap-2"><BarChart3 className="h-4 w-4 text-primary" />{c.level}</li>}
           </ul>
-          <Button asChild size="lg" className="w-full bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/admission">Free Admission</Link></Button>
+          {isDemo ? <p className="border-t pt-4 text-sm text-muted-foreground">Preview program only. Enrollment is not open for this sample course.</p> : <Button asChild size="lg" className="w-full bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/admission">Free Admission</Link></Button>}
         </aside>
       </section>
     </>
