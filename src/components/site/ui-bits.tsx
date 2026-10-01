@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { BookOpen, Clock, BarChart3 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { mediaUrl } from "@/lib/public-data";
+import { isPreviewOnlyCourse, mediaUrl } from "@/lib/public-data";
 
 export function SectionHeading({ eyebrow, title, children }: { eyebrow?: string; title: string; children?: ReactNode }) {
   return (
@@ -58,7 +58,7 @@ export function CourseCard({ c }: { c: CourseCardData }) {
         <div className="mt-auto flex flex-wrap gap-4 pt-4 text-xs text-muted-foreground">
           {c.duration && <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{c.duration}</span>}
           {c.level && <span className="flex items-center gap-1"><BarChart3 className="h-3.5 w-3.5" />{c.level}</span>}
-          <span className="flex items-center gap-1 text-primary"><BookOpen className="h-3.5 w-3.5" />{c.slug.startsWith("demo-") ? "Preview" : "Free"}</span>
+          <span className="flex items-center gap-1 text-primary"><BookOpen className="h-3.5 w-3.5" />{isPreviewOnlyCourse(c.slug) ? "Preview" : "Free"}</span>
         </div>
       </div>
     </Link>

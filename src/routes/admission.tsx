@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { cloneElement, isValidElement, useId, useState, type ReactNode } from "react";
@@ -12,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHero, seo } from "@/components/site/PageHero";
-import { coursesQuery } from "@/lib/public-data";
+import { coursesQuery, isPreviewOnlyCourse, TEST_ENROLLMENT_SLUG } from "@/lib/public-data";
 import { sendAdmissionReceivedEmail } from "@/lib/email.functions";
 import { ALLOWED_DOC_TYPES, MAX_DOC_BYTES, createAdmissionUploadUrl } from "@/lib/r2.functions";
 import {
@@ -21,6 +22,7 @@ import {
 } from "@/lib/admission-schema";
 
 export const Route = createFileRoute("/admission")({ staticData: { sitemap: true },
+  validateSearch: (s: Record<string, unknown>) => ({ course: typeof s.course === "string" ? s.course : undefined }),
   head: () => seo("Free Admission | Skill Bridgeway Foundation", "Apply online for free admission to AI, freelancing and digital skills courses at Skill Bridgeway Foundation.", { path: "/admission" }),
   component: Admission,
 });
@@ -35,14 +37,18 @@ type Errors = Partial<Record<keyof AdmissionForm | DocSlot, string>>;
 const selectCls = "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring [&>option]:bg-popover";
 
 function Admission() {
+  const { course: requestedCourse } = Route.useSearch();
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState<AdmissionForm>(empty);
+  const [form, setForm] = useState<AdmissionForm>(() => ({ ...empty, course_id: requestedCourse ?? "" }));
   const [files, setFiles] = useState<Partial<Record<DocSlot, File>>>({});
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
   const [progress, setProgress] = useState("");
   const [reference, setReference] = useState<string | null>(null);
   const courses = useQuery(coursesQuery());
+  useEffect(() => {
+    if (requestedCourse) setForm((current) => ({ ...current, course_id: requestedCourse }));
+  }, [requestedCourse]);
   const getUploadUrl = useServerFn(createAdmissionUploadUrl);
   const sendReceived = useServerFn(sendAdmissionReceivedEmail);
 
@@ -78,8 +84,9 @@ function Admission() {
 
   async function submit() {
     if (!check(personalSchema.and(educationSchema).and(courseSchema)) || !checkDocs()) return;
-    if (form.course_id !== NO_COURSE && courses.data?.find((c) => c.id === form.course_id)?.slug.startsWith("demo-")) {
-      setErrors((e) => ({ ...e, course_id: "Sample courses are not open for admission yet." }));
+    const selected = courses.data?.find((c) => c.id === form.course_id);
+    if (form.course_id !== NO_COURSE && (!selected || isPreviewOnlyCourse(selected.slug))) {
+      setErrors((e) => ({ ...e, course_id: "This course is not available for admission." }));
       setStep(2);
       return;
     }
@@ -181,7 +188,7 @@ function Admission() {
               {errors.course_id && <p className="text-xs text-destructive">{errors.course_id}</p>}
               <div className="grid gap-3">
                 {courses.isLoading ? Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 bg-muted" />) : (
-                  [...(courses.data ?? []).filter((c) => !c.slug.startsWith("demo-")).map((c) => ({ id: c.id, title: c.title, sub: [c.duration, c.level].filter(Boolean).join(" · ") })),
+                  [...(courses.data ?? []).filter((c) => !isPreviewOnlyCourse(c.slug)).map((c) => ({ id: c.id, title: c.title, sub: [c.slug === TEST_ENROLLMENT_SLUG ? "Demo · test applications only" : "", c.duration, c.level].filter(Boolean).join(" · ") })),
                    { id: NO_COURSE, title: "Not sure yet — advise me", sub: "Our team will suggest the best fit" }].map((c) => (
                     <button type="button" key={c.id} onClick={() => setForm((f) => ({ ...f, course_id: c.id }))}
                       className={`flex items-center justify-between gap-3 rounded-lg border p-4 text-left transition-colors ${form.course_id === c.id ? "border-primary bg-primary/10" : "hover:border-primary/60"}`}>
