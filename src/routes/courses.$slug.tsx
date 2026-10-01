@@ -31,7 +31,7 @@ export const Route = createFileRoute("/courses/$slug")({ staticData: { sitemap: 
 
 function CourseDetails() {
   const { slug } = Route.useParams();
-  const { data: c, isLoading } = useQuery(courseQuery(slug));
+  const c = Route.useLoaderData();
   const related = useQuery(coursesQuery());
 
   async function shareCourse(title: string) {
@@ -49,13 +49,6 @@ function CourseDetails() {
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="mx-auto max-w-7xl space-y-4 px-4 py-16">
-        <Skeleton className="h-4 w-24 bg-muted" /><Skeleton className="h-12 w-2/3 bg-muted" /><Skeleton className="h-64 w-full bg-muted" />
-      </div>
-    );
-  }
   if (!c) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-16">
@@ -92,7 +85,7 @@ function CourseDetails() {
             {c.duration && <li className="flex gap-2"><Clock className="h-4 w-4 text-primary" />{c.duration}</li>}
             {c.level && <li className="flex gap-2"><BarChart3 className="h-4 w-4 text-primary" />{c.level}</li>}
           </ul>
-          {previewOnly ? <p className="border-t pt-4 text-sm text-muted-foreground">Preview program only. Enrollment is not open for this sample course.</p> : <><Button asChild size="lg" className="w-full bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/admission" search={{ course: isTestCourse ? c.id : undefined }}>Free Admission</Link></Button>{isTestCourse && <p className="text-xs text-muted-foreground">Demo course · test applications only. Not a live training intake.</p>}</>}
+           {previewOnly ? <p className="border-t pt-4 text-sm text-muted-foreground">Preview program only. Enrollment is not open for this sample course.</p> : <><Button asChild size="lg" className="w-full bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/admission" search={isTestCourse ? { course: c.id } : {}}>Free Admission</Link></Button>{isTestCourse && <p className="text-xs text-muted-foreground">Demo course · test applications only. Not a live training intake.</p>}</>}
         </aside>
       </section>
       <section className="border-t bg-grid py-14">

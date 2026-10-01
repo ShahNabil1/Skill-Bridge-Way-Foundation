@@ -22,7 +22,7 @@ import {
 } from "@/lib/admission-schema";
 
 export const Route = createFileRoute("/admission")({ staticData: { sitemap: true },
-  validateSearch: (s: Record<string, unknown>): { course?: string } => ({ course: typeof s["course"] === "string" ? s["course"] : undefined }),
+  validateSearch: (s: Record<string, unknown>): { course?: string } => typeof s["course"] === "string" ? { course: s["course"] } : {},
   head: () => seo("Free Admission | Skill Bridgeway Foundation", "Apply online for free admission to AI, freelancing and digital skills courses at Skill Bridgeway Foundation.", { path: "/admission" }),
   component: Admission,
 });

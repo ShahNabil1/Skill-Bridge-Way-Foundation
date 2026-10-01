@@ -72,7 +72,7 @@ function About() {
       <section className="border-t bg-grid">
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-16 md:flex-row md:items-center md:justify-between">
           <h2 className="section-title text-2xl">Join our next batch</h2>
-          <Button asChild size="lg" className="bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/admission">Free Admission</Link></Button>
+           <Button asChild size="lg" className="bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/admission" search={{}}>Free Admission</Link></Button>
         </div>
       </section>
     </>
