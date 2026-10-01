@@ -10,8 +10,10 @@ import { Label } from "@/components/ui/label";
 import { AdminOnly, PageTitle, useMediaUpload } from "@/components/admin/shared";
 import { cdnUrl } from "@/lib/cdn";
 import { IMAGE_TYPES } from "@/lib/r2.functions";
+import { seo } from "@/components/site/PageHero";
 
 export const Route = createFileRoute("/_authenticated/admin/gallery")({ staticData: { sitemap: false },
+  head: () => seo("Manage Gallery | Skill Bridgeway Foundation", "Private gallery management.", { noindex: true }),
   component: () => <AdminOnly><GalleryAdmin /></AdminOnly>,
 });
 

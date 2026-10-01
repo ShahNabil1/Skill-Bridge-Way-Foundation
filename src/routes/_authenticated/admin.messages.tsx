@@ -8,8 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AdminOnly, PageTitle } from "@/components/admin/shared";
 import { formatDate } from "@/lib/public-data";
+import { seo } from "@/components/site/PageHero";
 
 export const Route = createFileRoute("/_authenticated/admin/messages")({ staticData: { sitemap: false },
+  head: () => seo("Messages | Skill Bridgeway Foundation", "Private contact messages.", { noindex: true }),
   component: () => <AdminOnly><MessagesAdmin /></AdminOnly>,
 });
 

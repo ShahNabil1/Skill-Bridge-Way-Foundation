@@ -14,8 +14,9 @@ import { cdnUrl } from "@/lib/cdn";
 import { IMAGE_TYPES } from "@/lib/r2.functions";
 import { checkNewPassword } from "@/lib/password";
 import { PasswordField } from "@/components/auth/PasswordField";
+import { seo } from "@/components/site/PageHero";
 
-export const Route = createFileRoute("/_authenticated/admin/profile")({ staticData: { sitemap: false }, component: ProfilePage });
+export const Route = createFileRoute("/_authenticated/admin/profile")({ staticData: { sitemap: false }, head: () => seo("My Profile | Skill Bridgeway Foundation", "Private profile and account settings.", { noindex: true }), component: ProfilePage });
 
 const infoSchema = z.object({
   full_name: z.string().trim().min(2, "Name is too short").max(120),

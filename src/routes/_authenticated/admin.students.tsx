@@ -14,8 +14,10 @@ import { sendCertificateEmail } from "@/lib/email.functions";
 import { createMediaUploadUrl } from "@/lib/r2.functions";
 import { cdnUrl } from "@/lib/cdn";
 import { formatDate } from "@/lib/public-data";
+import { seo } from "@/components/site/PageHero";
 
 export const Route = createFileRoute("/_authenticated/admin/students")({ staticData: { sitemap: false },
+  head: () => seo("Students | Skill Bridgeway Foundation", "Private student records and certificates.", { noindex: true }),
   component: () => <AdminOnly><StudentsAdmin /></AdminOnly>,
 });
 

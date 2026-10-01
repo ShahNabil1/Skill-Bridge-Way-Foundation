@@ -14,8 +14,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { AdminOnly, PageTitle, useCurrentUser } from "@/components/admin/shared";
 import { inviteUser, listUsers } from "@/lib/admin.functions";
 import { formatDate } from "@/lib/public-data";
+import { seo } from "@/components/site/PageHero";
 
 export const Route = createFileRoute("/_authenticated/admin/users")({ staticData: { sitemap: false },
+  head: () => seo("Manage Users | Skill Bridgeway Foundation", "Private user management.", { noindex: true }),
   component: () => <AdminOnly><UsersAdmin /></AdminOnly>,
 });
 

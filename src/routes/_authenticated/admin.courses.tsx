@@ -15,8 +15,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AdminOnly, ImageField, PageTitle } from "@/components/admin/shared";
 import { cdnUrl, slugify } from "@/lib/cdn";
+import { seo } from "@/components/site/PageHero";
 
 export const Route = createFileRoute("/_authenticated/admin/courses")({ staticData: { sitemap: false },
+  head: () => seo("Manage Courses | Skill Bridgeway Foundation", "Private course management.", { noindex: true }),
   component: () => <AdminOnly><CoursesAdmin /></AdminOnly>,
 });
 

@@ -2,8 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminOnly, PageTitle } from "@/components/admin/shared";
+import { seo } from "@/components/site/PageHero";
 
 export const Route = createFileRoute("/_authenticated/admin/")({ staticData: { sitemap: false },
+  head: () => seo("Admin Overview | Skill Bridgeway Foundation", "Private administrative overview.", { noindex: true }),
   component: () => <AdminOnly><Overview /></AdminOnly>,
 });
 
@@ -27,7 +29,7 @@ function Overview() {
   });
   const cards = [
     { label: "Pending admissions", value: data?.pending, to: "/admin/admissions" },
-    { label: "Students", value: data?.students, to: "/admin/admissions" },
+    { label: "Students", value: data?.students, to: "/admin/students" },
     { label: "Courses", value: data?.courses, to: "/admin/courses" },
     { label: "Unread messages", value: data?.unread, to: "/admin/messages" },
   ] as const;
