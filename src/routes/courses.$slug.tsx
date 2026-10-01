@@ -22,7 +22,7 @@ export const Route = createFileRoute("/courses/$slug")({ staticData: { sitemap: 
       path: `/courses/${params.slug}`,
       image: mediaUrl(c?.cover_image_key),
       type: "article",
-      noindex: c === null,
+      noindex: c === null || params.slug.startsWith("demo-"),
     });
   },
   component: CourseDetails,
@@ -64,7 +64,7 @@ function CourseDetails() {
           <div className="mt-4 whitespace-pre-line leading-relaxed text-muted-foreground">{c.description || "Full course details coming soon."}</div>
         </article>
         <aside className="glass h-fit space-y-4 rounded-xl p-6 lg:sticky lg:top-24">
-          <p className="font-heading text-3xl font-extrabold text-primary">FREE</p>
+          <p className="font-heading text-3xl font-extrabold text-primary">{isDemo ? "PREVIEW" : "FREE"}</p>
           <ul className="space-y-3 text-sm text-muted-foreground">
             {c.category && <li className="flex gap-2"><Tag className="h-4 w-4 text-primary" />{c.category}</li>}
             {c.duration && <li className="flex gap-2"><Clock className="h-4 w-4 text-primary" />{c.duration}</li>}

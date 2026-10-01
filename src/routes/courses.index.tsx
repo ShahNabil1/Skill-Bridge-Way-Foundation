@@ -50,7 +50,7 @@ function Courses() {
 
   return (
     <>
-      <PageHero eyebrow="Learn for free" title="Courses">Every course is 100% free and ends with a verifiable certificate.</PageHero>
+      <PageHero eyebrow="Learn for free" title="Courses">Explore learning paths from Skill Bridgeway Foundation. Courses marked Demo are previews, not open for enrollment.</PageHero>
       <section className="mx-auto max-w-7xl px-4 py-12">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="relative w-full md:max-w-sm">

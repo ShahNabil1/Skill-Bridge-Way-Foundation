@@ -33,6 +33,7 @@ export const Route = createFileRoute("/sitemap.xml")({
               .from("courses")
               .select("id, slug, updated_at")
               .eq("is_published", true)
+              .not("slug", "like", "demo-%")
               .order("id")
               .range(offset, offset + pageSize - 1);
             if (error) throw error;
