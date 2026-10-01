@@ -9,7 +9,7 @@ export const strongPassword = z
   .regex(/[a-z]/, "Add a lowercase letter")
   .regex(/[A-Z]/, "Add an uppercase letter")
   .regex(/\d/, "Add a number")
-  .regex(/[^A-Za-z0-9]/, "Add a symbol");
+  .regex(/[^A-Za-z0-9\s]/, "Add a symbol");
 
 /** Returns the first problem with a new password, or null if it's acceptable. */
 export function checkNewPassword(pw: string, confirm: string, current?: string) {
