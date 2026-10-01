@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { BookOpen, Bell, Image, Mail, ClipboardList, Users, UserCircle, LayoutDashboard, LogOut } from "lucide-react";
+import { BookOpen, Bell, Image, Mail, ClipboardList, Users, UserCircle, LayoutDashboard, LogOut, GraduationCap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { seo } from "@/components/site/PageHero";
@@ -14,6 +14,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 const NAV = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, admin: true, exact: true },
   { to: "/admin/admissions", label: "Admissions", icon: ClipboardList, admin: true },
+  { to: "/admin/students", label: "Students", icon: GraduationCap, admin: true },
   { to: "/admin/courses", label: "Courses", icon: BookOpen, admin: true },
   { to: "/admin/notices", label: "Notices", icon: Bell, admin: true },
   { to: "/admin/gallery", label: "Gallery", icon: Image, admin: true },
