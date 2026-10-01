@@ -21,7 +21,7 @@ export const Route = createFileRoute("/auth")({ staticData: { sitemap: false },
   component: AuthPage,
 });
 
-type Mode = "login" | "forgot" | "sent" | "reset" | "invite";
+type Mode = "login" | "forgot" | "sent" | "reset" | "new-password" | "invite";
 
 function PasswordPair({ pw, setPw, confirm, setConfirm }: { pw: string; setPw: (v: string) => void; confirm: string; setConfirm: (v: string) => void }) {
   return (
@@ -83,14 +83,21 @@ function AuthPage() {
     setMode("sent");
   }
 
+  async function verifyRecoveryCode(e: React.FormEvent) {
+    e.preventDefault();
+    if (!/^[0-9]{6}$/.test(otp)) { toast.error("Enter the 6-digit code"); return; }
+    setLoading(true);
+    const { error } = await supabase.auth.verifyOtp({ email, token: otp, type: "recovery" });
+    setLoading(false);
+    if (error) { toast.error("The code is invalid or expired. Request a new code if needed."); return; }
+    setMode("new-password");
+  }
+
   async function resetPassword(e: React.FormEvent) {
     e.preventDefault();
-    if (otp.length !== 6) { toast.error("Enter the 6-digit code"); return; }
     const problem = checkNewPassword(pw, confirm);
     if (problem) { toast.error(problem); return; }
     setLoading(true);
-    const { error } = await supabase.auth.verifyOtp({ email, token: otp, type: "recovery" });
-    if (error) { setLoading(false); { toast.error(error.message); return; } }
     const { error: upErr } = await supabase.auth.updateUser({ password: pw });
     setLoading(false);
     if (upErr) { toast.error(upErr.message); return; }
@@ -155,13 +162,21 @@ function AuthPage() {
       </div>}
 
       {mode === "reset" && (
-        <form onSubmit={resetPassword} className={card}>
-          <h1 className="section-title text-2xl">Reset Password</h1>
+        <form onSubmit={verifyRecoveryCode} className={card}>
+          <h1 className="section-title text-2xl">Verify your code</h1>
           <p className="text-sm text-muted-foreground">Enter the code sent to <span className="text-foreground">{email}</span>.</p>
           <div className="space-y-2"><Label>Verification code</Label><OtpField label="Password reset code" value={otp} onChange={setOtp} /></div>
+          <Button type="submit" disabled={loading} className="w-full">{loading ? "Verifying..." : "Verify code"}</Button>
+          <div className="flex flex-wrap items-center justify-between gap-2">{back("forgot")}{back("login")}</div>
+        </form>
+      )}
+
+      {mode === "new-password" && (
+        <form onSubmit={resetPassword} className={card}>
+          <h1 className="section-title text-2xl">Set new password</h1>
+          <p className="text-sm text-muted-foreground">Your email code has been verified.</p>
           <PasswordPair pw={pw} setPw={setPw} confirm={confirm} setConfirm={setConfirm} />
           <Button type="submit" disabled={loading} className="w-full">{loading ? "Saving..." : "Set new password"}</Button>
-          <div className="flex flex-wrap items-center justify-between gap-2">{back("forgot")}{back("login")}</div>
         </form>
       )}
 
