@@ -11,7 +11,7 @@ export function Footer() {
         <div className="sm:col-span-2 lg:col-span-1">
           <img src={logo.url} alt="Skill Bridgeway Foundation logo" width={88} height={88} loading="lazy" className="h-22 w-22 rounded-full" />
           <p className="mt-4 text-sm text-muted-foreground">
-            A non-profit in Bangladesh building skills in AI, freelancing and digital work — for free.
+            An RJSC-registered non-profit expanding access to practical, future-relevant skills and economic opportunities for young people and underserved communities in Bangladesh.
           </p>
         </div>
         <div>

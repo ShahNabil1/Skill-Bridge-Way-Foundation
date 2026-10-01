@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, BadgeCheck, Bot, Briefcase, CalendarDays, Laptop, ShieldCheck } from "lucide-react";
+import { ArrowRight, BadgeCheck, Bot, Briefcase, CalendarDays, HeartHandshake, Laptop, Rocket, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { seo } from "@/components/site/PageHero";
@@ -9,20 +9,22 @@ import { coursesQuery, formatDate, noticesQuery } from "@/lib/public-data";
 import logo from "@/assets/sbf-logo.jpeg.asset.json";
 
 export const Route = createFileRoute("/")({ staticData: { sitemap: true },
-  head: () => seo("Skill Bridgeway Foundation — Free AI & Digital Skills in Bangladesh", "Free training in AI, freelancing and digital skills for young people across Bangladesh. Apply for free admission today.", { path: "/" }),
+  head: () => seo("Skill Bridgeway Foundation — AI, Digital & Freelancing Skills in Bangladesh", "Non-profit building AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities in Bangladesh.", { path: "/" }),
   component: Index,
 });
 
 const PILLARS = [
-  { icon: Bot, title: "Artificial Intelligence", text: "Practical AI tools, prompting and automation for real work." },
+  { icon: Bot, title: "AI Literacy", text: "Practical, responsible use of artificial intelligence for work and learning." },
   { icon: Briefcase, title: "Freelancing", text: "Build a profile, win clients and earn on global marketplaces." },
-  { icon: Laptop, title: "Digital Skills", text: "Design, web, marketing and office skills employers need." },
+  { icon: Laptop, title: "Digital Skills", text: "Practical digital technology skills for today's workforce." },
+  { icon: Rocket, title: "Entrepreneurship", text: "Pathways to self-employment and sustainable local enterprise." },
+  { icon: HeartHandshake, title: "Human-Centred Skills", text: "Critical thinking, communication, creativity and problem-solving." },
 ];
 
 const STEPS = [
   { n: "01", title: "Apply free", text: "Fill in the online admission form — no fees, ever." },
   { n: "02", title: "Get your Student ID", text: "Approved learners receive a unique Student ID." },
-  { n: "03", title: "Learn by doing", text: "Mentor-led, project-based classes." },
+  { n: "03", title: "Learn by doing", text: "Practical, hands-on learning connected to real-world opportunities." },
   { n: "04", title: "Earn a verified certificate", text: "Every certificate carries a QR code anyone can verify." },
 ];
 
@@ -37,13 +39,13 @@ function Index() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 md:py-28 lg:grid-cols-[1.3fr_1fr]">
           <div className="min-w-0">
             <p className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              <span className="h-1.5 w-1.5 rounded-full bg-highlight" /> Non-profit · Bangladesh
+              <span className="h-1.5 w-1.5 rounded-full bg-highlight" /> RJSC-registered non-profit · Bangladesh
             </p>
             <h1 className="section-title mt-6 text-4xl leading-[1.05] sm:text-5xl md:text-6xl">
               Where human talent meets <span className="text-primary">AI</span> <span className="text-highlight">opportunity</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg font-light text-muted-foreground">
-              Free, practical training in AI, freelancing and digital skills — with certificates anyone can verify.
+              Bridging the gap between traditional education and the modern workforce — practical AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-highlight text-highlight-foreground hover:bg-highlight/90">
@@ -72,8 +74,8 @@ function Index() {
 
       {/* Pillars */}
       <section className="mx-auto max-w-7xl px-4 py-20">
-        <SectionHeading eyebrow="What we teach" title="Three bridges to the future" />
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
+        <SectionHeading eyebrow="What we teach" title="Skills for the future of work" />
+        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {PILLARS.map((p) => (
             <div key={p.title} className="glass rounded-xl p-6 transition-colors hover:border-primary/60">
               <p.icon className="h-8 w-8 text-primary" />
