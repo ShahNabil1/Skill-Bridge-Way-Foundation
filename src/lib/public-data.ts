@@ -1,12 +1,10 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { cdnUrl } from "@/lib/cdn";
 
-/** Resolve a stored media key to a URL. Full URLs pass through; R2 keys get wired in Phase 3. */
+/** Resolve a stored media key to its CDN URL. */
 export function mediaUrl(key?: string | null) {
-  if (!key) return null;
-  if (/^https?:\/\//.test(key) || key.startsWith("/")) return key;
-  const base = import.meta.env["VITE_R2_PUBLIC_URL"] as string | undefined;
-  return base ? `${base.replace(/\/$/, "")}/${key}` : null;
+  return cdnUrl(key);
 }
 
 export const coursesQuery = (limit?: number) =>
