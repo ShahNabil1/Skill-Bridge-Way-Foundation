@@ -87,8 +87,8 @@ function Admission() {
         const { uploadUrl, key } = await getUploadUrl({
           data: { admissionId, fileName: file.name, contentType: file.type as (typeof ALLOWED_DOC_TYPES)[number], size: file.size },
         });
-        const res = await fetch(uploadUrl, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
-        if (!res.ok) throw new Error(`Upload failed for ${slot.label}`);
+        const res = await fetch(uploadUrl, { method: "PUT", body: file, headers: { "Content-Type": file.type } }).catch(() => null);
+        if (!res?.ok) throw new Error(`Upload failed for ${slot.label}`);
         documentKeys.push({ type: slot.id, key, name: file.name });
       }
       setProgress("Saving your application...");
