@@ -17,3 +17,7 @@
 - Certificates: DB `issue_certificate` creates the serial atomically; the PDF is generated in the admin browser (`src/lib/certificate-pdf.ts`) and uploaded straight to R2 under `certificates/`; why: no PDF rendering on the edge worker, and serials stay unique.
 - Student emails send via Resend from server functions in `src/lib/email.functions.ts` (templates in `email.server.ts`); recipients are always read from the database, never from the caller; why: the public form can't be abused to email arbitrary addresses.
 - Page SEO goes through `seo()` in `PageHero.tsx` (canonical, og:url, optional og:image, noindex); the sitemap is router-derived via `staticData.sitemap` on every route plus published courses; why: one place for head tags and a sitemap that tracks routes automatically.
+
+- Public site chrome is rendered only for public routes; admin navigation uses a fixed overlay drawer, not a content-shifting sidebar; why: auth/admin need a focused interface at every screen size.
+- Route links preload on intent and public query data stays fresh briefly; why: repeat navigation avoids unnecessary network work while admin data remains independently refreshed.
+- Password visibility and live complexity feedback share one auth component; why: login, recovery, invitation and profile use the same validated password rules.
