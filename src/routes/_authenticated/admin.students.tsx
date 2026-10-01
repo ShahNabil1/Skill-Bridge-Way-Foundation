@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AdminOnly, PageTitle } from "@/components/admin/shared";
+import { sendCertificateEmail } from "@/lib/email.functions";
 import { createMediaUploadUrl } from "@/lib/r2.functions";
 import { cdnUrl } from "@/lib/cdn";
 import { formatDate } from "@/lib/public-data";
@@ -30,6 +31,7 @@ type Row = {
 function StudentsAdmin() {
   const qc = useQueryClient();
   const sign = useServerFn(createMediaUploadUrl);
+  const notifyCert = useServerFn(sendCertificateEmail);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [q, setQ] = useState("");
 
@@ -50,6 +52,7 @@ function StudentsAdmin() {
   async function issue(r: Row) {
     if (!r.students || !r.courses) { toast.error("Missing student or course"); return; }
     if (!certOf(r) && !confirm(`Mark "${r.courses.title}" completed for ${r.students.full_name} and issue a certificate?`)) return;
+    const isNew = !certOf(r);
     setBusyId(r.id);
     try {
       const { data, error } = await supabase.rpc("issue_certificate", { _enrollment_id: r.id });
@@ -72,6 +75,9 @@ function StudentsAdmin() {
       const { error: upErr } = await supabase.from("certificates").update({ pdf_key: key }).eq("id", cert.certificate_id);
       if (upErr) throw upErr;
       toast.success(`Certificate ${cert.serial} issued`);
+      if (isNew || !certOf(r)?.pdf_key) {
+        notifyCert({ data: { certificateId: cert.certificate_id } }).then((x) => { if (!x.sent) toast.warning("Certificate email could not be sent"); }).catch(() => toast.warning("Certificate email could not be sent"));
+      }
     } catch (err) {
       toast.error((err as Error).message);
     }

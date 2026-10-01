@@ -11,6 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AdminOnly, PageTitle } from "@/components/admin/shared";
+import { useServerFn } from "@tanstack/react-start";
+import { sendApprovalEmail } from "@/lib/email.functions";
 import { cdnUrl } from "@/lib/cdn";
 import { formatDate } from "@/lib/public-data";
 
@@ -27,6 +29,7 @@ function AdmissionsAdmin() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+  const notifyApproved = useServerFn(sendApprovalEmail);
 
   const { data: rows = [], isLoading } = useQuery({
     queryKey: ["admin-admissions", status],
@@ -41,6 +44,7 @@ function AdmissionsAdmin() {
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success(`Approved — Student ID ${data}`);
+    notifyApproved({ data: { admissionId: id } }).then((r) => { if (!r.sent) toast.warning("Approval email could not be sent"); }).catch(() => toast.warning("Approval email could not be sent"));
     setSelectedId(null); refresh();
   }
 
