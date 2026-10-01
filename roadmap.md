@@ -18,3 +18,4 @@
 - [x] Make password recovery account-safe with explicit code entry and navigation back
 - [x] Polish responsive auth/profile forms with English-only validation, numeric OTP, Caps Lock hints, and motion
 - [x] Add crop-and-resize avatar upload; signed-in upload verification needs an authenticated test session
+- [x] Apply the exact brand palette and Montserrat/Inter typography globally across public, auth, admin, overlays, and fallback views
