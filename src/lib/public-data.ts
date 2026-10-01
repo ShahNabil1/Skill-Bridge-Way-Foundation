@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 export function mediaUrl(key?: string | null) {
   if (!key) return null;
   if (/^https?:\/\//.test(key) || key.startsWith("/")) return key;
-  const base = import.meta.env.VITE_R2_PUBLIC_URL as string | undefined;
+  const base = import.meta.env["VITE_R2_PUBLIC_URL"] as string | undefined;
   return base ? `${base.replace(/\/$/, "")}/${key}` : null;
 }
 

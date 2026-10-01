@@ -9,15 +9,15 @@ import { formatDate, noticesQuery } from "@/lib/public-data";
 const TABS = [["all", "All"], ["notice", "Notices"], ["event", "Events"]] as const;
 
 export const Route = createFileRoute("/notices")({
-  validateSearch: (s: Record<string, unknown>) => ({
-    type: s.type === "notice" || s.type === "event" ? s.type : ("all" as "all" | "notice" | "event"),
+  validateSearch: (s: Record<string, unknown>): { type?: "notice" | "event" } => ({
+    type: s["type"] === "notice" || s["type"] === "event" ? s["type"] : undefined,
   }),
   head: () => seo("Notices & Events | Skill Bridgeway Foundation", "Latest notices, announcements and upcoming events from Skill Bridgeway Foundation."),
   component: Notices,
 });
 
 function Notices() {
-  const { type } = Route.useSearch();
+  const { type = "all" } = Route.useSearch();
   const navigate = useNavigate({ from: "/notices" });
   const { data, isLoading } = useQuery(noticesQuery());
   const items = (data ?? []).filter((n) => type === "all" || n.type === type);
@@ -28,7 +28,7 @@ function Notices() {
       <section className="mx-auto max-w-4xl px-4 py-12">
         <div className="flex gap-2">
           {TABS.map(([v, l]) => (
-            <button key={v} onClick={() => navigate({ search: { type: v } })}
+            <button key={v} onClick={() => navigate({ search: { type: v === "all" ? undefined : v } })}
               className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${type === v ? "border-primary bg-primary text-primary-foreground" : "text-muted-foreground hover:border-primary hover:text-primary"}`}>
               {l}
             </button>
