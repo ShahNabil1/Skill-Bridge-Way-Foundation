@@ -2,8 +2,10 @@
 - [x] Connect Supabase project (already connected)
 - [x] Phase 1 — Global setup, routing, database schema
 - [x] Phase 2 — Public website
-- [ ] Phase 3 — Admission + R2: built; waiting on R2 keys + bucket CORS to test uploads
-- [ ] Phase 4 — Admin CMS: built; waiting on Turnstile site key + Supabase email templates
-- [x] Phase 5 — Certificates + verification (logo.png must be uploaded to CDN)
-- [x] Phase 6 — Emails (Resend), SEO, sitemap, robots
-- [x] Brand logo
+- [x] Phase 3 — Admission + R2 (logo.png uploaded, R2 CORS confirmed by user)
+- [x] Phase 4 — Admin CMS (Turnstile hostnames confirmed by user)
+- [x] Phase 5 — Certificates + verification
+- [x] Phase 6 — Emails (Resend domain verified, tracking on), SEO, sitemap, robots
+- [x] Google Search Console: connection linked to project; sitemap live with 0 errors/warnings
+- [ ] Supabase Auth → URL Configuration: user adding redirect URLs (list provided)
+- [ ] End-to-end test: submit an admission, approve it, issue a certificate → verify all 3 emails arrive
