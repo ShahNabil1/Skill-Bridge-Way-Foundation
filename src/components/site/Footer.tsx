@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Mail, MapPin } from "lucide-react";
 import { NAV } from "./Header";
 import logo from "@/assets/sbf-logo.jpeg.asset.json";
+import { CONTACT_EMAIL, OFFICES } from "@/lib/site-info";
 
 export function Footer() {
   return (
@@ -24,9 +25,13 @@ export function Footer() {
         <div>
           <p className="section-title text-sm">Contact</p>
           <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
-            <li className="flex gap-2"><MapPin className="h-4 w-4 shrink-0 text-primary" />Dhaka, Bangladesh</li>
+            {OFFICES.map((o) => (
+              <li key={o.label} className="flex gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <span><span className="block text-foreground">{o.label}</span>{o.address}</span>
+              </li>
+            ))}
             <li className="flex gap-2"><Mail className="h-4 w-4 shrink-0 text-primary" />
-              <a href="mailto:info@skillbridgeway.org" className="hover:text-primary">info@skillbridgeway.org</a>
+              <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-primary">{CONTACT_EMAIL}</a>
             </li>
           </ul>
         </div>
