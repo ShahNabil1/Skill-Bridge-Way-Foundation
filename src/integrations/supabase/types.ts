@@ -423,12 +423,20 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      issue_certificate: {
+        Args: { _enrollment_id: string }
+        Returns: {
+          certificate_id: string
+          serial: string
+        }[]
+      }
       verify_certificate: {
         Args: { _serial: string }
         Returns: {
           course_title: string
           is_revoked: boolean
           issued_at: string
+          pdf_key: string
           serial: string
           student_code: string
           student_name: string
