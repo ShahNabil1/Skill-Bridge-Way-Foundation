@@ -78,6 +78,11 @@ function Admission() {
 
   async function submit() {
     if (!check(personalSchema.and(educationSchema).and(courseSchema)) || !checkDocs()) return;
+    if (form.course_id !== NO_COURSE && courses.data?.find((c) => c.id === form.course_id)?.slug.startsWith("demo-")) {
+      setErrors((e) => ({ ...e, course_id: "Sample courses are not open for admission yet." }));
+      setStep(2);
+      return;
+    }
     setSubmitting(true);
     try {
       const admissionId = crypto.randomUUID();
@@ -176,7 +181,7 @@ function Admission() {
               {errors.course_id && <p className="text-xs text-destructive">{errors.course_id}</p>}
               <div className="grid gap-3">
                 {courses.isLoading ? Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 bg-muted" />) : (
-                  [...(courses.data ?? []).map((c) => ({ id: c.id, title: c.title, sub: [c.duration, c.level].filter(Boolean).join(" · ") })),
+                  [...(courses.data ?? []).filter((c) => !c.slug.startsWith("demo-")).map((c) => ({ id: c.id, title: c.title, sub: [c.duration, c.level].filter(Boolean).join(" · ") })),
                    { id: NO_COURSE, title: "Not sure yet — advise me", sub: "Our team will suggest the best fit" }].map((c) => (
                     <button type="button" key={c.id} onClick={() => setForm((f) => ({ ...f, course_id: c.id }))}
                       className={`flex items-center justify-between gap-3 rounded-lg border p-4 text-left transition-colors ${form.course_id === c.id ? "border-primary bg-primary/10" : "hover:border-primary/60"}`}>
