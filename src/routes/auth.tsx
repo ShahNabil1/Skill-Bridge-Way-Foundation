@@ -115,10 +115,7 @@ function AuthPage() {
             <Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <button type="button" className={link} onClick={() => setMode("forgot")}>Forgot password?</button>
-            </div>
+            <button type="button" className={`${link} float-right`} onClick={() => setMode("forgot")}>Forgot password?</button>
           </div>
           <PasswordField id="password" label="Password" autoComplete="current-password" required value={password} onChange={setPassword} />
           <Turnstile onToken={setCaptcha} resetKey={captchaReset} />
