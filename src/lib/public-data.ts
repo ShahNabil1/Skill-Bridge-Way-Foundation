@@ -10,6 +10,7 @@ export function mediaUrl(key?: string | null) {
 export const coursesQuery = (limit?: number) =>
   queryOptions({
     queryKey: ["courses", limit ?? "all"],
+    staleTime: 60_000,
     queryFn: async () => {
       let q = supabase
         .from("courses")
@@ -27,6 +28,7 @@ export const coursesQuery = (limit?: number) =>
 export const courseQuery = (slug: string) =>
   queryOptions({
     queryKey: ["course", slug],
+    staleTime: 60_000,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("courses")
@@ -42,6 +44,7 @@ export const courseQuery = (slug: string) =>
 export const noticesQuery = (limit?: number) =>
   queryOptions({
     queryKey: ["notices", limit ?? "all"],
+    staleTime: 60_000,
     queryFn: async () => {
       let q = supabase
         .from("notices")
@@ -58,6 +61,7 @@ export const noticesQuery = (limit?: number) =>
 export const galleryQuery = () =>
   queryOptions({
     queryKey: ["gallery"],
+    staleTime: 60_000,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("gallery_items")

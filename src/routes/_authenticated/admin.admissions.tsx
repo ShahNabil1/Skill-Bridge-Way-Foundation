@@ -15,8 +15,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { sendApprovalEmail } from "@/lib/email.functions";
 import { cdnUrl } from "@/lib/cdn";
 import { formatDate } from "@/lib/public-data";
+import { seo } from "@/components/site/PageHero";
 
 export const Route = createFileRoute("/_authenticated/admin/admissions")({ staticData: { sitemap: false },
+  head: () => seo("Admissions | Skill Bridgeway Foundation", "Private admission review.", { noindex: true }),
   component: () => <AdminOnly><AdmissionsAdmin /></AdminOnly>,
 });
 

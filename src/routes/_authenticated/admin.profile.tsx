@@ -13,8 +13,10 @@ import { OtpField, PageTitle, useCurrentUser, useMediaUpload } from "@/component
 import { cdnUrl } from "@/lib/cdn";
 import { IMAGE_TYPES } from "@/lib/r2.functions";
 import { checkNewPassword } from "@/lib/password";
+import { PasswordField } from "@/components/auth/PasswordField";
+import { seo } from "@/components/site/PageHero";
 
-export const Route = createFileRoute("/_authenticated/admin/profile")({ staticData: { sitemap: false }, component: ProfilePage });
+export const Route = createFileRoute("/_authenticated/admin/profile")({ staticData: { sitemap: false }, head: () => seo("My Profile | Skill Bridgeway Foundation", "Private profile and account settings.", { noindex: true }), component: ProfilePage });
 
 const infoSchema = z.object({
   full_name: z.string().trim().min(2, "Name is too short").max(120),
@@ -136,10 +138,9 @@ function ChangePassword() {
   return (
     <form onSubmit={onSubmit} className="glass space-y-4 rounded-xl p-6">
       <h2 className="font-heading text-lg font-bold uppercase text-foreground">Change Password</h2>
-      <div className="space-y-2"><Label htmlFor="cp">Current password</Label><Input id="cp" type="password" autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} /></div>
-      <div className="space-y-2"><Label htmlFor="np">New password</Label><Input id="np" type="password" autoComplete="new-password" value={pw} onChange={(e) => setPw(e.target.value)} />
-        <p className="text-xs text-muted-foreground">Min 6 characters with uppercase, lowercase, number and symbol.</p></div>
-      <div className="space-y-2"><Label htmlFor="cnp">Confirm new password</Label><Input id="cnp" type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} /></div>
+      <PasswordField id="cp" label="Current password" autoComplete="current-password" value={current} onChange={setCurrent} />
+      <PasswordField id="np" label="New password" autoComplete="new-password" strength value={pw} onChange={setPw} />
+      <PasswordField id="cnp" label="Confirm new password" autoComplete="new-password" value={confirm} onChange={setConfirm} />
       {nonceNeeded && <div className="space-y-2"><Label>Verification code</Label><OtpField value={nonce} onChange={setNonce} /></div>}
       <Button type="submit" disabled={busy}>{busy ? "Updating..." : "Update password"}</Button>
     </form>

@@ -10,6 +10,7 @@ import { seo } from "@/components/site/PageHero";
 import { Turnstile } from "@/components/auth/Turnstile";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { checkNewPassword } from "@/lib/password";
+import { PasswordField } from "@/components/auth/PasswordField";
 
 export const Route = createFileRoute("/auth")({ staticData: { sitemap: false },
   validateSearch: (s: Record<string, unknown>) => z.object({ mode: z.enum(["invite"]).optional() }).parse({ mode: s["mode"] === "invite" ? "invite" : undefined }),
@@ -22,15 +23,8 @@ type Mode = "login" | "forgot" | "reset" | "invite";
 function PasswordPair({ pw, setPw, confirm, setConfirm }: { pw: string; setPw: (v: string) => void; confirm: string; setConfirm: (v: string) => void }) {
   return (
     <>
-      <div className="space-y-2">
-        <Label htmlFor="new-pw">New password</Label>
-        <Input id="new-pw" type="password" autoComplete="new-password" required value={pw} onChange={(e) => setPw(e.target.value)} />
-        <p className="text-xs text-muted-foreground">Min 6 characters with uppercase, lowercase, number and symbol.</p>
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="confirm-pw">Confirm new password</Label>
-        <Input id="confirm-pw" type="password" autoComplete="new-password" required value={confirm} onChange={(e) => setConfirm(e.target.value)} />
-      </div>
+      <PasswordField id="new-pw" label="New password" autoComplete="new-password" required strength value={pw} onChange={setPw} />
+      <PasswordField id="confirm-pw" label="Confirm new password" autoComplete="new-password" required value={confirm} onChange={setConfirm} />
     </>
   );
 }
@@ -120,13 +114,8 @@ function AuthPage() {
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <button type="button" className={link} onClick={() => setMode("forgot")}>Forgot password?</button>
-            </div>
-            <Input id="password" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-          </div>
+          <PasswordField id="password" label="Password" autoComplete="current-password" required value={password} onChange={setPassword}
+            trailingAction={<Button type="button" variant="link" className="h-auto p-0 text-sm" onClick={() => setMode("forgot")}>Forgot password?</Button>} />
           <Turnstile onToken={setCaptcha} resetKey={captchaReset} />
           <Button type="submit" disabled={loading || !captcha} className="w-full">{loading ? "Signing in..." : "Sign in"}</Button>
           <p className="text-xs text-muted-foreground">Accounts are created by administrators only.</p>

@@ -36,9 +36,9 @@ export function Header() {
             <Link to="/admission">Apply Free</Link>
           </Button>
         </nav>
-        <button className="lg:hidden" aria-label="Toggle menu" onClick={() => setOpen(!open)}>
+        <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}>
           {open ? <X /> : <Menu />}
-        </button>
+        </Button>
       </div>
       {open && (
         <nav className="flex flex-col gap-1 border-t px-4 py-3 lg:hidden">
