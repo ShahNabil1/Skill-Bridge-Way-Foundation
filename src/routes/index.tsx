@@ -8,8 +8,8 @@ import { CardSkeletonGrid, CourseCard, EmptyState, SectionHeading } from "@/comp
 import { coursesQuery, formatDate, noticesQuery } from "@/lib/public-data";
 import logo from "@/assets/sbf-logo.jpeg.asset.json";
 
-export const Route = createFileRoute("/")({
-  head: () => seo("Skill Bridgeway Foundation — Free AI & Digital Skills in Bangladesh", "Free training in AI, freelancing and digital skills for young people across Bangladesh. Apply for free admission today."),
+export const Route = createFileRoute("/")({ staticData: { sitemap: true },
+  head: () => seo("Skill Bridgeway Foundation — Free AI & Digital Skills in Bangladesh", "Free training in AI, freelancing and digital skills for young people across Bangladesh. Apply for free admission today.", { path: "/" }),
   component: Index,
 });
 

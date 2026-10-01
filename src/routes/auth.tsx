@@ -11,9 +11,9 @@ import { Turnstile } from "@/components/auth/Turnstile";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { checkNewPassword } from "@/lib/password";
 
-export const Route = createFileRoute("/auth")({
+export const Route = createFileRoute("/auth")({ staticData: { sitemap: false },
   validateSearch: (s: Record<string, unknown>) => z.object({ mode: z.enum(["invite"]).optional() }).parse({ mode: s["mode"] === "invite" ? "invite" : undefined }),
-  head: () => seo("Admin Sign In | Skill Bridgeway Foundation", "Sign in to the Skill Bridgeway Foundation admin area."),
+  head: () => seo("Admin Sign In | Skill Bridgeway Foundation", "Sign in to the Skill Bridgeway Foundation admin area.", { path: "/auth", noindex: true }),
   component: AuthPage,
 });
 

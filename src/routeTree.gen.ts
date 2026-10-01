@@ -17,6 +17,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as NoticesRouteImport } from './routes/notices'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
@@ -68,6 +69,11 @@ const GalleryRoute = GalleryRouteImport.update({
 const NoticesRoute = NoticesRouteImport.update({
   id: '/notices',
   path: '/notices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VerifyRoute = VerifyRouteImport.update({
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/notices': typeof NoticesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/verify': typeof VerifyRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/notices': typeof NoticesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/verify': typeof VerifyRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/courses': typeof CoursesIndexRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/notices': typeof NoticesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/verify': typeof VerifyRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/notices'
+    | '/sitemap.xml'
     | '/verify'
     | '/admin'
     | '/courses/$slug'
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/notices'
+    | '/sitemap.xml'
     | '/verify'
     | '/courses/$slug'
     | '/courses'
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/notices'
+    | '/sitemap.xml'
     | '/verify'
     | '/_authenticated/admin'
     | '/courses/$slug'
@@ -288,6 +300,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   GalleryRoute: typeof GalleryRoute
   NoticesRoute: typeof NoticesRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   VerifyRoute: typeof VerifyRoute
   CoursesSlugRoute: typeof CoursesSlugRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
@@ -349,6 +362,13 @@ declare module '@tanstack/react-router' {
       path: '/notices'
       fullPath: '/notices'
       preLoaderRoute: typeof NoticesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/verify': {
@@ -492,6 +512,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   GalleryRoute: GalleryRoute,
   NoticesRoute: NoticesRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   VerifyRoute: VerifyRoute,
   CoursesSlugRoute: CoursesSlugRoute,
   CoursesIndexRoute: CoursesIndexRoute,

@@ -13,14 +13,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHero, seo } from "@/components/site/PageHero";
 import { coursesQuery } from "@/lib/public-data";
+import { sendAdmissionReceivedEmail } from "@/lib/email.functions";
 import { ALLOWED_DOC_TYPES, MAX_DOC_BYTES, createAdmissionUploadUrl } from "@/lib/r2.functions";
 import {
   DOC_SLOTS, EDUCATION_LEVELS, courseSchema, educationSchema, personalSchema,
   type AdmissionForm, type DocSlot,
 } from "@/lib/admission-schema";
 
-export const Route = createFileRoute("/admission")({
-  head: () => seo("Free Admission | Skill Bridgeway Foundation", "Apply online for free admission to AI, freelancing and digital skills courses at Skill Bridgeway Foundation."),
+export const Route = createFileRoute("/admission")({ staticData: { sitemap: true },
+  head: () => seo("Free Admission | Skill Bridgeway Foundation", "Apply online for free admission to AI, freelancing and digital skills courses at Skill Bridgeway Foundation.", { path: "/admission" }),
   component: Admission,
 });
 
@@ -43,6 +44,7 @@ function Admission() {
   const [reference, setReference] = useState<string | null>(null);
   const courses = useQuery(coursesQuery());
   const getUploadUrl = useServerFn(createAdmissionUploadUrl);
+  const sendReceived = useServerFn(sendAdmissionReceivedEmail);
 
   const set = (k: keyof AdmissionForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -108,6 +110,7 @@ function Admission() {
         status: "pending",
       });
       if (error) throw new Error("Could not save your application");
+      sendReceived({ data: { admissionId } }).catch(() => undefined);
       setReference(`SBF-APP-${admissionId.slice(0, 8).toUpperCase()}`);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {

@@ -8,11 +8,11 @@ import { formatDate, noticesQuery } from "@/lib/public-data";
 
 const TABS = [["all", "All"], ["notice", "Notices"], ["event", "Events"]] as const;
 
-export const Route = createFileRoute("/notices")({
+export const Route = createFileRoute("/notices")({ staticData: { sitemap: true },
   validateSearch: (s: Record<string, unknown>): { type?: "notice" | "event" | undefined } => ({
     type: s["type"] === "notice" || s["type"] === "event" ? s["type"] : undefined,
   }),
-  head: () => seo("Notices & Events | Skill Bridgeway Foundation", "Latest notices, announcements and upcoming events from Skill Bridgeway Foundation."),
+  head: () => seo("Notices & Events | Skill Bridgeway Foundation", "Latest notices, announcements and upcoming events from Skill Bridgeway Foundation.", { path: "/notices" }),
   component: Notices,
 });
 

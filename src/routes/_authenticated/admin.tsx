@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { seo } from "@/components/site/PageHero";
 import { useIsAdmin } from "@/components/admin/shared";
 
-export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => seo("Admin Dashboard | Skill Bridgeway Foundation", "Manage courses, admissions, notices, gallery and users."),
+export const Route = createFileRoute("/_authenticated/admin")({ staticData: { sitemap: false },
+  head: () => seo("Admin Dashboard | Skill Bridgeway Foundation", "Manage courses, admissions, notices, gallery and users.", { noindex: true }),
   component: AdminLayout,
 });
 

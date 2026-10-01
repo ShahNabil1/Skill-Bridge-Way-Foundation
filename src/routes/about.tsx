@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { PageHero, seo } from "@/components/site/PageHero";
 import { SectionHeading } from "@/components/site/ui-bits";
 
-export const Route = createFileRoute("/about")({
-  head: () => seo("About Us | Skill Bridgeway Foundation", "Our mission to bring free AI, freelancing and digital skills training to young people across Bangladesh."),
+export const Route = createFileRoute("/about")({ staticData: { sitemap: true },
+  head: () => seo("About Us | Skill Bridgeway Foundation", "Our mission to bring free AI, freelancing and digital skills training to young people across Bangladesh.", { path: "/about" }),
   component: About,
 });
 

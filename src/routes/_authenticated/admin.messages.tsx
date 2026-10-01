@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { AdminOnly, PageTitle } from "@/components/admin/shared";
 import { formatDate } from "@/lib/public-data";
 
-export const Route = createFileRoute("/_authenticated/admin/messages")({
+export const Route = createFileRoute("/_authenticated/admin/messages")({ staticData: { sitemap: false },
   component: () => <AdminOnly><MessagesAdmin /></AdminOnly>,
 });
 

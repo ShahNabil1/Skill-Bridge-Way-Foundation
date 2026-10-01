@@ -9,10 +9,10 @@ import { PageHero, seo } from "@/components/site/PageHero";
 import { cdnUrl } from "@/lib/cdn";
 import { formatDate } from "@/lib/public-data";
 
-export const Route = createFileRoute("/verify")({
+export const Route = createFileRoute("/verify")({ staticData: { sitemap: true },
   validateSearch: (s: Record<string, unknown>): { serial?: string } =>
     typeof s["serial"] === "string" && s["serial"] ? { serial: s["serial"].slice(0, 60) } : {},
-  head: () => seo("Verify Certificate | Skill Bridgeway Foundation", "Verify a Skill Bridgeway Foundation certificate by serial number or QR code."),
+  head: () => seo("Verify Certificate | Skill Bridgeway Foundation", "Verify a Skill Bridgeway Foundation certificate by serial number or QR code.", { path: "/verify" }),
   component: VerifyPage,
 });
 

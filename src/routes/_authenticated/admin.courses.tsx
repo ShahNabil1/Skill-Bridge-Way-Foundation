@@ -16,7 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { AdminOnly, ImageField, PageTitle } from "@/components/admin/shared";
 import { cdnUrl, slugify } from "@/lib/cdn";
 
-export const Route = createFileRoute("/_authenticated/admin/courses")({
+export const Route = createFileRoute("/_authenticated/admin/courses")({ staticData: { sitemap: false },
   component: () => <AdminOnly><CoursesAdmin /></AdminOnly>,
 });
 

@@ -14,7 +14,7 @@ import { cdnUrl } from "@/lib/cdn";
 import { IMAGE_TYPES } from "@/lib/r2.functions";
 import { checkNewPassword } from "@/lib/password";
 
-export const Route = createFileRoute("/_authenticated/admin/profile")({ component: ProfilePage });
+export const Route = createFileRoute("/_authenticated/admin/profile")({ staticData: { sitemap: false }, component: ProfilePage });
 
 const infoSchema = z.object({
   full_name: z.string().trim().min(2, "Name is too short").max(120),
