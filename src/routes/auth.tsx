@@ -114,10 +114,8 @@ function AuthPage() {
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
-          <div className="space-y-2">
-            <button type="button" className={`${link} float-right`} onClick={() => setMode("forgot")}>Forgot password?</button>
-          </div>
-          <PasswordField id="password" label="Password" autoComplete="current-password" required value={password} onChange={setPassword} />
+          <PasswordField id="password" label="Password" autoComplete="current-password" required value={password} onChange={setPassword}
+            trailingAction={<Button type="button" variant="link" className="h-auto p-0 text-sm" onClick={() => setMode("forgot")}>Forgot password?</Button>} />
           <Turnstile onToken={setCaptcha} resetKey={captchaReset} />
           <Button type="submit" disabled={loading || !captcha} className="w-full">{loading ? "Signing in..." : "Sign in"}</Button>
           <p className="text-xs text-muted-foreground">Accounts are created by administrators only.</p>

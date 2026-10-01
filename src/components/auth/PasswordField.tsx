@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { Check, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,9 +13,10 @@ type PasswordFieldProps = {
   autoComplete: "current-password" | "new-password";
   required?: boolean;
   strength?: boolean;
+  trailingAction?: ReactNode;
 };
 
-export function PasswordField({ id, label, value, onChange, autoComplete, required, strength = false }: PasswordFieldProps) {
+export function PasswordField({ id, label, value, onChange, autoComplete, required, strength = false, trailingAction }: PasswordFieldProps) {
   const [visible, setVisible] = useState(false);
   const rules = [
     { label: "6–72 characters", valid: value.length >= 6 && value.length <= 72 },
@@ -28,13 +30,14 @@ export function PasswordField({ id, label, value, onChange, autoComplete, requir
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
+      <div className="flex items-center justify-between gap-2"><Label htmlFor={id}>{label}</Label>{trailingAction}</div>
       <div className="relative">
         <Input id={id} type={visible ? "text" : "password"} autoComplete={autoComplete} required={required}
           value={value} onChange={(event) => onChange(event.target.value)} className="pr-12" aria-describedby={strength ? `${id}-strength` : undefined} />
         <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
           onClick={() => setVisible((previous) => !previous)} aria-label={`${visible ? "Hide" : "Show"} ${label.toLowerCase()}`} aria-pressed={visible} title={`${visible ? "Hide" : "Show"} password`}>
-          {visible ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+          <Eye aria-hidden="true" className={`absolute transition-all duration-200 motion-reduce:transition-none ${visible ? "scale-75 rotate-45 opacity-0" : "scale-100 rotate-0 opacity-100"}`} />
+          <EyeOff aria-hidden="true" className={`absolute transition-all duration-200 motion-reduce:transition-none ${visible ? "scale-100 rotate-0 opacity-100" : "scale-75 -rotate-45 opacity-0"}`} />
         </Button>
       </div>
       {strength && (
