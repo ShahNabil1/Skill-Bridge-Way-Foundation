@@ -87,7 +87,7 @@ export async function generateCertificatePdf(d: CertificateData): Promise<Uint8A
 
   centered(page, "This is to certify that", top - 108, body, 13, GREY);
   centered(page, d.studentName.toUpperCase(), top - 152, head, 32, WHITE, 620);
-  centered(page, `Student ID: ${d.studentCode}`, top - 176, body, 11, GREY);
+  centered(page, `STUDENT ID: ${d.studentCode}`, top - 178, semi, 10, GREY);
   centered(page, "has successfully completed the course", top - 210, body, 13, GREY);
   centered(page, d.courseTitle, top - 244, semi, 22, CYAN, 620);
 
