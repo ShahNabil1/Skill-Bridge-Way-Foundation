@@ -1,25 +1,31 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { BookOpen, Bell, Image, Mail, ClipboardList, Users, UserCircle, LayoutDashboard, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { seo } from "@/components/site/PageHero";
+import { useIsAdmin } from "@/components/admin/shared";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => seo("Admin Dashboard | Skill Bridgeway Foundation", "Manage courses, admissions, notices and certificates."),
-  component: AdminPage,
+  head: () => ({ ...seo("Admin Dashboard | Skill Bridgeway Foundation", "Manage courses, admissions, notices and certificates."), meta: [{ name: "robots", content: "noindex" }, ...seo("Admin Dashboard | Skill Bridgeway Foundation", "Manage courses, admissions, notices and certificates.").meta] }),
+  component: AdminLayout,
 });
 
-function AdminPage() {
-  const { user } = Route.useRouteContext();
+const NAV = [
+  { to: "/admin", label: "Overview", icon: LayoutDashboard, admin: true, exact: true },
+  { to: "/admin/admissions", label: "Admissions", icon: ClipboardList, admin: true },
+  { to: "/admin/courses", label: "Courses", icon: BookOpen, admin: true },
+  { to: "/admin/notices", label: "Notices", icon: Bell, admin: true },
+  { to: "/admin/gallery", label: "Gallery", icon: Image, admin: true },
+  { to: "/admin/messages", label: "Messages", icon: Mail, admin: true },
+  { to: "/admin/users", label: "Users", icon: Users, admin: true },
+  { to: "/admin/profile", label: "My Profile", icon: UserCircle, admin: false },
+] as const;
+
+function AdminLayout() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { data: isAdmin, isLoading } = useQuery({
-    queryKey: ["is-admin", user.id],
-    queryFn: async () => {
-      const { data } = await supabase.rpc("has_role", { _user_id: user.id, _role: "admin" });
-      return !!data;
-    },
-  });
+  const { data: isAdmin } = useIsAdmin();
 
   async function signOut() {
     await qc.cancelQueries();
@@ -29,16 +35,22 @@ function AdminPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12">
-      <div className="flex items-center justify-between">
-        <h1 className="section-title text-3xl">Admin Dashboard</h1>
-        <Button variant="outline" onClick={signOut}>Sign out</Button>
-      </div>
-      <div className="glass mt-8 rounded-xl p-8 text-muted-foreground">
-        {isLoading ? "Checking access..." : isAdmin
-          ? "Welcome, admin. Management tools arrive in Phase 4."
-          : "Your account does not have admin access yet."}
-      </div>
+    <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 md:grid-cols-[220px_1fr]">
+      <aside className="glass h-fit rounded-xl p-3">
+        <nav className="flex gap-1 overflow-x-auto md:flex-col">
+          {NAV.filter((n) => !n.admin || isAdmin).map((n) => (
+            <Link key={n.to} to={n.to} activeOptions={{ exact: "exact" in n }}
+              className="flex shrink-0 items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              activeProps={{ className: "bg-primary/15 !text-primary" }}>
+              <n.icon className="h-4 w-4" /> {n.label}
+            </Link>
+          ))}
+          <Button variant="ghost" size="sm" className="shrink-0 justify-start gap-2 text-muted-foreground" onClick={signOut}>
+            <LogOut className="h-4 w-4" /> Sign out
+          </Button>
+        </nav>
+      </aside>
+      <main className="min-w-0"><Outlet /></main>
     </div>
   );
 }
