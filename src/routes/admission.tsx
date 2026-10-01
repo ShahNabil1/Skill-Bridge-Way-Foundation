@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState, type ReactNode } from "react";
+import { cloneElement, isValidElement, useId, useState, type ReactNode } from "react";
 import type { ZodType } from "zod";
 import { toast } from "sonner";
 import { Check, CheckCircle2, Copy, FileText, Loader2, Upload, X } from "lucide-react";
@@ -248,7 +248,9 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 }
 
 function Field({ label, error, children }: { label: string; error?: string | undefined; children: ReactNode }) {
-  return <div className="space-y-2"><Label>{label}</Label>{children}{error && <p className="text-xs text-destructive">{error}</p>}</div>;
+  const id = useId();
+  const control = isValidElement<{ id?: string }>(children) ? cloneElement(children, { id }) : children;
+  return <div className="space-y-2"><Label htmlFor={id}>{label}</Label>{control}{error && <p className="text-xs text-destructive">{error}</p>}</div>;
 }
 
 function Review({ title, rows, onEdit }: { title: string; rows: string[][]; onEdit: () => void }) {

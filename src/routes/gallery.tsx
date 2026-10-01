@@ -45,7 +45,7 @@ function Gallery() {
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
             {items.map((g, i) => (
               <button key={g.id} onClick={() => setOpen(i)} className="group relative aspect-square overflow-hidden rounded-lg border focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                <img src={g.url} alt={g.title ?? "Gallery photo"} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <img src={g.url} alt={g.title ?? "Skill Bridgeway Foundation training activity"} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 {g.title && <span className="absolute inset-x-0 bottom-0 bg-background/70 p-2 text-left text-xs opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">{g.title}</span>}
               </button>
             ))}
@@ -63,7 +63,7 @@ function Gallery() {
             </>
           )}
           <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <img src={current.url} alt={current.title ?? "Gallery photo"} className="max-h-[80vh] w-auto rounded-lg object-contain" />
+            <img src={current.url} alt={current.title ?? "Skill Bridgeway Foundation training activity"} className="max-h-[80vh] w-auto rounded-lg object-contain" />
             {current.title && <figcaption className="mt-3 text-center text-sm text-muted-foreground">{current.title}</figcaption>}
           </figure>
         </div>
