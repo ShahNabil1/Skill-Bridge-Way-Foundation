@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHero, seo } from "@/components/site/PageHero";
+import { CONTACT_EMAIL, OFFICES } from "@/lib/site-info";
 
 export const Route = createFileRoute("/contact")({
   head: () => seo("Contact | Skill Bridgeway Foundation", "Get in touch with Skill Bridgeway Foundation about courses, admission or partnerships."),
@@ -70,8 +71,10 @@ function Contact() {
       <PageHero eyebrow="Talk to us" title="Contact">Questions about courses, admission or partnering with us? Send a message.</PageHero>
       <section className="mx-auto grid max-w-7xl gap-8 px-4 py-14 lg:grid-cols-[1fr_1.6fr]">
         <div className="space-y-4">
-          <div className="glass flex gap-4 rounded-xl p-6"><MapPin className="h-6 w-6 shrink-0 text-primary" /><div><h2 className="section-title text-sm">Address</h2><p className="mt-1 text-sm text-muted-foreground">Dhaka, Bangladesh</p></div></div>
-          <div className="glass flex gap-4 rounded-xl p-6"><Mail className="h-6 w-6 shrink-0 text-primary" /><div><h2 className="section-title text-sm">Email</h2><a href="mailto:info@skillbridgeway.org" className="mt-1 block text-sm text-muted-foreground hover:text-primary">info@skillbridgeway.org</a></div></div>
+          {OFFICES.map((o) => (
+            <div key={o.label} className="glass flex gap-4 rounded-xl p-6"><MapPin className="h-6 w-6 shrink-0 text-primary" /><div><h2 className="section-title text-sm">{o.label}</h2><p className="mt-1 text-sm text-muted-foreground">{o.address}</p></div></div>
+          ))}
+          <div className="glass flex gap-4 rounded-xl p-6"><Mail className="h-6 w-6 shrink-0 text-primary" /><div><h2 className="section-title text-sm">Email</h2><a href={`mailto:${CONTACT_EMAIL}`} className="mt-1 block text-sm text-muted-foreground hover:text-primary">{CONTACT_EMAIL}</a></div></div>
         </div>
         <div className="glass rounded-xl p-6 md:p-8">
           {sent ? (
