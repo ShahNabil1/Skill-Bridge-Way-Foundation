@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { createMediaUploadUrl, IMAGE_TYPES, MAX_DOC_BYTES } from "@/lib/r2.functions";
 import { cdnUrl } from "@/lib/cdn";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { asciiDigits, digitsOnly } from "@/lib/form-input";
 
 export const selectCls = "h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground";
 
@@ -84,9 +86,9 @@ export function ImageField({ value, onChange, folder }: { value: string | null; 
   );
 }
 
-export function OtpField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+export function OtpField({ value, onChange, label = "Verification code" }: { value: string; onChange: (v: string) => void; label?: string }) {
   return (
-    <InputOTP maxLength={6} value={value} onChange={onChange} inputMode="numeric">
+    <InputOTP aria-label={label} pattern={REGEXP_ONLY_DIGITS} pasteTransformer={asciiDigits} maxLength={6} value={value} onChange={(v) => onChange(digitsOnly(v).slice(0, 6))} inputMode="numeric" containerClassName="max-w-full overflow-x-auto">
       <InputOTPGroup>
         {[0, 1, 2, 3, 4, 5].map((i) => <InputOTPSlot key={i} index={i} />)}
       </InputOTPGroup>

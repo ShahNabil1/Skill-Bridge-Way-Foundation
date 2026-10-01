@@ -1,9 +1,10 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { Check, Eye, EyeOff } from "lucide-react";
+import { Check, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ENGLISH_WARNING, asciiOnly } from "@/lib/form-input";
 
 type PasswordFieldProps = {
   id: string;
@@ -18,12 +19,14 @@ type PasswordFieldProps = {
 
 export function PasswordField({ id, label, value, onChange, autoComplete, required, strength = false, trailingAction }: PasswordFieldProps) {
   const [visible, setVisible] = useState(false);
+  const [warning, setWarning] = useState(false);
+  const [caps, setCaps] = useState(false);
   const rules = [
     { label: "6–72 characters", valid: value.length >= 6 && value.length <= 72 },
     { label: "Uppercase letter", valid: /[A-Z]/.test(value) },
     { label: "Lowercase letter", valid: /[a-z]/.test(value) },
     { label: "Number", valid: /\d/.test(value) },
-    { label: "Symbol", valid: /[^A-Za-z0-9]/.test(value) },
+    { label: "Symbol", valid: /[^A-Za-z0-9\s]/.test(value) },
   ];
   const score = rules.filter((rule) => rule.valid).length;
   const status = score === 5 ? "Strong" : score >= 3 ? "Getting there" : "Needs work";
@@ -33,13 +36,17 @@ export function PasswordField({ id, label, value, onChange, autoComplete, requir
       <div className="flex items-center justify-between gap-2"><Label htmlFor={id}>{label}</Label>{trailingAction}</div>
       <div className="relative">
         <Input id={id} type={visible ? "text" : "password"} autoComplete={autoComplete} required={required}
-          value={value} onChange={(event) => onChange(event.target.value)} className="pr-12" aria-describedby={strength ? `${id}-strength` : undefined} />
+          value={value} onChange={(event) => { const clean = asciiOnly(event.target.value); setWarning(clean !== event.target.value); onChange(clean); }}
+          onKeyDown={(event) => setCaps(event.getModifierState("CapsLock"))} onKeyUp={(event) => setCaps(event.getModifierState("CapsLock"))} onBlur={() => setCaps(false)}
+          className="pr-12 transition-[border-color,box-shadow] duration-200 focus-visible:shadow-[0_0_18px_var(--ring)]" aria-describedby={strength ? `${id}-strength` : undefined} />
         <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
           onClick={() => setVisible((previous) => !previous)} aria-label={`${visible ? "Hide" : "Show"} ${label.toLowerCase()}`} aria-pressed={visible} title={`${visible ? "Hide" : "Show"} password`}>
           <Eye aria-hidden="true" className={`absolute transition-all duration-200 motion-reduce:transition-none ${visible ? "scale-75 rotate-45 opacity-0" : "scale-100 rotate-0 opacity-100"}`} />
           <EyeOff aria-hidden="true" className={`absolute transition-all duration-200 motion-reduce:transition-none ${visible ? "scale-100 rotate-0 opacity-100" : "scale-75 -rotate-45 opacity-0"}`} />
         </Button>
       </div>
+      {warning && <p role="status" className="flex items-center gap-1 text-xs text-highlight"><AlertCircle className="h-3.5 w-3.5" />{ENGLISH_WARNING}</p>}
+      {caps && <p role="status" className="text-xs text-highlight">Caps Lock is on</p>}
       {strength && (
         <div id={`${id}-strength`} className="space-y-2 pt-1" aria-live="polite">
           <div className="flex items-center gap-1" role="meter" aria-label="Password strength" aria-valuemin={0} aria-valuemax={5} aria-valuenow={score} aria-valuetext={value ? status : "No password entered"}>
