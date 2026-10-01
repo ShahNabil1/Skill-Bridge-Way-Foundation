@@ -1,24 +1,32 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { seo } from "@/components/site/PageHero";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => seo("Skill Bridgeway Foundation — Free AI & Digital Skills in Bangladesh", "Free training in AI, freelancing and digital skills for young people across Bangladesh. Apply for free admission today."),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <section className="relative overflow-hidden bg-grid">
+      <div className="mx-auto max-w-7xl px-4 py-24 md:py-36">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Non-profit · Bangladesh</p>
+        <h1 className="section-title mt-4 max-w-4xl text-4xl leading-tight md:text-7xl">
+          Bridging talent to the <span className="text-primary">digital</span> <span className="text-highlight">future</span>
+        </h1>
+        <p className="mt-6 max-w-2xl text-lg font-light text-muted-foreground">
+          Free, practical training in AI, freelancing and digital skills — with verified certificates.
+        </p>
+        <div className="mt-10 flex flex-wrap gap-3">
+          <Button asChild size="lg" className="bg-highlight text-highlight-foreground hover:bg-highlight/90">
+            <Link to="/admission">Apply for free</Link>
+          </Button>
+          <Button asChild size="lg" variant="outline" className="border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground">
+            <Link to="/courses">Explore courses</Link>
+          </Button>
+        </div>
+      </div>
+    </section>
   );
 }
