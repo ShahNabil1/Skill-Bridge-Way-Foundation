@@ -254,7 +254,7 @@ function Review({ title, rows, onEdit }: { title: string; rows: string[][]; onEd
       <div className="flex items-center justify-between"><h3 className="text-sm uppercase">{title}</h3><button type="button" onClick={onEdit} className="text-xs text-primary hover:underline">Edit</button></div>
       <dl className="mt-3 grid gap-2 text-sm">
         {rows.map(([k, v]) => (
-          <div key={k} className="grid grid-cols-[120px_minmax(0,1fr)] gap-3"><dt className="text-muted-foreground">{k}</dt><dd className="break-words capitalize-first">{v || "—"}</dd></div>
+          <div key={k} className="grid grid-cols-[120px_minmax(0,1fr)] gap-3"><dt className="text-muted-foreground">{k}</dt><dd className="break-words">{v || "—"}</dd></div>
         ))}
       </dl>
     </div>
