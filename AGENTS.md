@@ -21,3 +21,4 @@
 - Public site chrome is rendered only for public routes; admin navigation uses a fixed overlay drawer, not a content-shifting sidebar; why: auth/admin need a focused interface at every screen size.
 - Route links preload on intent and public query data stays fresh briefly; why: repeat navigation avoids unnecessary network work while admin data remains independently refreshed.
 - Password visibility and live complexity feedback share one auth component; why: login, recovery, invitation and profile use the same validated password rules.
+- Preview content lives in existing admin-managed Supabase rows and R2 media keys, identified by `demo-` course slugs; why: editors can replace it without replacing page code and sample courses must not imply open enrollment.

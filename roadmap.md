@@ -14,3 +14,4 @@
 - [x] Replace admin navigation with smooth, shift-free hamburger drawer
 - [x] Add password visibility and live strength feedback to auth and profile
 - [x] Improve navigation responsiveness across the site and verify
+- [x] Add clearly labeled preview courses, notices, and gallery photography in admin-managed content; keep demo courses out of real admissions
