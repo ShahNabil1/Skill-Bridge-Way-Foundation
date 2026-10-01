@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { ConfirmHost } from "@/components/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 
 function NotFoundComponent() {
@@ -146,6 +147,7 @@ function RootComponent() {
         {!isPrivate && <Footer />}
       </div>
       <Toaster />
+      <ConfirmHost />
     </QueryClientProvider>
   );
 }

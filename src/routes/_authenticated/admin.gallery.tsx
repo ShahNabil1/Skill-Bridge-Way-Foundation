@@ -1,3 +1,4 @@
+import { confirmAction } from "@/components/ConfirmDialog";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -52,7 +53,7 @@ function GalleryAdmin() {
   }
 
   async function remove(id: string) {
-    if (!confirm("Delete this photo?")) return;
+    if (!(await confirmAction({ title: "Delete this photo?", description: "It will be removed from the public gallery.", confirmText: "Delete", destructive: true }))) return;
     const { error } = await supabase.from("gallery_items").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
     refresh();

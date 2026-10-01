@@ -1,3 +1,4 @@
+import { confirmAction } from "@/components/ConfirmDialog";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -65,7 +66,7 @@ function CoursesAdmin() {
   }
 
   async function remove(c: Course) {
-    if (!confirm(`Delete "${c.title}"?`)) return;
+    if (!(await confirmAction({ title: `Delete "${c.title}"?`, description: "This course will be permanently removed.", confirmText: "Delete", destructive: true }))) return;
     const { error } = await supabase.from("courses").delete().eq("id", c.id);
     if (error) { toast.error(error.message); return; }
     refresh();

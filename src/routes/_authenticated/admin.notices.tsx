@@ -1,3 +1,4 @@
+import { confirmAction } from "@/components/ConfirmDialog";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -63,7 +64,7 @@ function NoticesAdmin() {
   }
 
   async function remove(n: Notice) {
-    if (!confirm(`Delete "${n.title}"?`)) return;
+    if (!(await confirmAction({ title: `Delete "${n.title}"?`, description: "This notice will be permanently removed.", confirmText: "Delete", destructive: true }))) return;
     const { error } = await supabase.from("notices").delete().eq("id", n.id);
     if (error) { toast.error(error.message); return; }
     refresh();
