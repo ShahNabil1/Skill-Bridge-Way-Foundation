@@ -14,7 +14,7 @@ import { createMediaUploadUrl } from "@/lib/r2.functions";
 import { cdnUrl } from "@/lib/cdn";
 import { formatDate } from "@/lib/public-data";
 
-export const Route = createFileRoute("/_authenticated/admin/students")({
+export const Route = createFileRoute("/_authenticated/admin/students")({ staticData: { sitemap: false },
   component: () => <AdminOnly><StudentsAdmin /></AdminOnly>,
 });
 

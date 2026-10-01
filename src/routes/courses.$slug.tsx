@@ -7,7 +7,7 @@ import { seo } from "@/components/site/PageHero";
 import { EmptyState } from "@/components/site/ui-bits";
 import { courseQuery, mediaUrl } from "@/lib/public-data";
 
-export const Route = createFileRoute("/courses/$slug")({
+export const Route = createFileRoute("/courses/$slug")({ staticData: { sitemap: true },
   head: ({ params }) => {
     const name = params.slug.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
     return seo(`${name} | Skill Bridgeway Foundation`, `Free ${name} course by Skill Bridgeway Foundation — details, duration and free admission.`);

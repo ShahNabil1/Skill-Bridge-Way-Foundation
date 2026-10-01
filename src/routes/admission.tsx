@@ -19,8 +19,8 @@ import {
   type AdmissionForm, type DocSlot,
 } from "@/lib/admission-schema";
 
-export const Route = createFileRoute("/admission")({
-  head: () => seo("Free Admission | Skill Bridgeway Foundation", "Apply online for free admission to AI, freelancing and digital skills courses at Skill Bridgeway Foundation."),
+export const Route = createFileRoute("/admission")({ staticData: { sitemap: true },
+  head: () => seo("Free Admission | Skill Bridgeway Foundation", "Apply online for free admission to AI, freelancing and digital skills courses at Skill Bridgeway Foundation.", { path: "/admission" }),
   component: Admission,
 });
 

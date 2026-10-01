@@ -15,7 +15,7 @@ import { AdminOnly, PageTitle, useCurrentUser } from "@/components/admin/shared"
 import { inviteUser, listUsers } from "@/lib/admin.functions";
 import { formatDate } from "@/lib/public-data";
 
-export const Route = createFileRoute("/_authenticated/admin/users")({
+export const Route = createFileRoute("/_authenticated/admin/users")({ staticData: { sitemap: false },
   component: () => <AdminOnly><UsersAdmin /></AdminOnly>,
 });
 

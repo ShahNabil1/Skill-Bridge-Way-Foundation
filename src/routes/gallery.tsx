@@ -7,8 +7,8 @@ import { PageHero, seo } from "@/components/site/PageHero";
 import { EmptyState } from "@/components/site/ui-bits";
 import { galleryQuery, mediaUrl } from "@/lib/public-data";
 
-export const Route = createFileRoute("/gallery")({
-  head: () => seo("Photo Gallery | Skill Bridgeway Foundation", "Moments from our classes, events and graduations across Bangladesh."),
+export const Route = createFileRoute("/gallery")({ staticData: { sitemap: true },
+  head: () => seo("Photo Gallery | Skill Bridgeway Foundation", "Moments from our classes, events and graduations across Bangladesh.", { path: "/gallery" }),
   component: Gallery,
 });
 

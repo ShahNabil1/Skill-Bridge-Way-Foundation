@@ -18,7 +18,7 @@ import { AdminOnly, PageTitle, selectCls } from "@/components/admin/shared";
 import { slugify } from "@/lib/cdn";
 import { formatDate } from "@/lib/public-data";
 
-export const Route = createFileRoute("/_authenticated/admin/notices")({
+export const Route = createFileRoute("/_authenticated/admin/notices")({ staticData: { sitemap: false },
   component: () => <AdminOnly><NoticesAdmin /></AdminOnly>,
 });
 

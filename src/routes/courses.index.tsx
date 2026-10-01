@@ -6,12 +6,12 @@ import { PageHero, seo } from "@/components/site/PageHero";
 import { CardSkeletonGrid, CourseCard, EmptyState } from "@/components/site/ui-bits";
 import { coursesQuery } from "@/lib/public-data";
 
-export const Route = createFileRoute("/courses/")({
+export const Route = createFileRoute("/courses/")({ staticData: { sitemap: true },
   validateSearch: (s: Record<string, unknown>): { q?: string | undefined; category?: string | undefined } => ({
     q: typeof s["q"] === "string" && s["q"] ? s["q"] : undefined,
     category: typeof s["category"] === "string" && s["category"] ? s["category"] : undefined,
   }),
-  head: () => seo("Courses | Skill Bridgeway Foundation", "Browse free courses in AI, freelancing and digital skills."),
+  head: () => seo("Courses | Skill Bridgeway Foundation", "Browse free courses in AI, freelancing and digital skills.", { path: "/courses" }),
   component: Courses,
 });
 

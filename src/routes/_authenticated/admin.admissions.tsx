@@ -14,7 +14,7 @@ import { AdminOnly, PageTitle } from "@/components/admin/shared";
 import { cdnUrl } from "@/lib/cdn";
 import { formatDate } from "@/lib/public-data";
 
-export const Route = createFileRoute("/_authenticated/admin/admissions")({
+export const Route = createFileRoute("/_authenticated/admin/admissions")({ staticData: { sitemap: false },
   component: () => <AdminOnly><AdmissionsAdmin /></AdminOnly>,
 });
 

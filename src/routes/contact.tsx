@@ -11,8 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { PageHero, seo } from "@/components/site/PageHero";
 import { CONTACT_EMAIL, OFFICES } from "@/lib/site-info";
 
-export const Route = createFileRoute("/contact")({
-  head: () => seo("Contact | Skill Bridgeway Foundation", "Get in touch with Skill Bridgeway Foundation about courses, admission or partnerships."),
+export const Route = createFileRoute("/contact")({ staticData: { sitemap: true },
+  head: () => seo("Contact | Skill Bridgeway Foundation", "Get in touch with Skill Bridgeway Foundation about courses, admission or partnerships.", { path: "/contact" }),
   component: Contact,
 });
 
