@@ -19,3 +19,4 @@
 - [x] Polish responsive auth/profile forms with English-only validation, numeric OTP, Caps Lock hints, and motion
 - [x] Add crop-and-resize avatar upload; signed-in upload verification needs an authenticated test session
 - [x] Apply the exact brand palette and Montserrat/Inter typography globally across public, auth, admin, overlays, and fallback views
+- [x] Allow test applications for one labeled demo course, offer native course sharing with copy fallback, show related courses, and hide the footer on course detail pages

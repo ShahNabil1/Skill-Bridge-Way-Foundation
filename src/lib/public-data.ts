@@ -2,6 +2,10 @@ import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { cdnUrl } from "@/lib/cdn";
 
+/** Only this clearly labeled preview course accepts test applications. */
+export const TEST_ENROLLMENT_SLUG = "demo-ai-literacy-productivity";
+export const isPreviewOnlyCourse = (slug: string) => slug.startsWith("demo-") && slug !== TEST_ENROLLMENT_SLUG;
+
 /** Resolve a stored media key to its CDN URL. */
 export function mediaUrl(key?: string | null) {
   return cdnUrl(key);

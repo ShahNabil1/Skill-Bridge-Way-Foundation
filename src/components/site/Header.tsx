@@ -33,7 +33,7 @@ export function Header() {
             </Link>
           ))}
           <Button asChild className="bg-highlight text-highlight-foreground hover:bg-highlight/90">
-            <Link to="/admission">Apply Free</Link>
+            <Link to="/admission" search={{}}>Apply Free</Link>
           </Button>
         </nav>
         <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}>
@@ -48,7 +48,7 @@ export function Header() {
             </Link>
           ))}
           <Button asChild className="mt-2 bg-highlight text-highlight-foreground hover:bg-highlight/90">
-            <Link to="/admission" onClick={() => setOpen(false)}>Apply Free</Link>
+            <Link to="/admission" search={{}} onClick={() => setOpen(false)}>Apply Free</Link>
           </Button>
         </nav>
       )}

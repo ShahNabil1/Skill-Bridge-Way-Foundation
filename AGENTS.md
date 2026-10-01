@@ -24,4 +24,4 @@
 - Account recovery never reveals whether an email is registered and requires explicit code entry after the generic send response; why: Supabase deliberately masks account existence.
 - Auth and profile fields share ASCII validation and digit normalization; why: consistent input feedback prevents mixed-script account details.
 - Avatar images are cropped and resized in-browser before direct R2 upload; why: predictable square images avoid oversized media and keep the existing signed-upload boundary.
-- Preview content lives in existing admin-managed Supabase rows and R2 media keys, identified by `demo-` course slugs; why: editors can replace it without replacing page code and sample courses must not imply open enrollment.
+- Preview content lives in admin-managed Supabase rows and R2 media keys; only the explicitly allowlisted AI Literacy demo accepts test applications, while other `demo-` courses cannot be selected; why: editors can replace samples without page rewrites and test enrollment remains clearly distinguished from a live intake.
