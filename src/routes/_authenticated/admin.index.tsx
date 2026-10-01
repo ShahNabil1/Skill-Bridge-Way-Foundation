@@ -1,0 +1,47 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { AdminOnly, PageTitle } from "@/components/admin/shared";
+
+export const Route = createFileRoute("/_authenticated/admin/")({
+  component: () => <AdminOnly><Overview /></AdminOnly>,
+});
+
+function Overview() {
+  const { data } = useQuery({
+    queryKey: ["admin-stats"],
+    queryFn: async () => {
+      const count = async (t: "admissions" | "courses" | "students" | "contact_messages", f?: (q: any) => any) => {
+        let q = supabase.from(t).select("id", { count: "exact", head: true });
+        if (f) q = f(q);
+        return (await q).count ?? 0;
+      };
+      const [pending, courses, students, unread] = await Promise.all([
+        count("admissions", (q) => q.eq("status", "pending")),
+        count("courses"),
+        count("students"),
+        count("contact_messages", (q) => q.eq("is_read", false)),
+      ]);
+      return { pending, courses, students, unread };
+    },
+  });
+  const cards = [
+    { label: "Pending admissions", value: data?.pending, to: "/admin/admissions" },
+    { label: "Students", value: data?.students, to: "/admin/admissions" },
+    { label: "Courses", value: data?.courses, to: "/admin/courses" },
+    { label: "Unread messages", value: data?.unread, to: "/admin/messages" },
+  ] as const;
+  return (
+    <>
+      <PageTitle title="Overview" />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((c) => (
+          <Link key={c.label} to={c.to} className="glass rounded-xl p-5 transition hover:border-primary/50">
+            <p className="text-sm text-muted-foreground">{c.label}</p>
+            <p className="mt-2 font-heading text-3xl font-extrabold text-foreground">{c.value ?? "—"}</p>
+          </Link>
+        ))}
+      </div>
+    </>
+  );
+}

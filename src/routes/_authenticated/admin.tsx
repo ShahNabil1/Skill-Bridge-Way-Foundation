@@ -7,7 +7,7 @@ import { seo } from "@/components/site/PageHero";
 import { useIsAdmin } from "@/components/admin/shared";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ ...seo("Admin Dashboard | Skill Bridgeway Foundation", "Manage courses, admissions, notices and certificates."), meta: [{ name: "robots", content: "noindex" }, ...seo("Admin Dashboard | Skill Bridgeway Foundation", "Manage courses, admissions, notices and certificates.").meta] }),
+  head: () => seo("Admin Dashboard | Skill Bridgeway Foundation", "Manage courses, admissions, notices, gallery and users."),
   component: AdminLayout,
 });
 
