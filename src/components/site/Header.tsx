@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/sbf-logo.jpeg.asset.json";
 
 export const NAV = [
   { to: "/", label: "Home" },
@@ -18,8 +19,12 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 glass border-x-0 border-t-0">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-        <Link to="/" className="font-heading text-sm font-extrabold uppercase tracking-wider">
-          Skill <span className="text-primary">Bridgeway</span>
+        <Link to="/" className="flex min-w-0 items-center gap-3">
+          <img src={logo.url} alt="Skill Bridgeway Foundation logo" width={40} height={40} className="h-10 w-10 shrink-0 rounded-full" />
+          <span className="truncate font-heading text-sm font-extrabold uppercase leading-tight tracking-wider">
+            Skill <span className="text-primary">Bridge</span><span className="text-highlight">way</span>
+            <span className="block text-[10px] font-semibold tracking-[0.3em] text-muted-foreground">Foundation</span>
+          </span>
         </Link>
         <nav className="hidden items-center gap-6 lg:flex">
           {NAV.map((n) => (
