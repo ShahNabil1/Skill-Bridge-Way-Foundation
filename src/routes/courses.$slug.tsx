@@ -22,7 +22,7 @@ export const Route = createFileRoute("/courses/$slug")({ staticData: { sitemap: 
       path: `/courses/${params.slug}`,
       image: mediaUrl(c?.cover_image_key),
       type: "article",
-      noindex: c === null,
+      noindex: c === null || params.slug.startsWith("demo-"),
     });
   },
   component: CourseDetails,
