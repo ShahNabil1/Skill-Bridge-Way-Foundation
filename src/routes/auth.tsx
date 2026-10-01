@@ -66,7 +66,7 @@ function AuthPage() {
     const { error } = await supabase.auth.signInWithPassword({ email: validEmail.data, password, options: { captchaToken: captcha } });
     setLoading(false);
     freshCaptcha();
-    if (error) { toast.error(error.message); return; }
+     if (error) { toast.error(error.message); return; }
     navigate({ to: "/admin" });
   }
 
