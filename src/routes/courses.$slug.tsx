@@ -8,9 +8,22 @@ import { EmptyState } from "@/components/site/ui-bits";
 import { courseQuery, mediaUrl } from "@/lib/public-data";
 
 export const Route = createFileRoute("/courses/$slug")({ staticData: { sitemap: true },
-  head: ({ params }) => {
-    const name = params.slug.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
-    return seo(`${name} | Skill Bridgeway Foundation`, `Free ${name} course by Skill Bridgeway Foundation — details, duration and free admission.`);
+  loader: async ({ context, params }) => {
+    try {
+      return await context.queryClient.ensureQueryData(courseQuery(params.slug));
+    } catch {
+      return null; // the page itself shows a friendly fallback
+    }
+  },
+  head: ({ params, loaderData: c }) => {
+    const name = c?.title ?? params.slug.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
+    const desc = (c?.summary || c?.description || `Free ${name} course by Skill Bridgeway Foundation — details, duration and free admission.`).slice(0, 160);
+    return seo(`${name} | Skill Bridgeway Foundation`, desc, {
+      path: `/courses/${params.slug}`,
+      image: mediaUrl(c?.cover_image_key),
+      type: "article",
+      noindex: c === null,
+    });
   },
   component: CourseDetails,
 });
