@@ -58,7 +58,7 @@ export function CourseCard({ c }: { c: CourseCardData }) {
         <div className="mt-auto flex flex-wrap gap-4 pt-4 text-xs text-muted-foreground">
           {c.duration && <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{c.duration}</span>}
           {c.level && <span className="flex items-center gap-1"><BarChart3 className="h-3.5 w-3.5" />{c.level}</span>}
-          <span className="flex items-center gap-1 text-primary"><BookOpen className="h-3.5 w-3.5" />Free</span>
+          <span className="flex items-center gap-1 text-primary"><BookOpen className="h-3.5 w-3.5" />{c.slug.startsWith("demo-") ? "Preview" : "Free"}</span>
         </div>
       </div>
     </Link>
