@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -119,12 +120,17 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const isPrivate = /^\/(admin|auth)(\/|$)/.test(pathname);
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
-      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
-      router.invalidate();
-      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
+      if (event === "SIGNED_OUT") {
+        queryClient.clear();
+        router.invalidate();
+      } else if (event === "SIGNED_IN" || event === "USER_UPDATED") {
+        router.invalidate();
+      }
     });
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
@@ -132,11 +138,11 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen flex-col">
-        <Header />
+        {!isPrivate && <Header />}
         <main className="flex-1">
           <Outlet />
         </main>
-        <Footer />
+        {!isPrivate && <Footer />}
       </div>
       <Toaster />
     </QueryClientProvider>
