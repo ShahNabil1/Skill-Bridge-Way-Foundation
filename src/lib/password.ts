@@ -5,6 +5,7 @@ export const strongPassword = z
   .string()
   .min(6, "Use at least 6 characters")
   .max(72, "Too long")
+  .regex(/^[\x20-\x7E]*$/, "English characters only are supported")
   .regex(printableEnglish, ENGLISH_WARNING)
   .regex(/[a-z]/, "Add a lowercase letter")
   .regex(/[A-Z]/, "Add an uppercase letter")

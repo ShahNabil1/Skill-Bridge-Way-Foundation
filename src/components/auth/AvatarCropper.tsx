@@ -34,7 +34,7 @@ export function AvatarCropper({ onSave, disabled }: { onSave: (file: File) => Pr
         const file = e.target.files?.[0]; e.target.value = "";
         if (!file) return;
         if (!(IMAGE_TYPES as readonly string[]).includes(file.type) || file.size > MAX_DOC_BYTES) { toast.error("Use a JPG, PNG or WebP under 5 MB"); return; }
-        setCrop({ x: 0, y: 0 }); setZoom(1); setUrl(URL.createObjectURL(file));
+        setCrop({ x: 0, y: 0 }); setZoom(1); setArea(null); setUrl(URL.createObjectURL(file));
       }} />
     </label>
     <Dialog open={!!url} onOpenChange={(open) => { if (!open) close(); }}>

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/admin/profile")({ staticDa
 
 const infoSchema = z.object({
   full_name: z.string().trim().min(2, "Name is too short").max(120).regex(englishName, "Use English letters for your name"),
-  phone: z.string().trim().max(30).regex(/^[+0-9\s-]*$/, "Use English digits only"),
+  phone: z.string().trim().max(30).regex(/^[0-9]*$/, "Use English digits only"),
   address: z.string().trim().max(500).regex(englishText, "Use English characters for your address"),
 });
 
@@ -78,7 +78,7 @@ function BasicInfo() {
       await save({ avatar_key: key });
       setAvatarKey(key);
       toast.success("Avatar updated");
-    } catch (err) { toast.error((err as Error).message); throw err; }
+    } catch (err) { throw err; }
     finally { setUploading(false); }
   }
 

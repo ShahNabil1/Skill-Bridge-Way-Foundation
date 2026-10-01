@@ -14,7 +14,7 @@ type Props = {
 export function ValidatedField({ id, value, onChange, mode = "english", type = "text", required, maxLength, autoComplete, multiline, rows, placeholder }: Props) {
   const [warning, setWarning] = useState(false);
   const [caps, setCaps] = useState(false);
-  const clean = (raw: string) => mode === "digits" ? digitsOnly(raw) : mode === "phone" ? asciiDigits(raw).replace(/[^0-9+\s-]/g, "") : mode === "ascii" ? asciiOnly(raw) : englishOnly(raw);
+  const clean = (raw: string) => mode === "digits" || mode === "phone" ? digitsOnly(raw) : mode === "ascii" ? asciiOnly(raw) : englishOnly(raw);
   const handleChange = (raw: string) => {
     const normalized = clean(raw);
     setWarning(normalized !== raw);
@@ -27,7 +27,7 @@ export function ValidatedField({ id, value, onChange, mode = "english", type = "
   };
   return <div className="space-y-1.5">
     {multiline ? <Textarea {...common} rows={rows} onChange={(e) => handleChange(e.target.value)} /> :
-      <Input {...common} type={type} autoComplete={autoComplete} inputMode={mode === "digits" ? "numeric" : mode === "phone" ? "tel" : undefined} onChange={(e) => handleChange(e.target.value)} />}
+      <Input {...common} type={type} autoComplete={autoComplete} inputMode={mode === "digits" || mode === "phone" ? "numeric" : undefined} onChange={(e) => handleChange(e.target.value)} />}
     {warning && <p id={`${id}-warning`} role="status" className="flex items-center gap-1.5 text-xs text-highlight"><AlertCircle className="h-3.5 w-3.5" />{mode === "digits" || mode === "phone" ? DIGIT_WARNING : ENGLISH_WARNING}</p>}
     {caps && <p role="status" className="text-xs text-highlight">Caps Lock is on</p>}
   </div>;
