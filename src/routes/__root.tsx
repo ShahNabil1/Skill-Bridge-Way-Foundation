@@ -84,8 +84,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#0A192F" },
-      { title: "Skill Bridgeway Foundation" },
-      { name: "description", content: "Free AI, freelancing and digital skills training in Bangladesh." },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },

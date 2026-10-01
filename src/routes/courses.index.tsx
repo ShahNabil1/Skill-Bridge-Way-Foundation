@@ -11,7 +11,31 @@ export const Route = createFileRoute("/courses/")({ staticData: { sitemap: true 
     q: typeof s["q"] === "string" && s["q"] ? s["q"] : undefined,
     category: typeof s["category"] === "string" && s["category"] ? s["category"] : undefined,
   }),
-  head: () => seo("Courses | Skill Bridgeway Foundation", "Browse free courses in AI, freelancing and digital skills.", { path: "/courses" }),
+  loader: async ({ context }) => {
+    try { return await context.queryClient.ensureQueryData(coursesQuery()); } catch { return []; }
+  },
+  head: ({ loaderData }) => {
+    const base = seo("Courses | Skill Bridgeway Foundation", "Browse free courses in AI, freelancing and digital skills.", { path: "/courses" });
+    const list = loaderData ?? [];
+    if (!list.length) return base;
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      itemListElement: list.map((c, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `https://skillbridgeway.org/courses/${c.slug}`,
+        item: {
+          "@type": "Course",
+          name: c.title,
+          description: c.summary ?? c.title,
+          url: `https://skillbridgeway.org/courses/${c.slug}`,
+          provider: { "@type": "Organization", name: "Skill Bridgeway Foundation", sameAs: "https://skillbridgeway.org" },
+        },
+      })),
+    };
+    return { ...base, scripts: [{ type: "application/ld+json", children: JSON.stringify(jsonLd) }] };
+  },
   component: Courses,
 });
 
@@ -31,7 +55,7 @@ function Courses() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="relative w-full md:max-w-sm">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input value={q} placeholder="Search courses" className="pl-9" onChange={(e) => navigate({ search: (p) => ({ ...p, q: e.target.value || undefined }), replace: true })} />
+            <Input value={q} aria-label="Search courses" placeholder="Search courses" className="pl-9" onChange={(e) => navigate({ search: (p) => ({ ...p, q: e.target.value || undefined }), replace: true })} />
           </div>
           {categories.length > 0 && (
             <div className="flex flex-wrap gap-2">
