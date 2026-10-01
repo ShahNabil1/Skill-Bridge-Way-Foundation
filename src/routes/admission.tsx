@@ -30,7 +30,7 @@ const empty: AdmissionForm = {
   full_name: "", email: "", phone: "", date_of_birth: "", gender: "" as AdmissionForm["gender"], address: "",
   education_level: "", institution: "", course_id: "", motivation: "",
 };
-type Errors = Partial<Record<string, string>>;
+type Errors = Partial<Record<keyof AdmissionForm | DocSlot, string>>;
 const selectCls = "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring [&>option]:bg-popover";
 
 function Admission() {
@@ -51,7 +51,7 @@ function Admission() {
     const r = schema.safeParse(form);
     if (r.success) { setErrors({}); return true; }
     const errs: Errors = {};
-    for (const i of r.error.issues) errs[String(i.path[0])] ??= i.message;
+    for (const i of r.error.issues) errs[i.path[0] as keyof Errors] ??= i.message;
     setErrors(errs);
     return false;
   }
