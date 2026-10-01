@@ -9,3 +9,8 @@
 - [x] Google Search Console: connection linked to project; sitemap live with 0 errors/warnings
 - [ ] Supabase Auth → URL Configuration: user adding redirect URLs (list provided)
 - [ ] End-to-end test: submit an admission, approve it, issue a certificate → verify all 3 emails arrive
+
+- [ ] Keep public header/footer off /auth and /admin routes
+- [ ] Replace admin navigation with smooth, shift-free hamburger drawer
+- [ ] Add password visibility and live strength feedback to auth and profile
+- [ ] Improve navigation responsiveness across the site and verify
