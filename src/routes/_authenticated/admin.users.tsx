@@ -46,7 +46,7 @@ function UsersAdmin() {
     const { error } = isAdmin
       ? await supabase.from("user_roles").delete().eq("user_id", userId).eq("role", "admin")
       : await supabase.from("user_roles").insert({ user_id: userId, role: "admin" });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: ["admin-users"] });
   }
 

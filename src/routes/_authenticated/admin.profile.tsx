@@ -55,7 +55,7 @@ function BasicInfo() {
   }, [profile]);
 
   async function save(next: Partial<{ full_name: string; phone: string; address: string; avatar_key: string | null }>) {
-    const { error } = await supabase.from("profiles").upsert({ id: user.id, email: user.email, ...next });
+    const { error } = await supabase.from("profiles").upsert({ id: user.id, email: user.email ?? null, ...next });
     if (error) throw error;
     qc.invalidateQueries({ queryKey: ["profile", user.id] });
   }
@@ -63,7 +63,7 @@ function BasicInfo() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const r = infoSchema.safeParse(form);
-    if (!r.success) return toast.error(r.error.issues[0]?.message);
+    if (!r.success) { toast.error(r.error.issues[0]?.message); return; }
     setBusy(true);
     try { await save(r.data); toast.success("Profile saved"); } catch (err) { toast.error((err as Error).message); }
     setBusy(false);
@@ -114,9 +114,9 @@ function ChangePassword() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!current) return toast.error("Enter your current password");
+    if (!current) { toast.error("Enter your current password"); return; }
     const problem = checkNewPassword(pw, confirm, current);
-    if (problem) return toast.error(problem);
+    if (problem) { toast.error(problem); return; }
     setBusy(true);
     const attrs: Record<string, string> = { password: pw, current_password: current };
     if (nonceNeeded) attrs["nonce"] = nonce;
@@ -125,10 +125,10 @@ function ChangePassword() {
       await supabase.auth.reauthenticate();
       setNonceNeeded(true);
       setBusy(false);
-      return toast.info("For security, we emailed you a 6-digit code. Enter it to confirm.");
+      { toast.info("For security, we emailed you a 6-digit code. Enter it to confirm."); return; }
     }
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Password changed");
     setCurrent(""); setPw(""); setConfirm(""); setNonce(""); setNonceNeeded(false);
   }
@@ -157,25 +157,25 @@ function ChangeEmail() {
   async function request(e: React.FormEvent) {
     e.preventDefault();
     const r = z.string().trim().email().max(255).safeParse(newEmail);
-    if (!r.success) return toast.error("Enter a valid email");
-    if (r.data.toLowerCase() === user.email?.toLowerCase()) return toast.error("That's already your email");
+    if (!r.success) { toast.error("Enter a valid email"); return; }
+    if (r.data.toLowerCase() === user.email?.toLowerCase()) { toast.error("That's already your email"); return; }
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ email: r.data });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setStep("verify");
     toast.success("Codes sent to both your current and new email.");
   }
 
   async function verify(e: React.FormEvent) {
     e.preventDefault();
-    if (oldCode.length !== 6 || newCode.length !== 6) return toast.error("Enter both 6-digit codes");
+    if (oldCode.length !== 6 || newCode.length !== 6) { toast.error("Enter both 6-digit codes"); return; }
     setBusy(true);
     const a = await supabase.auth.verifyOtp({ email: user.email ?? "", token: oldCode, type: "email_change" });
-    if (a.error) { setBusy(false); return toast.error(`Current email code: ${a.error.message}`); }
+    if (a.error) { setBusy(false); { toast.error(`Current email code: ${a.error.message}`); return; } }
     const b = await supabase.auth.verifyOtp({ email: newEmail.trim(), token: newCode, type: "email_change" });
     setBusy(false);
-    if (b.error) return toast.error(`New email code: ${b.error.message}`);
+    if (b.error) { toast.error(`New email code: ${b.error.message}`); return; }
     await supabase.from("profiles").update({ email: newEmail.trim() }).eq("id", user.id);
     toast.success("Email changed. Sign in with your new email next time.");
     setStep("enter"); setNewEmail(""); setOldCode(""); setNewCode("");

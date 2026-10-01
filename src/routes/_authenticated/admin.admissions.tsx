@@ -39,7 +39,7 @@ function AdmissionsAdmin() {
     setBusy(true);
     const { data, error } = await supabase.rpc("approve_admission", { _admission_id: id });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(`Approved — Student ID ${data}`);
     setSelectedId(null); refresh();
   }
@@ -48,7 +48,7 @@ function AdmissionsAdmin() {
     setBusy(true);
     const { error } = await supabase.from("admissions").update({ status: "rejected", review_note: note.trim().slice(0, 1000) || null, reviewed_at: new Date().toISOString() }).eq("id", id);
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Application rejected");
     setSelectedId(null); setNote(""); refresh();
   }

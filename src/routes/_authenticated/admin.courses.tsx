@@ -55,17 +55,17 @@ function CoursesAdmin() {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const r = schema.safeParse(form);
-    if (!r.success) return toast.error(r.error.issues[0]?.message);
+    if (!r.success) { toast.error(r.error.issues[0]?.message); return; }
     const payload = { ...r.data, summary: r.data.summary || null, description: r.data.description || null, category: r.data.category || null, duration: r.data.duration || null, level: r.data.level || null };
     const { error } = editing ? await supabase.from("courses").update(payload).eq("id", editing.id) : await supabase.from("courses").insert(payload);
-    if (error) return toast.error(error.message.includes("duplicate") ? "That slug is already used" : error.message);
+    if (error) { toast.error(error.message.includes("duplicate") ? "That slug is already used" : error.message); return; }
     toast.success("Course saved"); setOpen(false); refresh();
   }
 
   async function remove(c: Course) {
     if (!confirm(`Delete "${c.title}"?`)) return;
     const { error } = await supabase.from("courses").delete().eq("id", c.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     refresh();
   }
 

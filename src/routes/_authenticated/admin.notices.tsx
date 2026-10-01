@@ -53,17 +53,17 @@ function NoticesAdmin() {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const r = schema.safeParse(form);
-    if (!r.success) return toast.error(r.error.issues[0]?.message);
+    if (!r.success) { toast.error(r.error.issues[0]?.message); return; }
     const payload = { ...r.data, body: r.data.body || null, event_date: r.data.event_date ? new Date(r.data.event_date).toISOString() : null };
     const { error } = editing ? await supabase.from("notices").update(payload).eq("id", editing.id) : await supabase.from("notices").insert(payload);
-    if (error) return toast.error(error.message.includes("duplicate") ? "That slug is already used" : error.message);
+    if (error) { toast.error(error.message.includes("duplicate") ? "That slug is already used" : error.message); return; }
     toast.success("Saved"); setOpen(false); refresh();
   }
 
   async function remove(n: Notice) {
     if (!confirm(`Delete "${n.title}"?`)) return;
     const { error } = await supabase.from("notices").delete().eq("id", n.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     refresh();
   }
 

@@ -30,7 +30,7 @@ function GalleryAdmin() {
 
   async function onUpload(e: React.FormEvent) {
     e.preventDefault();
-    if (!files.length) return toast.error("Choose at least one image");
+    if (!files.length) { toast.error("Choose at least one image"); return; }
     setBusy(true);
     let ok = 0;
     for (const file of files) {
@@ -50,7 +50,7 @@ function GalleryAdmin() {
   async function remove(id: string) {
     if (!confirm("Delete this photo?")) return;
     const { error } = await supabase.from("gallery_items").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     refresh();
   }
 

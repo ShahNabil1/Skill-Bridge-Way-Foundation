@@ -60,38 +60,38 @@ function AuthPage() {
 
   async function login(e: React.FormEvent) {
     e.preventDefault();
-    if (!captcha) return toast.error("Please complete the security check");
+    if (!captcha) { toast.error("Please complete the security check"); return; }
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password, options: { captchaToken: captcha } });
     setLoading(false);
     freshCaptcha();
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     navigate({ to: "/admin" });
   }
 
   async function sendCode(e: React.FormEvent) {
     e.preventDefault();
-    if (!captcha) return toast.error("Please complete the security check");
+    if (!captcha) { toast.error("Please complete the security check"); return; }
     setLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email, { captchaToken: captcha });
     setLoading(false);
     freshCaptcha();
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("If that email has an account, a 6-digit code is on its way.");
     setMode("reset");
   }
 
   async function resetPassword(e: React.FormEvent) {
     e.preventDefault();
-    if (otp.length !== 6) return toast.error("Enter the 6-digit code");
+    if (otp.length !== 6) { toast.error("Enter the 6-digit code"); return; }
     const problem = checkNewPassword(pw, confirm);
-    if (problem) return toast.error(problem);
+    if (problem) { toast.error(problem); return; }
     setLoading(true);
     const { error } = await supabase.auth.verifyOtp({ email, token: otp, type: "recovery" });
-    if (error) { setLoading(false); return toast.error(error.message); }
+    if (error) { setLoading(false); { toast.error(error.message); return; } }
     const { error: upErr } = await supabase.auth.updateUser({ password: pw });
     setLoading(false);
-    if (upErr) return toast.error(upErr.message);
+    if (upErr) { toast.error(upErr.message); return; }
     toast.success("Password updated");
     navigate({ to: "/admin" });
   }
@@ -99,11 +99,11 @@ function AuthPage() {
   async function setInvitePassword(e: React.FormEvent) {
     e.preventDefault();
     const problem = checkNewPassword(pw, confirm);
-    if (problem) return toast.error(problem);
+    if (problem) { toast.error(problem); return; }
     setLoading(true);
     const { error } = await supabase.auth.updateUser({ password: pw });
     setLoading(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Welcome aboard! Your password is set.");
     navigate({ to: "/admin" });
   }
