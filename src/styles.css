@@ -86,7 +86,7 @@
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3 { font-family: var(--font-heading); font-weight: 800; line-height: 1.2; }
+  h1, h2, h3 { font-family: var(--font-heading); font-weight: 800; line-height: 1.2; text-transform: uppercase; }
 }
 
 @utility glass {
