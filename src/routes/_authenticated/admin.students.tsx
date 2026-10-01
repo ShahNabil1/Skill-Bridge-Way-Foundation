@@ -1,3 +1,4 @@
+import { confirmAction } from "@/components/ConfirmDialog";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -53,7 +54,7 @@ function StudentsAdmin() {
 
   async function issue(r: Row) {
     if (!r.students || !r.courses) { toast.error("Missing student or course"); return; }
-    if (!certOf(r) && !confirm(`Mark "${r.courses.title}" completed for ${r.students.full_name} and issue a certificate?`)) return;
+    if (!certOf(r) && !(await confirmAction({ title: "Complete course & issue certificate?", description: `Mark "${r.courses.title}" completed for ${r.students.full_name} and issue a certificate.`, confirmText: "Issue certificate" }))) return;
     const isNew = !certOf(r);
     setBusyId(r.id);
     try {
@@ -88,7 +89,7 @@ function StudentsAdmin() {
   }
 
   async function toggleRevoke(c: Cert) {
-    if (!confirm(c.is_revoked ? "Restore this certificate?" : "Revoke this certificate? Verification will show it as revoked.")) return;
+    if (!(await confirmAction(c.is_revoked ? { title: "Restore this certificate?", description: "It will verify as authentic again.", confirmText: "Restore" } : { title: "Revoke this certificate?", description: "Verification will show it as revoked.", confirmText: "Revoke", destructive: true }))) return;
     const { error } = await supabase.from("certificates").update({ is_revoked: !c.is_revoked }).eq("id", c.id);
     if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: ["admin-enrollments"] });

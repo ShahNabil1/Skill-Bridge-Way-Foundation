@@ -1,3 +1,4 @@
+import { confirmAction } from "@/components/ConfirmDialog";
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -39,6 +40,7 @@ function AdminLayout() {
   }, [open]);
 
   async function signOut() {
+    if (!(await confirmAction({ title: "Sign out?", description: "You will need to sign in again to access the admin panel.", confirmText: "Sign out", destructive: true }))) return;
     await qc.cancelQueries();
     qc.clear();
     await supabase.auth.signOut();

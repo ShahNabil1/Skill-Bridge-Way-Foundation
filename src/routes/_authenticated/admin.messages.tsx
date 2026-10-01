@@ -1,3 +1,4 @@
+import { confirmAction } from "@/components/ConfirmDialog";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -30,7 +31,7 @@ function MessagesAdmin() {
   }
 
   async function remove(id: string) {
-    if (!confirm("Delete this message?")) return;
+    if (!(await confirmAction({ title: "Delete this message?", description: "This cannot be undone.", confirmText: "Delete", destructive: true }))) return;
     const { error } = await supabase.from("contact_messages").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
     refresh();
