@@ -13,25 +13,23 @@ function Overview() {
   const { data } = useQuery({
     queryKey: ["admin-stats"],
     queryFn: async () => {
-      const count = async (t: "admissions" | "courses" | "students" | "contact_messages", f?: (q: any) => any) => {
+      const count = async (t: "admissions" | "courses" | "students", f?: (q: any) => any) => {
         let q = supabase.from(t).select("id", { count: "exact", head: true });
         if (f) q = f(q);
         return (await q).count ?? 0;
       };
-      const [pending, courses, students, unread] = await Promise.all([
+      const [pending, courses, students] = await Promise.all([
         count("admissions", (q) => q.eq("status", "pending")),
         count("courses"),
         count("students"),
-        count("contact_messages", (q) => q.eq("is_read", false)),
       ]);
-      return { pending, courses, students, unread };
+      return { pending, courses, students };
     },
   });
   const cards = [
     { label: "Pending admissions", value: data?.pending, to: "/admin/applications" },
     { label: "Students", value: data?.students, to: "/admin/students" },
     { label: "Courses", value: data?.courses, to: "/admin/courses" },
-    { label: "Unread messages", value: data?.unread, to: "/admin/messages" },
   ] as const;
   return (
     <>
