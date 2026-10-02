@@ -77,3 +77,44 @@ export const sendCertificateEmail = createServerFn({ method: "POST" })
     const { sendEmail, templates } = await import("./email.server");
     return sendEmail(s.email, templates.certificate(s.full_name, (c.courses as { title: string } | null)?.title ?? null, c.serial));
   });
+
+type EnrollmentMail = { id: string; progress: number; learning_status: string; absence_reminders: boolean; students: { full_name: string; email: string } | null; courses: { title: string } | null };
+
+/** Admin: emails a student their current progress + attendance. */
+export const sendProgressEmail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => idInput("enrollmentId").parse(d) as { enrollmentId: string })
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { data: e } = await context.supabase.from("enrollments")
+      .select("id, progress, learning_status, absence_reminders, students(full_name, email), courses(title), attendance(status, class_sessions(session_date))")
+      .eq("id", data.enrollmentId).maybeSingle();
+    const en = e as unknown as (EnrollmentMail & { attendance: never[] }) | null;
+    if (!en?.students) return { sent: false };
+    const { attendanceStats } = await import("./student");
+    const { sendEmail, templates } = await import("./email.server");
+    return sendEmail(en.students.email, templates.progress(en.students.full_name, en.courses?.title ?? null, en.progress, en.learning_status, attendanceStats(en.attendance ?? [])));
+  });
+
+/** Admin: after attendance is saved, emails absent students whose reminder toggle is on (once per class). */
+export const sendAbsenceReminders = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => idInput("sessionId").parse(d) as { sessionId: string })
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { data: rows } = await context.supabase.from("attendance")
+      .select("id, class_sessions(session_date), enrollments(id, progress, learning_status, absence_reminders, students(full_name, email), courses(title), attendance(status, class_sessions(session_date)))")
+      .eq("session_id", data.sessionId).eq("status", "absent").is("reminded_at", null);
+    const { attendanceStats } = await import("./student");
+    const { sendEmail, templates } = await import("./email.server");
+    let sent = 0, skipped = 0;
+    for (const r of (rows ?? []) as any[]) {
+      const en = r.enrollments as (EnrollmentMail & { attendance: never[] }) | null;
+      if (!en?.students || !en.absence_reminders || en.learning_status !== "active") { skipped++; continue; }
+      const st = attendanceStats(en.attendance ?? []);
+      const date = new Date(`${r.class_sessions?.session_date}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+      const res = await sendEmail(en.students.email, templates.absence(en.students.full_name, en.courses?.title ?? null, date, { ...st, progress: en.progress }));
+      if (res.sent) { sent++; await context.supabase.from("attendance").update({ reminded_at: new Date().toISOString() }).eq("id", r.id); } else skipped++;
+    }
+    return { sent, skipped };
+  });

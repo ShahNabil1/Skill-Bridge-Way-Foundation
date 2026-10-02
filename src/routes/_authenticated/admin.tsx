@@ -2,7 +2,7 @@ import { confirmAction } from "@/components/ConfirmDialog";
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { BookOpen, Bell, Image, Mail, ClipboardList, Users, UserCircle, LayoutDashboard, LogOut, GraduationCap, Menu, X } from "lucide-react";
+import { BookOpen, Bell, Image, Mail, ClipboardList, Users, UserCircle, LayoutDashboard, LogOut, GraduationCap, CalendarCheck, Menu, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { seo } from "@/components/site/PageHero";
@@ -17,6 +17,7 @@ const NAV = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, admin: true, exact: true },
   { to: "/admin/applications", label: "Applications", icon: ClipboardList, admin: true },
   { to: "/admin/students", label: "Students", icon: GraduationCap, admin: true },
+  { to: "/admin/attendance", label: "Attendance", icon: CalendarCheck, admin: true },
   { to: "/admin/courses", label: "Courses", icon: BookOpen, admin: true },
   { to: "/admin/notices", label: "Notices", icon: Bell, admin: true },
   { to: "/admin/gallery", label: "Gallery", icon: Image, admin: true },

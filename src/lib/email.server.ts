@@ -28,6 +28,9 @@ const appLink = (t: string) => `${SITE}/application/${encodeURIComponent(t)}`;
 const viewApp = (t: string) => ({ label: "View Your Application", href: appLink(t) });
 const linkLine = (t: string) => `<p style="font-size:13px;color:#8892b0">Your private application link (don't share it):<br><a href="${appLink(t)}" style="color:#00A8FF;word-break:break-all">${appLink(t)}</a></p>`;
 
+const bar = (p: number) => `<div style="margin:18px 0"><div style="color:#8892b0;font-size:12px;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px">Course progress · ${p}%</div><div style="background:#0A192F;border:1px solid #1e3a5f;border-radius:99px;height:14px;overflow:hidden"><div style="width:${Math.max(0, Math.min(100, p))}%;height:14px;background:#00A8FF;border-radius:99px"></div></div></div>`;
+const stat = (k: string, v: string) => `<td align="center" style="padding:10px;background:#0A192F;border:1px solid #1e3a5f;border-radius:8px"><div style="color:#8892b0;font-size:11px;text-transform:uppercase">${k}</div><div style="color:#fff;font-size:18px;font-weight:800;margin-top:4px">${esc(v)}</div></td>`;
+
 export const templates = {
   received: (name: string, ref: string, course: string | null, token: string) => ({
     subject: "Application received — Skill Bridgeway Foundation",
@@ -43,6 +46,18 @@ export const templates = {
     subject: "Update on your application — Skill Bridgeway Foundation",
     html: layout("Application Update",
       `<p>Dear ${esc(name)},</p><p>Thank you for your interest${course ? ` in <b style="color:#fff">${esc(course)}</b>` : ""}. After careful review, we are unable to accept your application at this time.</p>${highlight("Reference number", ref)}${note ? `<p><b style="color:#fff">Note from our team:</b> ${esc(note)}</p>` : ""}<p>You are welcome to apply again for this or another course in the future.</p>${linkLine(token)}`, viewApp(token)),
+  }),
+  progress: (name: string, course: string | null, progress: number, status: string, att: { attended: number; held: number; rate: number | null }) => ({
+    subject: `Your learning progress: ${progress}%${course ? ` — ${course}` : ""}`,
+    html: layout("Learning Progress Update",
+      `<p>Dear ${esc(name)},</p><p>Here is your latest progress${course ? ` in <b style="color:#fff">${esc(course)}</b>` : ""}.</p>${bar(progress)}<table role="presentation" width="100%" style="margin:16px 0;font-size:14px"><tr>${stat("Status", status.charAt(0).toUpperCase() + status.slice(1))}${stat("Classes attended", `${att.attended}/${att.held}`)}${stat("Attendance", att.rate == null ? "—" : `${att.rate}%`)}</tr></table><p>${status === "completed" ? "Congratulations on completing the course!" : progress >= 75 ? "Great work — you're almost there. Keep it up!" : "Keep attending classes and practising — every session moves you forward."}</p>`,
+      { label: "Visit Skill Bridgeway", href: SITE }),
+  }),
+  absence: (name: string, course: string | null, date: string, s: { missed: number; streak: number; attended: number; held: number; rate: number | null; progress: number }) => ({
+    subject: s.streak > 1 ? `We've missed you for ${s.streak} classes in a row` : `You missed class on ${date}`,
+    html: layout("We Missed You in Class",
+      `<p>Dear ${esc(name)},</p><p>You were marked <b style="color:#FF9900">absent</b>${course ? ` from <b style="color:#fff">${esc(course)}</b>` : ""} on <b style="color:#fff">${esc(date)}</b>.</p><table role="presentation" width="100%" style="margin:16px 0;font-size:14px"><tr>${stat("Missed in a row", String(s.streak))}${stat("Total missed", String(s.missed))}${stat("Attendance", s.rate == null ? "—" : `${s.rate}%`)}</tr></table>${bar(s.progress)}<p>${s.streak >= 3 ? `You are now <b style="color:#fff">${s.streak} classes behind</b>. Please contact us so we can help you catch up — we don't want you to fall behind.` : "Please review what was covered and join the next class. If something is stopping you, reply to this email and we'll help."}</p>`,
+      { label: "Contact us", href: `${SITE}/contact` }),
   }),
   certificate: (name: string, course: string | null, serial: string) => {
     const link = `${SITE}/verify?serial=${encodeURIComponent(serial)}`;
