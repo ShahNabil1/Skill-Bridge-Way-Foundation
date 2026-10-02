@@ -14,62 +14,142 @@ export type Database = {
   }
   public: {
     Tables: {
+      admission_activity: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_name: string | null
+          admission_id: string
+          created_at: string
+          detail: Json
+          id: string
+          note: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_name?: string | null
+          admission_id: string
+          created_at?: string
+          detail?: Json
+          id?: string
+          note?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_name?: string | null
+          admission_id?: string
+          created_at?: string
+          detail?: Json
+          id?: string
+          note?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admission_activity_admission_id_fkey"
+            columns: ["admission_id"]
+            isOneToOne: false
+            referencedRelation: "admissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admissions: {
         Row: {
+          access_token: string
           address: string | null
+          address_line: string | null
           course_id: string | null
           created_at: string
           date_of_birth: string | null
+          district: string | null
+          division: string | null
           document_keys: Json
+          education_board: string | null
+          education_group: string | null
           education_level: string | null
+          education_result: string | null
           email: string
           full_name: string
           gender: string | null
           id: string
           institution: string | null
           motivation: string | null
+          passing_year: string | null
           phone: string
+          phone_normalized: string | null
+          post_office: string | null
+          postal_code: string | null
           review_note: string | null
           reviewed_at: string | null
+          session: string | null
           status: Database["public"]["Enums"]["admission_status"]
+          upazila: string | null
           updated_at: string
         }
         Insert: {
+          access_token?: string
           address?: string | null
+          address_line?: string | null
           course_id?: string | null
           created_at?: string
           date_of_birth?: string | null
+          district?: string | null
+          division?: string | null
           document_keys?: Json
+          education_board?: string | null
+          education_group?: string | null
           education_level?: string | null
+          education_result?: string | null
           email: string
           full_name: string
           gender?: string | null
           id?: string
           institution?: string | null
           motivation?: string | null
+          passing_year?: string | null
           phone: string
+          phone_normalized?: string | null
+          post_office?: string | null
+          postal_code?: string | null
           review_note?: string | null
           reviewed_at?: string | null
+          session?: string | null
           status?: Database["public"]["Enums"]["admission_status"]
+          upazila?: string | null
           updated_at?: string
         }
         Update: {
+          access_token?: string
           address?: string | null
+          address_line?: string | null
           course_id?: string | null
           created_at?: string
           date_of_birth?: string | null
+          district?: string | null
+          division?: string | null
           document_keys?: Json
+          education_board?: string | null
+          education_group?: string | null
           education_level?: string | null
+          education_result?: string | null
           email?: string
           full_name?: string
           gender?: string | null
           id?: string
           institution?: string | null
           motivation?: string | null
+          passing_year?: string | null
           phone?: string
+          phone_normalized?: string | null
+          post_office?: string | null
+          postal_code?: string | null
           review_note?: string | null
           reviewed_at?: string | null
+          session?: string | null
           status?: Database["public"]["Enums"]["admission_status"]
+          upazila?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -414,7 +494,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _actor_name: { Args: { _uid: string }; Returns: string }
       approve_admission: { Args: { _admission_id: string }; Returns: string }
+      get_application_by_token: { Args: { _token: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -429,6 +511,14 @@ export type Database = {
           certificate_id: string
           serial: string
         }[]
+      }
+      log_admission_activity: {
+        Args: { _action: string; _admission_id: string; _detail?: Json }
+        Returns: undefined
+      }
+      update_admission_with_log: {
+        Args: { _admission_id: string; _note?: string; _patch: Json }
+        Returns: number
       }
       verify_certificate: {
         Args: { _serial: string }
