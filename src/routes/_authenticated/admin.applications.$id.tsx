@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { AdminOnly } from "@/components/admin/shared";
+import { ActivityFeed } from "@/components/admin/ActivityFeed";
 import { confirmAction } from "@/components/ConfirmDialog";
 import { AddressPicker, Field, PhoneInput, Select } from "@/components/admission/FormBits";
 import { EducationFields } from "@/components/admission/EducationFields";
@@ -58,10 +59,7 @@ function Review() {
     },
   });
   const { data: courses = [] } = useQuery({ queryKey: ["admin-course-options"], queryFn: async () => (await supabase.from("courses").select("id, title, is_published").order("title")).data ?? [] });
-  const { data: activity = [] } = useQuery({
-    queryKey: ["admission-activity", id],
-    queryFn: async () => (await supabase.from("admission_activity").select("*").eq("admission_id", id).order("created_at", { ascending: false })).data ?? [],
-  });
+
 
   const log = async (action: string, detail: Record<string, unknown> = {}) => {
     await supabase.rpc("log_admission_activity", { _admission_id: id, _action: action, _detail: detail as never });
@@ -226,19 +224,13 @@ function Review() {
           {app.status !== "pending" && (app as { review_note?: string | null }).review_note && <p className="text-sm text-muted-foreground">Review note: {(app as { review_note?: string | null }).review_note}</p>}
 
           <Card title="Activity log">
-            {activity.length === 0 ? <p className="text-sm text-muted-foreground">No activity yet.</p> : (
-              <ol className="relative space-y-4 border-l border-border pl-5">
-                {activity.map((a) => <li key={a.id} className="relative">
-                  <span className="absolute -left-[25px] top-1 flex h-3 w-3 rounded-full bg-primary ring-4 ring-background" />
-                  <p className="text-sm"><span className="font-semibold text-foreground">{a.actor_name ?? "Admin"}</span> {describe(a.action, a.detail as Record<string, unknown>)}</p>
-                  {a.action === "edited" && <ul className="mt-1 space-y-0.5 text-xs text-muted-foreground">
-                    {(((a.detail as { changes?: { field: string; from: unknown; to: unknown }[] }).changes) ?? []).map((c, i) => <li key={i}>changed <span className="text-foreground">{FIELD_LABELS[c.field] ?? c.field}</span>{c.field === "document_keys" ? "" : <> from <span className="text-destructive">'{fmt(c.from, c.field, courses)}'</span> to <span className="text-primary">'{fmt(c.to, c.field, courses)}'</span></>}</li>)}
-                  </ul>}
-                  {a.note && <p className="mt-1 text-xs italic text-muted-foreground">Reason: {a.note}</p>}
-                  <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground"><History className="h-3 w-3" />{new Date(a.created_at).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}</p>
-                </li>)}
-              </ol>
-            )}
+            <ActivityFeed table="admission_activity" column="admission_id" id={id} queryKey={["admission-activity", id]} render={(a) => <>
+              <p className="text-sm"><span className="font-semibold text-foreground">{a.actor_name ?? "Admin"}</span> {describe(a.action, a.detail as Record<string, unknown>)}</p>
+              {a.action === "edited" && <ul className="mt-1 space-y-0.5 text-xs text-muted-foreground">
+                {(((a.detail as { changes?: { field: string; from: unknown; to: unknown }[] }).changes) ?? []).map((c, i) => <li key={i}>changed <span className="text-foreground">{FIELD_LABELS[c.field] ?? c.field}</span>{c.field === "document_keys" ? "" : <> from <span className="text-destructive">'{fmt(c.from, c.field, courses)}'</span> to <span className="text-primary">'{fmt(c.to, c.field, courses)}'</span></>}</li>)}
+              </ul>}
+              {a.note && <p className="mt-1 text-xs italic text-muted-foreground">Reason: {a.note}</p>}
+            </>} />
           </Card>
         </div>
       </div>
