@@ -20,3 +20,4 @@
 - [x] Add crop-and-resize avatar upload; signed-in upload verification needs an authenticated test session
 - [x] Apply the exact brand palette and Montserrat/Inter typography globally across public, auth, admin, overlays, and fallback views
 - [x] Allow test applications for one labeled demo course, offer native course sharing with copy fallback, show related courses, and hide the footer on course detail pages
+- [x] Admissions upgrade: structured BD address, +88 phone, education details, duplicate block, private application link + branded PDF, admin Applications list (search/filters) and full review page with edit mode, call/WhatsApp/copy, activity log
