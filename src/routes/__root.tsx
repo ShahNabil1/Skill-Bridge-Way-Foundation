@@ -124,7 +124,7 @@ function RootComponent() {
   const router = useRouter();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const isPrivate = /^\/(admin|auth)(\/|$)/.test(pathname);
-  const isCourseDetail = /^\/courses\/[^/]+\/?$/.test(pathname);
+  const isCourseDetail = /^\/(courses\/[^/]+|admission|application\/[^/]+)\/?$/.test(pathname);
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {

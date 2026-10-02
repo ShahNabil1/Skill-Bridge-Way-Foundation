@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/admin")({ staticData: { si
 
 const NAV = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, admin: true, exact: true },
-  { to: "/admin/admissions", label: "Admissions", icon: ClipboardList, admin: true },
+  { to: "/admin/applications", label: "Applications", icon: ClipboardList, admin: true },
   { to: "/admin/students", label: "Students", icon: GraduationCap, admin: true },
   { to: "/admin/courses", label: "Courses", icon: BookOpen, admin: true },
   { to: "/admin/notices", label: "Notices", icon: Bell, admin: true },

@@ -23,6 +23,7 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-highlight: var(--highlight);
   --color-highlight-foreground: var(--highlight-foreground);
+  --color-whatsapp: #25D366;
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);

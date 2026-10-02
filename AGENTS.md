@@ -25,3 +25,5 @@
 - Auth and profile fields share ASCII validation and digit normalization; why: consistent input feedback prevents mixed-script account details.
 - Avatar images are cropped and resized in-browser before direct R2 upload; why: predictable square images avoid oversized media and keep the existing signed-upload boundary.
 - Preview content lives in admin-managed Supabase rows and R2 media keys; only the explicitly allowlisted AI Literacy demo accepts test applications, while other `demo-` courses cannot be selected; why: editors can replace samples without page rewrites and test enrollment remains clearly distinguished from a live intake.
+- Admin application edits go through the `update_admission_with_log` DB function, and views/downloads/decisions go through `log_admission_activity`; why: every change is recorded with its old value and the admin's name, in one transaction.
+- Applicants view their own application via a random `access_token` link served by `get_application_by_token`; application PDFs are generated in the browser (`src/lib/application-pdf.ts`) from live data; why: there is no public read access to the table, and the PDF always reflects edits.
