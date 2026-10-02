@@ -13,7 +13,7 @@ import { cdnUrl } from "@/lib/cdn";
 import { formatDate } from "@/lib/public-data";
 import { seo } from "@/components/site/PageHero";
 
-export const Route = createFileRoute("/_authenticated/admin/notices")({ staticData: { sitemap: false },
+export const Route = createFileRoute("/_authenticated/admin/notices/")({ staticData: { sitemap: false },
   head: () => seo("Manage Notices | Skill Bridgeway Foundation", "Private notices and events management.", { noindex: true }),
   component: () => <AdminOnly><NoticesAdmin /></AdminOnly>,
 });

@@ -30,13 +30,13 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminAdmissionsRouteImport } from './routes/_authenticated/admin.admissions'
 import { Route as AuthenticatedAdminAttendanceRouteImport } from './routes/_authenticated/admin.attendance'
 import { Route as AuthenticatedAdminGalleryRouteImport } from './routes/_authenticated/admin.gallery'
-import { Route as AuthenticatedAdminNoticesRouteImport } from './routes/_authenticated/admin.notices'
 import { Route as AuthenticatedAdminProfileRouteImport } from './routes/_authenticated/admin.profile'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminApplicationsIndexRouteImport } from './routes/_authenticated/admin.applications.index'
 import { Route as AuthenticatedAdminApplicationsIdRouteImport } from './routes/_authenticated/admin.applications.$id'
 import { Route as AuthenticatedAdminCoursesIndexRouteImport } from './routes/_authenticated/admin.courses.index'
 import { Route as AuthenticatedAdminCoursesIdRouteImport } from './routes/_authenticated/admin.courses.$id'
+import { Route as AuthenticatedAdminNoticesIndexRouteImport } from './routes/_authenticated/admin.notices.index'
 import { Route as AuthenticatedAdminNoticesIdRouteImport } from './routes/_authenticated/admin.notices.$id'
 import { Route as AuthenticatedAdminStudentsIndexRouteImport } from './routes/_authenticated/admin.students.index'
 import { Route as AuthenticatedAdminStudentsIdRouteImport } from './routes/_authenticated/admin.students.$id'
@@ -148,12 +148,6 @@ const AuthenticatedAdminGalleryRoute =
     path: '/gallery',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminNoticesRoute =
-  AuthenticatedAdminNoticesRouteImport.update({
-    id: '/notices',
-    path: '/notices',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
 const AuthenticatedAdminProfileRoute =
   AuthenticatedAdminProfileRouteImport.update({
     id: '/profile',
@@ -189,11 +183,17 @@ const AuthenticatedAdminCoursesIdRoute =
     path: '/courses/$id',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminNoticesIndexRoute =
+  AuthenticatedAdminNoticesIndexRouteImport.update({
+    id: '/notices/',
+    path: '/notices/',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminNoticesIdRoute =
   AuthenticatedAdminNoticesIdRouteImport.update({
-    id: '/$id',
-    path: '/$id',
-    getParentRoute: () => AuthenticatedAdminNoticesRoute,
+    id: '/notices/$id',
+    path: '/notices/$id',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminStudentsIndexRoute =
   AuthenticatedAdminStudentsIndexRouteImport.update({
@@ -228,7 +228,6 @@ export interface FileRoutesByFullPath {
   '/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
-  '/admin/notices': typeof AuthenticatedAdminNoticesRouteWithChildren
   '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -238,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/admin/students/$id': typeof AuthenticatedAdminStudentsIdRoute
   '/admin/applications/': typeof AuthenticatedAdminApplicationsIndexRoute
   '/admin/courses/': typeof AuthenticatedAdminCoursesIndexRoute
+  '/admin/notices/': typeof AuthenticatedAdminNoticesIndexRoute
   '/admin/students/': typeof AuthenticatedAdminStudentsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -258,7 +258,6 @@ export interface FileRoutesByTo {
   '/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
-  '/admin/notices': typeof AuthenticatedAdminNoticesRouteWithChildren
   '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -268,6 +267,7 @@ export interface FileRoutesByTo {
   '/admin/students/$id': typeof AuthenticatedAdminStudentsIdRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsIndexRoute
   '/admin/courses': typeof AuthenticatedAdminCoursesIndexRoute
+  '/admin/notices': typeof AuthenticatedAdminNoticesIndexRoute
   '/admin/students': typeof AuthenticatedAdminStudentsIndexRoute
 }
 export interface FileRoutesById {
@@ -292,7 +292,6 @@ export interface FileRoutesById {
   '/_authenticated/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/_authenticated/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/_authenticated/admin/gallery': typeof AuthenticatedAdminGalleryRoute
-  '/_authenticated/admin/notices': typeof AuthenticatedAdminNoticesRouteWithChildren
   '/_authenticated/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -302,6 +301,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/students/$id': typeof AuthenticatedAdminStudentsIdRoute
   '/_authenticated/admin/applications/': typeof AuthenticatedAdminApplicationsIndexRoute
   '/_authenticated/admin/courses/': typeof AuthenticatedAdminCoursesIndexRoute
+  '/_authenticated/admin/notices/': typeof AuthenticatedAdminNoticesIndexRoute
   '/_authenticated/admin/students/': typeof AuthenticatedAdminStudentsIndexRoute
 }
 export interface FileRouteTypes {
@@ -326,7 +326,6 @@ export interface FileRouteTypes {
     | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/gallery'
-    | '/admin/notices'
     | '/admin/profile'
     | '/admin/users'
     | '/admin/'
@@ -336,6 +335,7 @@ export interface FileRouteTypes {
     | '/admin/students/$id'
     | '/admin/applications/'
     | '/admin/courses/'
+    | '/admin/notices/'
     | '/admin/students/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -356,7 +356,6 @@ export interface FileRouteTypes {
     | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/gallery'
-    | '/admin/notices'
     | '/admin/profile'
     | '/admin/users'
     | '/admin'
@@ -366,6 +365,7 @@ export interface FileRouteTypes {
     | '/admin/students/$id'
     | '/admin/applications'
     | '/admin/courses'
+    | '/admin/notices'
     | '/admin/students'
   id:
     | '__root__'
@@ -389,7 +389,6 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/admissions'
     | '/_authenticated/admin/attendance'
     | '/_authenticated/admin/gallery'
-    | '/_authenticated/admin/notices'
     | '/_authenticated/admin/profile'
     | '/_authenticated/admin/users'
     | '/_authenticated/admin/'
@@ -399,6 +398,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/students/$id'
     | '/_authenticated/admin/applications/'
     | '/_authenticated/admin/courses/'
+    | '/_authenticated/admin/notices/'
     | '/_authenticated/admin/students/'
   fileRoutesById: FileRoutesById
 }
@@ -568,13 +568,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminGalleryRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/notices': {
-      id: '/_authenticated/admin/notices'
-      path: '/notices'
-      fullPath: '/admin/notices'
-      preLoaderRoute: typeof AuthenticatedAdminNoticesRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
     '/_authenticated/admin/profile': {
       id: '/_authenticated/admin/profile'
       path: '/profile'
@@ -617,12 +610,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCoursesIdRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/notices/': {
+      id: '/_authenticated/admin/notices/'
+      path: '/notices'
+      fullPath: '/admin/notices/'
+      preLoaderRoute: typeof AuthenticatedAdminNoticesIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/notices/$id': {
       id: '/_authenticated/admin/notices/$id'
-      path: '/$id'
+      path: '/notices/$id'
       fullPath: '/admin/notices/$id'
       preLoaderRoute: typeof AuthenticatedAdminNoticesIdRouteImport
-      parentRoute: typeof AuthenticatedAdminNoticesRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/students/': {
       id: '/_authenticated/admin/students/'
@@ -641,33 +641,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedAdminNoticesRouteChildren {
-  AuthenticatedAdminNoticesIdRoute: typeof AuthenticatedAdminNoticesIdRoute
-}
-
-const AuthenticatedAdminNoticesRouteChildren: AuthenticatedAdminNoticesRouteChildren =
-  {
-    AuthenticatedAdminNoticesIdRoute: AuthenticatedAdminNoticesIdRoute,
-  }
-
-const AuthenticatedAdminNoticesRouteWithChildren =
-  AuthenticatedAdminNoticesRoute._addFileChildren(
-    AuthenticatedAdminNoticesRouteChildren,
-  )
-
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAdmissionsRoute: typeof AuthenticatedAdminAdmissionsRoute
   AuthenticatedAdminAttendanceRoute: typeof AuthenticatedAdminAttendanceRoute
   AuthenticatedAdminGalleryRoute: typeof AuthenticatedAdminGalleryRoute
-  AuthenticatedAdminNoticesRoute: typeof AuthenticatedAdminNoticesRouteWithChildren
   AuthenticatedAdminProfileRoute: typeof AuthenticatedAdminProfileRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminApplicationsIdRoute: typeof AuthenticatedAdminApplicationsIdRoute
   AuthenticatedAdminCoursesIdRoute: typeof AuthenticatedAdminCoursesIdRoute
+  AuthenticatedAdminNoticesIdRoute: typeof AuthenticatedAdminNoticesIdRoute
   AuthenticatedAdminStudentsIdRoute: typeof AuthenticatedAdminStudentsIdRoute
   AuthenticatedAdminApplicationsIndexRoute: typeof AuthenticatedAdminApplicationsIndexRoute
   AuthenticatedAdminCoursesIndexRoute: typeof AuthenticatedAdminCoursesIndexRoute
+  AuthenticatedAdminNoticesIndexRoute: typeof AuthenticatedAdminNoticesIndexRoute
   AuthenticatedAdminStudentsIndexRoute: typeof AuthenticatedAdminStudentsIndexRoute
 }
 
@@ -675,16 +662,17 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAdmissionsRoute: AuthenticatedAdminAdmissionsRoute,
   AuthenticatedAdminAttendanceRoute: AuthenticatedAdminAttendanceRoute,
   AuthenticatedAdminGalleryRoute: AuthenticatedAdminGalleryRoute,
-  AuthenticatedAdminNoticesRoute: AuthenticatedAdminNoticesRouteWithChildren,
   AuthenticatedAdminProfileRoute: AuthenticatedAdminProfileRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminApplicationsIdRoute: AuthenticatedAdminApplicationsIdRoute,
   AuthenticatedAdminCoursesIdRoute: AuthenticatedAdminCoursesIdRoute,
+  AuthenticatedAdminNoticesIdRoute: AuthenticatedAdminNoticesIdRoute,
   AuthenticatedAdminStudentsIdRoute: AuthenticatedAdminStudentsIdRoute,
   AuthenticatedAdminApplicationsIndexRoute:
     AuthenticatedAdminApplicationsIndexRoute,
   AuthenticatedAdminCoursesIndexRoute: AuthenticatedAdminCoursesIndexRoute,
+  AuthenticatedAdminNoticesIndexRoute: AuthenticatedAdminNoticesIndexRoute,
   AuthenticatedAdminStudentsIndexRoute: AuthenticatedAdminStudentsIndexRoute,
 }
 
