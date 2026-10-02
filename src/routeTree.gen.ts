@@ -16,7 +16,6 @@ import { Route as AdmissionRouteImport } from './routes/admission'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as GalleryRouteImport } from './routes/gallery'
-import { Route as NoticesRouteImport } from './routes/notices'
 import { Route as PartnerRouteImport } from './routes/partner'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as VerifyRouteImport } from './routes/verify'
@@ -24,6 +23,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as ApplicationTokenRouteImport } from './routes/application.$token'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
+import { Route as NoticesIndexRouteImport } from './routes/notices.index'
 import { Route as NoticesSlugRouteImport } from './routes/notices.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAdmissionsRouteImport } from './routes/_authenticated/admin.admissions'
@@ -74,11 +74,6 @@ const GalleryRoute = GalleryRouteImport.update({
   path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NoticesRoute = NoticesRouteImport.update({
-  id: '/notices',
-  path: '/notices',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PartnerRoute = PartnerRouteImport.update({
   id: '/partner',
   path: '/partner',
@@ -114,10 +109,15 @@ const CoursesSlugRoute = CoursesSlugRouteImport.update({
   path: '/courses/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NoticesIndexRoute = NoticesIndexRouteImport.update({
+  id: '/notices/',
+  path: '/notices/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NoticesSlugRoute = NoticesSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => NoticesRoute,
+  id: '/notices/$slug',
+  path: '/notices/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
@@ -209,7 +209,6 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
-  '/notices': typeof NoticesRouteWithChildren
   '/partner': typeof PartnerRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/verify': typeof VerifyRoute
@@ -218,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/courses/$slug': typeof CoursesSlugRoute
   '/notices/$slug': typeof NoticesSlugRoute
   '/courses/': typeof CoursesIndexRoute
+  '/notices/': typeof NoticesIndexRoute
   '/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
@@ -240,7 +240,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
-  '/notices': typeof NoticesRouteWithChildren
   '/partner': typeof PartnerRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/verify': typeof VerifyRoute
@@ -248,6 +247,7 @@ export interface FileRoutesByTo {
   '/courses/$slug': typeof CoursesSlugRoute
   '/notices/$slug': typeof NoticesSlugRoute
   '/courses': typeof CoursesIndexRoute
+  '/notices': typeof NoticesIndexRoute
   '/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
@@ -272,7 +272,6 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
-  '/notices': typeof NoticesRouteWithChildren
   '/partner': typeof PartnerRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/verify': typeof VerifyRoute
@@ -281,6 +280,7 @@ export interface FileRoutesById {
   '/courses/$slug': typeof CoursesSlugRoute
   '/notices/$slug': typeof NoticesSlugRoute
   '/courses/': typeof CoursesIndexRoute
+  '/notices/': typeof NoticesIndexRoute
   '/_authenticated/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/_authenticated/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/_authenticated/admin/gallery': typeof AuthenticatedAdminGalleryRoute
@@ -305,7 +305,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/gallery'
-    | '/notices'
     | '/partner'
     | '/sitemap.xml'
     | '/verify'
@@ -314,6 +313,7 @@ export interface FileRouteTypes {
     | '/courses/$slug'
     | '/notices/$slug'
     | '/courses/'
+    | '/notices/'
     | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/gallery'
@@ -336,7 +336,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/gallery'
-    | '/notices'
     | '/partner'
     | '/sitemap.xml'
     | '/verify'
@@ -344,6 +343,7 @@ export interface FileRouteTypes {
     | '/courses/$slug'
     | '/notices/$slug'
     | '/courses'
+    | '/notices'
     | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/gallery'
@@ -367,7 +367,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/gallery'
-    | '/notices'
     | '/partner'
     | '/sitemap.xml'
     | '/verify'
@@ -376,6 +375,7 @@ export interface FileRouteTypes {
     | '/courses/$slug'
     | '/notices/$slug'
     | '/courses/'
+    | '/notices/'
     | '/_authenticated/admin/admissions'
     | '/_authenticated/admin/attendance'
     | '/_authenticated/admin/gallery'
@@ -400,13 +400,14 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   GalleryRoute: typeof GalleryRoute
-  NoticesRoute: typeof NoticesRouteWithChildren
   PartnerRoute: typeof PartnerRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   VerifyRoute: typeof VerifyRoute
   ApplicationTokenRoute: typeof ApplicationTokenRoute
   CoursesSlugRoute: typeof CoursesSlugRoute
+  NoticesSlugRoute: typeof NoticesSlugRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
+  NoticesIndexRoute: typeof NoticesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -460,13 +461,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/notices': {
-      id: '/notices'
-      path: '/notices'
-      fullPath: '/notices'
-      preLoaderRoute: typeof NoticesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/partner': {
       id: '/partner'
       path: '/partner'
@@ -516,12 +510,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notices/': {
+      id: '/notices/'
+      path: '/notices'
+      fullPath: '/notices/'
+      preLoaderRoute: typeof NoticesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/notices/$slug': {
       id: '/notices/$slug'
-      path: '/$slug'
+      path: '/notices/$slug'
       fullPath: '/notices/$slug'
       preLoaderRoute: typeof NoticesSlugRouteImport
-      parentRoute: typeof NoticesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
@@ -685,17 +686,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface NoticesRouteChildren {
-  NoticesSlugRoute: typeof NoticesSlugRoute
-}
-
-const NoticesRouteChildren: NoticesRouteChildren = {
-  NoticesSlugRoute: NoticesSlugRoute,
-}
-
-const NoticesRouteWithChildren =
-  NoticesRoute._addFileChildren(NoticesRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -704,13 +694,14 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   GalleryRoute: GalleryRoute,
-  NoticesRoute: NoticesRouteWithChildren,
   PartnerRoute: PartnerRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   VerifyRoute: VerifyRoute,
   ApplicationTokenRoute: ApplicationTokenRoute,
   CoursesSlugRoute: CoursesSlugRoute,
+  NoticesSlugRoute: NoticesSlugRoute,
   CoursesIndexRoute: CoursesIndexRoute,
+  NoticesIndexRoute: NoticesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

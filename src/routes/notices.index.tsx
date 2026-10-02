@@ -10,7 +10,7 @@ import { formatDate, noticesQuery } from "@/lib/public-data";
 
 const TABS = [["all", "All"], ["notice", "Notices"], ["event", "Events"]] as const;
 
-export const Route = createFileRoute("/notices")({ staticData: { sitemap: true },
+export const Route = createFileRoute("/notices/")({ staticData: { sitemap: true },
   validateSearch: (s: Record<string, unknown>): { type?: "notice" | "event" | undefined } => ({
     type: s["type"] === "notice" || s["type"] === "event" ? s["type"] : undefined,
   }),
