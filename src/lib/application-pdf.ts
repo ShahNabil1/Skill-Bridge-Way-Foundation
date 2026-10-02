@@ -92,6 +92,7 @@ export async function generateApplicationPdf(a: ApplicationRecord, viewUrl?: str
   y -= 22;
 
   const section = (title: string, rows: [string, unknown][]) => {
+    if (rows.length === 0) return;
     ensure(40);
     page.drawRectangle({ x: M, y: y - 6, width: 3, height: 16, color: CYAN });
     page.drawText(title.toUpperCase(), { x: M + 10, y: y - 2, size: 10.5, font: head, color: NAVY });
