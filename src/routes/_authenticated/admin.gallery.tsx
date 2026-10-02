@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Check, Eye, ImagePlus, Loader2, Pencil, Search, Trash2, Upload, X } from "lucide-react";
+import { Check, ImagePlus, Loader2, Pencil, Search, Trash2, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
@@ -153,7 +153,7 @@ function GalleryAdmin() {
       </div>
       {error && <div role="alert" className="mt-6 text-sm text-destructive">Could not load photos. <Button variant="link" onClick={() => refetch()}>Try again</Button></div>}
       {isLoading ? <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{Array.from({ length: 8 }, (_, i) => <div key={i} className="aspect-square animate-pulse rounded-md bg-muted" />)}</div>
-        : !error && !filtered.length ? <div className="py-14 text-center text-sm text-muted-foreground">{rows.length ? "No photos match your search." : "No photos yet. Add images above to start your gallery."}</div>
+        : error ? null : !filtered.length ? <div className="py-14 text-center text-sm text-muted-foreground">{rows.length ? "No photos match your search." : "No photos yet. Add images above to start your gallery."}</div>
           : <><p className="mt-5 text-xs text-muted-foreground" aria-live="polite">Showing {visible.length} of {filtered.length} photos</p><div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {visible.map((photo) => <article key={photo.id} className="min-w-0 overflow-hidden rounded-md border border-border bg-card">
               <Button type="button" variant="ghost" className="block h-auto w-full rounded-none p-0" aria-label={`View ${photo.title || "photo"}`} onClick={() => setViewing(photo)}><img src={cdnUrl(photo.image_key) ?? ""} alt={photo.title || "Gallery photo"} className="aspect-square w-full object-cover" loading="lazy" /></Button>
