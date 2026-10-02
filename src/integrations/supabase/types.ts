@@ -338,39 +338,6 @@ export type Database = {
           },
         ]
       }
-      contact_messages: {
-        Row: {
-          created_at: string
-          email: string
-          id: string
-          is_read: boolean
-          message: string
-          name: string
-          phone: string | null
-          subject: string | null
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          is_read?: boolean
-          message: string
-          name: string
-          phone?: string | null
-          subject?: string | null
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          is_read?: boolean
-          message?: string
-          name?: string
-          phone?: string | null
-          subject?: string | null
-        }
-        Relationships: []
-      }
       course_categories: {
         Row: {
           created_at: string
