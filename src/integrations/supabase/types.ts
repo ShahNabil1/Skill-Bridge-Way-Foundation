@@ -162,6 +162,92 @@ export type Database = {
           },
         ]
       }
+      attendance: {
+        Row: {
+          enrollment_id: string
+          id: string
+          marked_at: string
+          marked_by: string | null
+          reminded_at: string | null
+          session_id: string
+          status: string
+        }
+        Insert: {
+          enrollment_id: string
+          id?: string
+          marked_at?: string
+          marked_by?: string | null
+          reminded_at?: string | null
+          session_id: string
+          status: string
+        }
+        Update: {
+          enrollment_id?: string
+          id?: string
+          marked_at?: string
+          marked_by?: string | null
+          reminded_at?: string | null
+          session_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "class_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      batches: {
+        Row: {
+          class_days: string[]
+          class_time: string | null
+          course_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          start_date: string | null
+        }
+        Insert: {
+          class_days?: string[]
+          class_time?: string | null
+          course_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          start_date?: string | null
+        }
+        Update: {
+          class_days?: string[]
+          class_time?: string | null
+          course_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          start_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batches_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       certificates: {
         Row: {
           course_id: string | null
@@ -216,6 +302,38 @@ export type Database = {
             columns: ["student_id"]
             isOneToOne: false
             referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      class_sessions: {
+        Row: {
+          batch_id: string
+          created_at: string
+          id: string
+          session_date: string
+          topic: string | null
+        }
+        Insert: {
+          batch_id: string
+          created_at?: string
+          id?: string
+          session_date: string
+          topic?: string | null
+        }
+        Update: {
+          batch_id?: string
+          created_at?: string
+          id?: string
+          session_date?: string
+          topic?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_sessions_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
             referencedColumns: ["id"]
           },
         ]
@@ -303,27 +421,46 @@ export type Database = {
       }
       enrollments: {
         Row: {
+          absence_reminders: boolean
+          batch_id: string | null
           completed_at: string | null
           course_id: string
           created_at: string
           id: string
+          learning_status: string
+          progress: number
           student_id: string
         }
         Insert: {
+          absence_reminders?: boolean
+          batch_id?: string | null
           completed_at?: string | null
           course_id: string
           created_at?: string
           id?: string
+          learning_status?: string
+          progress?: number
           student_id: string
         }
         Update: {
+          absence_reminders?: boolean
+          batch_id?: string | null
           completed_at?: string | null
           course_id?: string
           created_at?: string
           id?: string
+          learning_status?: string
+          progress?: number
           student_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "enrollments_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "enrollments_course_id_fkey"
             columns: ["course_id"]
@@ -433,6 +570,44 @@ export type Database = {
         }
         Relationships: []
       }
+      student_activity: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_name: string | null
+          created_at: string
+          detail: Json
+          id: string
+          student_id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_name?: string | null
+          created_at?: string
+          detail?: Json
+          id?: string
+          student_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_name?: string | null
+          created_at?: string
+          detail?: Json
+          id?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_activity_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       students: {
         Row: {
           admission_id: string | null
@@ -514,6 +689,10 @@ export type Database = {
       }
       log_admission_activity: {
         Args: { _action: string; _admission_id: string; _detail?: Json }
+        Returns: undefined
+      }
+      log_student_activity: {
+        Args: { _action: string; _detail?: Json; _student_id: string }
         Returns: undefined
       }
       update_admission_with_log: {
