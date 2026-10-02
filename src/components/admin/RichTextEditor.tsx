@@ -12,7 +12,7 @@ import TableRow from "@tiptap/extension-table-row";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import Placeholder from "@tiptap/extension-placeholder";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Code, Columns3, Heading1, Heading2, Heading3, Highlighter, ImagePlus, Italic,
@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useMediaUpload } from "@/components/admin/shared";
 import { cdnUrl } from "@/lib/cdn";
+import { descriptionHtml } from "@/lib/course-content";
 
 const COLORS = ["#FFFFFF", "#F4F6F8", "#00A8FF", "#FF9900", "#22C55E", "#EF4444", "#A855F7", "#94A3B8"];
 
@@ -102,10 +103,15 @@ export function RichTextEditor({ value, onChange }: { value: string; onChange: (
       Table.configure({ resizable: true }), TableRow, TableHeader, TableCell,
       Placeholder.configure({ placeholder: "Write the full course description…" }),
     ],
-    content: value,
+    content: descriptionHtml(value),
     editorProps: { attributes: { class: "rich-content min-h-[320px] px-5 py-4 focus:outline-none" } },
     onUpdate: ({ editor }) => onChange(editor.isEmpty ? "" : editor.getHTML()),
   });
+  useEffect(() => {
+    if (!editor) return;
+    const next = descriptionHtml(value);
+    if (editor.getHTML() !== next) editor.commands.setContent(next, false);
+  }, [editor, value]);
   if (!editor) return <div className="h-80 animate-pulse rounded-xl border border-border bg-muted/30" />;
   return <div className="overflow-hidden rounded-xl border border-input bg-background"><Toolbar editor={editor} /><EditorContent editor={editor} /></div>;
 }
