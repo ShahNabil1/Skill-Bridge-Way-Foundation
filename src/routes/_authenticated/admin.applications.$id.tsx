@@ -86,22 +86,22 @@ function Review() {
 
   async function save() {
     if (!draft || !dirty) return;
-    if (!/^01[3-9]\d{8}$/.test(String(draft.phone))) return toast.error("Enter a valid 11-digit mobile number");
-    if (!/^\S+@\S+\.\S+$/.test(String(draft.email))) return toast.error("Enter a valid email");
+    if (!/^01[3-9]\d{8}$/.test(String(draft.phone))) { toast.error("Enter a valid 11-digit mobile number"); return; }
+    if (!/^\S+@\S+\.\S+$/.test(String(draft.email))) { toast.error("Enter a valid email"); return; }
     setBusy("save");
     const n = norm(draft);
-    const { data, error } = await supabase.rpc("update_admission_with_log", { _admission_id: id, _patch: { ...n, gender: n.gender ?? null } as never, _note: note || null });
+    const { data, error } = await supabase.rpc("update_admission_with_log", { _admission_id: id, _patch: { ...n } as never, _note: note });
     if (!error) await supabase.from("admissions").update({ address: composeAddress(n as Partial<ApplicationRecord>) }).eq("id", id);
     setBusy(null);
-    if (error) return toast.error(error.code === "23505" ? "Another active application already uses this email/phone for that course." : error.message);
+    if (error) { toast.error(error.code === "23505" ? "Another active application already uses this email/phone for that course." : error.message); return; }
     toast.success(`Updated ${data} field${data === 1 ? "" : "s"}`);
     cancelEdit(); refresh();
   }
 
   async function replaceDoc(slot: string, file?: File) {
     if (!file || !draft) return;
-    if (!(ALLOWED_DOC_TYPES as readonly string[]).includes(file.type)) return toast.error("Only PDF, JPG, PNG or WEBP files");
-    if (file.size > MAX_DOC_BYTES) return toast.error("File must be 5 MB or smaller");
+    if (!(ALLOWED_DOC_TYPES as readonly string[]).includes(file.type)) { toast.error("Only PDF, JPG, PNG or WEBP files"); return; }
+    if (file.size > MAX_DOC_BYTES) { toast.error("File must be 5 MB or smaller"); return; }
     setBusy(slot);
     try {
       const { uploadUrl, key } = await getUploadUrl({ data: { admissionId: id, fileName: file.name, contentType: file.type as (typeof ALLOWED_DOC_TYPES)[number], size: file.size } });
@@ -110,7 +110,7 @@ function Review() {
       const docs = (draft.document_keys as AppDoc[]).filter((d) => d.type !== slot);
       patch({ document_keys: [...docs, { type: slot, key, name: file.name }] });
       toast.success(`${docLabel(slot)} replaced — click Update to save`);
-    } catch { toast.error("Upload failed"); }
+    } catch { toast.error("Upload failed"); return; } }
     setBusy(null);
   }
 
@@ -120,7 +120,7 @@ function Review() {
       const { downloadApplicationPdf } = await import("@/lib/application-pdf");
       await downloadApplicationPdf(app!, app!.access_token ? `${window.location.origin}/application/${app!.access_token}` : undefined);
       log("downloaded_pdf");
-    } catch { toast.error("Could not create the PDF"); }
+    } catch { toast.error("Could not create the PDF"); return; } }
     setBusy(null);
   }
 
@@ -129,7 +129,7 @@ function Review() {
     setBusy("approve");
     const { data, error } = await supabase.rpc("approve_admission", { _admission_id: id });
     setBusy(null);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(`Approved — Student ID ${data}`);
     log("approved", { student_code: data });
     notifyApproved({ data: { admissionId: id } }).then((r) => { if (!r.sent) toast.warning("Approval email could not be sent"); }).catch(() => toast.warning("Approval email could not be sent"));
@@ -140,7 +140,7 @@ function Review() {
     setBusy("reject");
     const { error } = await supabase.from("admissions").update({ status: "rejected", review_note: rejectNote.trim().slice(0, 1000) || null, reviewed_at: new Date().toISOString() }).eq("id", id);
     setBusy(null);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Application rejected");
     log("rejected", { note: rejectNote.trim().slice(0, 300) });
     refresh();

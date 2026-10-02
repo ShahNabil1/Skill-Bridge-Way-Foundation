@@ -4,7 +4,7 @@ import { Field, Select } from "./FormBits";
 
 export type EducationValue = { education_level: string; institution: string; education_board: string; education_group: string; education_result: string; passing_year: string; session: string };
 
-export function EducationFields({ value, onChange, errors = {}, disabled }: { value: EducationValue; onChange: (p: Partial<EducationValue>) => void; errors?: Partial<Record<keyof EducationValue, string>>; disabled?: boolean }) {
+export function EducationFields({ value, onChange, errors = {}, disabled }: { value: EducationValue; onChange: (p: Partial<EducationValue>) => void; errors?: Partial<Record<keyof EducationValue, string | undefined>>; disabled?: boolean | undefined }) {
   const running = /running/i.test(value.education_level);
   return <div className="space-y-5">
     <div className="grid gap-5 sm:grid-cols-2">

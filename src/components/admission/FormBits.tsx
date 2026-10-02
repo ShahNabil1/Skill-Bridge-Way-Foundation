@@ -14,7 +14,7 @@ export function Field({ label, error, hint, children }: { label: string; error?:
     {error && <p className="text-xs text-destructive">{error}</p>}</div>;
 }
 
-export function Select({ value, onChange, options, placeholder = "Select", disabled, id }: { value: string; onChange: (v: string) => void; options: string[]; placeholder?: string; disabled?: boolean; id?: string }) {
+export function Select({ value, onChange, options, placeholder = "Select", disabled, id }: { value: string; onChange: (v: string) => void; options: string[]; placeholder?: string; disabled?: boolean | undefined; id?: string | undefined }) {
   return <select id={id} className={selectCls} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)}>
     <option value="">{placeholder}</option>
     {value && !options.includes(value) && <option value={value}>{value}</option>}
@@ -26,7 +26,7 @@ function BdFlag() {
   return <svg viewBox="0 0 20 12" className="h-3.5 w-6 rounded-[2px]" aria-hidden="true"><rect width="20" height="12" fill="#006A4E" /><circle cx="9" cy="6" r="3.6" fill="#F42A41" /></svg>;
 }
 
-export function PhoneInput({ value, onChange, disabled, id }: { value: string; onChange: (v: string) => void; disabled?: boolean; id?: string }) {
+export function PhoneInput({ value, onChange, disabled, id }: { value: string; onChange: (v: string) => void; disabled?: boolean | undefined; id?: string | undefined }) {
   return <div className="flex h-10 overflow-hidden rounded-md border border-input focus-within:ring-1 focus-within:ring-ring">
     <span className="flex shrink-0 items-center gap-2 border-r border-input bg-muted px-3 text-sm"><BdFlag />+88</span>
     <input id={id} type="tel" inputMode="numeric" autoComplete="tel-national" disabled={disabled} maxLength={11} placeholder="01XXXXXXXXX"
@@ -39,7 +39,7 @@ export type AddressValue = { division: string; district: string; upazila: string
 type Errs = Partial<Record<keyof AddressValue, string>>;
 
 /** Division → District → Upazila picker plus detailed address, shared by the public form and admin editing. */
-export function AddressPicker({ value, onChange, errors = {}, disabled }: { value: AddressValue; onChange: (patch: Partial<AddressValue>) => void; errors?: Errs; disabled?: boolean }) {
+export function AddressPicker({ value, onChange, errors = {}, disabled }: { value: AddressValue; onChange: (patch: Partial<AddressValue>) => void; errors?: Errs; disabled?: boolean | undefined }) {
   const districts = value.division ? Object.keys(BD_LOCATIONS[value.division] ?? {}) : [];
   const upazilas = value.division && value.district ? BD_LOCATIONS[value.division]?.[value.district] ?? [] : [];
   return <div className="space-y-5">
