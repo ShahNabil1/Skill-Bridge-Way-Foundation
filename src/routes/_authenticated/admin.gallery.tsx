@@ -16,7 +16,7 @@ import { IMAGE_TYPES, MAX_DOC_BYTES } from "@/lib/r2.functions";
 import { seo } from "@/components/site/PageHero";
 
 type Photo = Tables<"gallery_items">;
-type Pending = { id: string; file: File; url: string; title: string; category: string; error?: string; key?: string; done?: boolean };
+type Pending = { id: string; file: File; url: string; title: string; category: string; error?: string | undefined; key?: string; done?: boolean };
 const PAGE_SIZE = 24;
 
 export const Route = createFileRoute("/_authenticated/admin/gallery")({ staticData: { sitemap: false },
