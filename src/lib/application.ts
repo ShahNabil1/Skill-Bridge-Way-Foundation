@@ -5,7 +5,7 @@ export type AppDoc = { type?: string; key?: string; name?: string };
 export type ApplicationRecord = {
   id: string; full_name: string; email: string; phone: string; date_of_birth: string | null; gender: string | null;
   address: string | null; division: string | null; district: string | null; upazila: string | null; address_line: string | null;
-  post_office: string | null; postal_code: string | null; education_level: string | null; institution: string | null;
+  education_level: string | null; institution: string | null;
   education_board: string | null; education_group: string | null; education_result: string | null; passing_year: string | null;
   session: string | null; course_id: string | null; motivation: string | null; document_keys: unknown; status: string;
   created_at: string; course_title?: string | null; access_token?: string;
