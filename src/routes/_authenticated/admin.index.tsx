@@ -28,7 +28,7 @@ function Overview() {
     },
   });
   const cards = [
-    { label: "Pending admissions", value: data?.pending, to: "/admin/admissions" },
+    { label: "Pending admissions", value: data?.pending, to: "/admin/applications" },
     { label: "Students", value: data?.students, to: "/admin/students" },
     { label: "Courses", value: data?.courses, to: "/admin/courses" },
     { label: "Unread messages", value: data?.unread, to: "/admin/messages" },
