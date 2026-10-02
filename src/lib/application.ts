@@ -5,7 +5,7 @@ export type AppDoc = { type?: string; key?: string; name?: string };
 export type ApplicationRecord = {
   id: string; full_name: string; email: string; phone: string; date_of_birth: string | null; gender: string | null;
   address: string | null; division: string | null; district: string | null; upazila: string | null; address_line: string | null;
-  post_office: string | null; postal_code: string | null; education_level: string | null; institution: string | null;
+  education_level: string | null; institution: string | null;
   education_board: string | null; education_group: string | null; education_result: string | null; passing_year: string | null;
   session: string | null; course_id: string | null; motivation: string | null; document_keys: unknown; status: string;
   created_at: string; course_title?: string | null; access_token?: string;
@@ -17,14 +17,13 @@ export const docLabel = (t?: string) => DOC_SLOTS.find((s) => s.id === t)?.label
 export const photoKey = (a: { document_keys: unknown }) => docsOf(a).find((d) => d.type === "photo" && /\.(jpe?g|png|webp)$/i.test(d.key ?? ""))?.key ?? null;
 
 export function composeAddress(a: Partial<ApplicationRecord>) {
-  const parts = [a.address_line, a.post_office && `Post Office: ${a.post_office}${a.postal_code ? ` - ${a.postal_code}` : ""}`, a.upazila, a.district, a.division].filter(Boolean);
+  const parts = [a.address_line, a.upazila, a.district, a.division].filter(Boolean);
   return parts.length ? parts.join(", ") : a.address ?? "";
 }
 
 export const FIELD_LABELS: Record<string, string> = {
   full_name: "Full name", email: "Email", phone: "Phone", date_of_birth: "Date of birth", gender: "Gender",
-  division: "Division", district: "District", upazila: "Upazila / Thana", address_line: "Village / Area, House & Road",
-  post_office: "Post office", postal_code: "Post code", education_level: "Education level", institution: "Institution",
+  division: "Division", district: "District", upazila: "Upazila / Thana", address_line: "Village / Area, House & Road", education_level: "Education level", institution: "Institution",
   education_board: "Board / University", education_group: "Group / Subject", education_result: "Result",
   passing_year: "Passing year", session: "Session", course_id: "Course", motivation: "Motivation", document_keys: "Documents",
 };

@@ -25,7 +25,7 @@ export const Route = createFileRoute("/_authenticated/admin/applications/$id")({
   component: () => <AdminOnly><Review /></AdminOnly>,
 });
 
-const EDITABLE = ["full_name", "email", "phone", "date_of_birth", "gender", "division", "district", "upazila", "address_line", "post_office", "postal_code", "education_level", "institution", "education_board", "education_group", "education_result", "passing_year", "session", "course_id", "motivation", "document_keys"] as const;
+const EDITABLE = ["full_name", "email", "phone", "date_of_birth", "gender", "division", "district", "upazila", "address_line", "education_level", "institution", "education_board", "education_group", "education_result", "passing_year", "session", "course_id", "motivation", "document_keys"] as const;
 type Draft = Record<(typeof EDITABLE)[number], unknown>;
 const pick = (a: ApplicationRecord): Draft => Object.fromEntries(EDITABLE.map((k) => [k, k === "document_keys" ? docsOf(a) : (a[k] ?? "")])) as Draft;
 const norm = (d: Draft) => Object.fromEntries(EDITABLE.map((k) => [k, k === "document_keys" ? d[k] : (typeof d[k] === "string" ? (d[k] as string).trim() || null : d[k])]));
@@ -178,7 +178,7 @@ function Review() {
             </div>
             <h3 className="mt-6 mb-3 text-sm uppercase text-muted-foreground">Address</h3>
             {!app.division && !editing && app.address && <p className="mb-3 text-sm text-muted-foreground">Legacy address: {app.address}</p>}
-            <AddressPicker disabled={!editing} value={{ division: s("division"), district: s("district"), upazila: s("upazila"), address_line: s("address_line"), post_office: s("post_office"), postal_code: s("postal_code") }} onChange={patch} />
+            <AddressPicker disabled={!editing} value={{ division: s("division"), district: s("district"), upazila: s("upazila"), address_line: s("address_line") }} onChange={patch} />
           </Card>
           <Card title="Education">
             <EducationFields disabled={!editing} value={{ education_level: s("education_level"), institution: s("institution"), education_board: s("education_board"), education_group: s("education_group"), education_result: s("education_result"), passing_year: s("passing_year"), session: s("session") }} onChange={patch} />

@@ -109,7 +109,7 @@ export async function generateApplicationPdf(a: ApplicationRecord, viewUrl?: str
   };
 
   section("Personal information", [["Full name", a.full_name], ["Email", a.email], ["Mobile", a.phone ? `+88 ${a.phone}` : ""], ["Date of birth", a.date_of_birth], ["Gender", a.gender ? a.gender[0]!.toUpperCase() + a.gender.slice(1) : ""]]);
-  section("Address", a.division ? [["Division", a.division], ["District", a.district], ["Upazila / Thana", a.upazila], ["Village / Area", a.address_line], ["Post office", a.post_office], ["Post code", a.postal_code]] : [["Address", composeAddress(a)]]);
+  section("Address", a.division ? [["Division", a.division], ["District", a.district], ["Upazila / Thana", a.upazila], ["Village / Area", a.address_line]] : [["Address", composeAddress(a)]]);
   section("Education", [["Level", a.education_level], ["Institution", a.institution], ["Board / University", a.education_board], ["Group / Subject", a.education_group], [/running/i.test(a.education_level ?? "") ? "Session" : "Passing year", a.session || a.passing_year], ["Result", a.education_result]]);
   section("Course", [["Course", a.course_title ?? "Not decided — advise me"], ["Motivation", a.motivation]]);
   section("Submitted documents", docsOf(a).map((d) => [docLabel(d.type), d.name ?? d.key ?? ""]));

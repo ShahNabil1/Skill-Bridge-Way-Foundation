@@ -35,7 +35,7 @@ export function PhoneInput({ value, onChange, disabled, id }: { value: string; o
   </div>;
 }
 
-export type AddressValue = { division: string; district: string; upazila: string; address_line: string; post_office: string; postal_code: string };
+export type AddressValue = { division: string; district: string; upazila: string; address_line: string };
 type Errs = Partial<Record<keyof AddressValue, string>>;
 
 /** Division → District → Upazila picker plus detailed address, shared by the public form and admin editing. */
@@ -49,9 +49,5 @@ export function AddressPicker({ value, onChange, errors = {}, disabled }: { valu
       <Field label="Upazila / Thana" error={errors.upazila}><Select value={value.upazila} disabled={disabled || !value.district} options={upazilas} placeholder={value.district ? "Select upazila" : "Select district first"} onChange={(v) => onChange({ upazila: v })} /></Field>
     </div>
     <Field label="Village / Area, House & Road" error={errors.address_line} hint="e.g. House 12, Road 3, Malotinagar"><Input disabled={disabled} value={value.address_line} maxLength={300} onChange={(e) => onChange({ address_line: e.target.value })} /></Field>
-    <div className="grid gap-5 sm:grid-cols-2">
-      <Field label="Post office" error={errors.post_office}><Input disabled={disabled} value={value.post_office} maxLength={100} onChange={(e) => onChange({ post_office: e.target.value })} /></Field>
-      <Field label="Post code" error={errors.postal_code}><Input disabled={disabled} inputMode="numeric" maxLength={4} placeholder="5800" value={value.postal_code} onChange={(e) => onChange({ postal_code: digitsOnly(e.target.value).slice(0, 4) })} /></Field>
-    </div>
   </div>;
 }

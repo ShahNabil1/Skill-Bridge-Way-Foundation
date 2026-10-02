@@ -13,7 +13,7 @@ const input = z.object({
     date_of_birth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     gender: z.enum(["male", "female", "other"]),
     division: z.string().min(1).max(60), district: z.string().min(1).max(60), upazila: z.string().min(1).max(80),
-    address_line: z.string().trim().min(3).max(300), post_office: z.string().trim().min(2).max(100), postal_code: z.string().regex(/^\d{4}$/),
+    address_line: z.string().trim().min(3).max(300),
     address: z.string().max(800),
     education_level: z.string().min(1).max(80), institution: z.string().trim().min(2).max(200),
     education_board: z.string().min(1).max(80), education_group: opt(100), education_result: opt(50), passing_year: opt(4), session: opt(20),
