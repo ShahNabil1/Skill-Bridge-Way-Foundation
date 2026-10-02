@@ -8,7 +8,7 @@ export const todayISO = () => {
   const d = new Date();
   return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 };
-export const weekdayOf = (iso: string) => WEEKDAYS[new Date(`${iso}T00:00:00`).getDay()];
+export const weekdayOf = (iso: string): string => WEEKDAYS[new Date(`${iso}T00:00:00`).getDay()] ?? "sun";
 
 export type AttRow = { status: string; class_sessions: { session_date: string } | null };
 

@@ -183,7 +183,7 @@ function EnrollmentCard({ e, student, log, onChange }: { e: Enr; student: { id: 
 }
 
 function Line({ a }: { a: ActivityRow }) {
-  const d = (a.detail ?? {}) as Record<string, any>;
+  const d = (a.detail ?? {}) as any;
   const text: Record<string, string> = {
     viewed: "opened the student profile",
     updated_learning: `updated learning for ${d.course ?? "a course"}`,

@@ -64,7 +64,7 @@ function Attendance() {
       const { data: s, error } = await supabase.from("class_sessions").upsert({ batch_id: batch.id, session_date: date }, { onConflict: "batch_id,session_date" }).select("id").single();
       if (error) throw error;
       const { data: u } = await supabase.auth.getUser();
-      const rows = roster.map((r) => ({ session_id: s.id, enrollment_id: r.id, status: marks[r.id] ?? "present", marked_by: u.user?.id, marked_at: new Date().toISOString() }));
+      const rows = roster.map((r) => ({ session_id: s.id, enrollment_id: r.id, status: marks[r.id] ?? "present", marked_by: u.user?.id ?? null, marked_at: new Date().toISOString() }));
       const { error: aErr } = await supabase.from("attendance").upsert(rows, { onConflict: "session_id,enrollment_id" });
       if (aErr) throw aErr;
       const course = courseTitle(batch.course_id);
