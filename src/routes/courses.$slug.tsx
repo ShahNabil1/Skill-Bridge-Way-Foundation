@@ -21,12 +21,24 @@ export const Route = createFileRoute("/courses/$slug")({ staticData: { sitemap: 
   head: ({ params, loaderData: c }) => {
     const name = c?.title ?? params.slug.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
     const desc = (c?.summary || plainText(c?.description) || `Free ${name} course by Skill Bridgeway Foundation — details, duration and free admission.`).slice(0, 160);
-    return seo(`${name} | Skill Bridgeway Foundation`, desc, {
+    const base = seo(`${name} | Skill Bridgeway Foundation`, desc, {
       path: `/courses/${params.slug}`,
       image: mediaUrl(c?.cover_image_key),
       type: "article",
       noindex: c === null || params.slug.startsWith("demo-"),
     });
+    if (!c) return base;
+    const image = mediaUrl(c.cover_image_key);
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      name: c.title,
+      description: desc,
+      url: `https://skillbridgeway.org/courses/${params.slug}`,
+      ...(image ? { image } : {}),
+      provider: { "@type": "Organization", name: "Skill Bridgeway Foundation", sameAs: "https://skillbridgeway.org" },
+    };
+    return { ...base, scripts: [{ type: "application/ld+json", children: JSON.stringify(jsonLd) }] };
   },
   component: CourseDetails,
 });
