@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Rebuild Notices & Events with optional cover pictures, full-page rich-text New/Edit, previews, public detail pages, and category filters (public verified; admin editing needs a signed-in test session)
 - [x] Add Partner With Us / Sponsor Us page from client copy and link it in public navigation
 - [x] Connect Supabase project (already connected)
 - [x] Phase 1 — Global setup, routing, database schema

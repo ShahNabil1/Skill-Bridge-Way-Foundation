@@ -32,3 +32,4 @@
 - Admin activity logs load through `ActivityFeed` (latest 10, then 20 per "See more"); student actions log via `log_student_activity`; why: avoids loading whole logs at once.
 - Courses edit on a full page (`/admin/courses/$id`, `new` for create); descriptions are TipTap HTML rendered via `RichContent` with shared `.rich-content` styles and deterministic `sanitizeHtml`; why: editor preview and public page look identical and SSR matches hydration.
 - Course images live in `courses.image_keys` (1–5, ordered; first mirrored to `cover_image_key`), cropped in-browser to 16:9; the apply window (`apply_start/apply_end`) is enforced by a DB insert trigger as well as the UI; why: old cards keep working and closed intakes can't be bypassed.
+- Notices use a full-page admin editor with a single optional R2 cover image and shared rich-text rendering on preview/public detail pages; why: editorial formatting stays consistent while publication remains controlled by existing RLS.

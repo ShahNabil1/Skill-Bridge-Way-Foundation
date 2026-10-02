@@ -24,6 +24,8 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as ApplicationTokenRouteImport } from './routes/application.$token'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
+import { Route as NoticesIndexRouteImport } from './routes/notices.index'
+import { Route as NoticesSlugRouteImport } from './routes/notices.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAdmissionsRouteImport } from './routes/_authenticated/admin.admissions'
 import { Route as AuthenticatedAdminAttendanceRouteImport } from './routes/_authenticated/admin.attendance'
@@ -35,6 +37,8 @@ import { Route as AuthenticatedAdminApplicationsIndexRouteImport } from './route
 import { Route as AuthenticatedAdminApplicationsIdRouteImport } from './routes/_authenticated/admin.applications.$id'
 import { Route as AuthenticatedAdminCoursesIndexRouteImport } from './routes/_authenticated/admin.courses.index'
 import { Route as AuthenticatedAdminCoursesIdRouteImport } from './routes/_authenticated/admin.courses.$id'
+import { Route as AuthenticatedAdminNoticesIndexRouteImport } from './routes/_authenticated/admin.notices.index'
+import { Route as AuthenticatedAdminNoticesIdRouteImport } from './routes/_authenticated/admin.notices.$id'
 import { Route as AuthenticatedAdminStudentsIndexRouteImport } from './routes/_authenticated/admin.students.index'
 import { Route as AuthenticatedAdminStudentsIdRouteImport } from './routes/_authenticated/admin.students.$id'
 
@@ -112,6 +116,16 @@ const CoursesSlugRoute = CoursesSlugRouteImport.update({
   path: '/courses/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NoticesIndexRoute = NoticesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => NoticesRoute,
+} as any)
+const NoticesSlugRoute = NoticesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => NoticesRoute,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -176,6 +190,18 @@ const AuthenticatedAdminCoursesIdRoute =
     path: '/courses/$id',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminNoticesIndexRoute =
+  AuthenticatedAdminNoticesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminNoticesRoute,
+  } as any)
+const AuthenticatedAdminNoticesIdRoute =
+  AuthenticatedAdminNoticesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminNoticesRoute,
+  } as any)
 const AuthenticatedAdminStudentsIndexRoute =
   AuthenticatedAdminStudentsIndexRouteImport.update({
     id: '/students/',
@@ -196,26 +222,30 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
-  '/notices': typeof NoticesRoute
+  '/notices': typeof NoticesRouteWithChildren
   '/partner': typeof PartnerRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/verify': typeof VerifyRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/application/$token': typeof ApplicationTokenRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/notices/$slug': typeof NoticesSlugRoute
   '/courses/': typeof CoursesIndexRoute
+  '/notices/': typeof NoticesIndexRoute
   '/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
-  '/admin/notices': typeof AuthenticatedAdminNoticesRoute
+  '/admin/notices': typeof AuthenticatedAdminNoticesRouteWithChildren
   '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/applications/$id': typeof AuthenticatedAdminApplicationsIdRoute
   '/admin/courses/$id': typeof AuthenticatedAdminCoursesIdRoute
+  '/admin/notices/$id': typeof AuthenticatedAdminNoticesIdRoute
   '/admin/students/$id': typeof AuthenticatedAdminStudentsIdRoute
   '/admin/applications/': typeof AuthenticatedAdminApplicationsIndexRoute
   '/admin/courses/': typeof AuthenticatedAdminCoursesIndexRoute
+  '/admin/notices/': typeof AuthenticatedAdminNoticesIndexRoute
   '/admin/students/': typeof AuthenticatedAdminStudentsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -225,25 +255,27 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
-  '/notices': typeof NoticesRoute
   '/partner': typeof PartnerRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/verify': typeof VerifyRoute
   '/application/$token': typeof ApplicationTokenRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/notices/$slug': typeof NoticesSlugRoute
   '/courses': typeof CoursesIndexRoute
+  '/notices': typeof NoticesIndexRoute
   '/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
-  '/admin/notices': typeof AuthenticatedAdminNoticesRoute
   '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/applications/$id': typeof AuthenticatedAdminApplicationsIdRoute
   '/admin/courses/$id': typeof AuthenticatedAdminCoursesIdRoute
+  '/admin/notices/$id': typeof AuthenticatedAdminNoticesIdRoute
   '/admin/students/$id': typeof AuthenticatedAdminStudentsIdRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsIndexRoute
   '/admin/courses': typeof AuthenticatedAdminCoursesIndexRoute
+  '/admin/notices': typeof AuthenticatedAdminNoticesIndexRoute
   '/admin/students': typeof AuthenticatedAdminStudentsIndexRoute
 }
 export interface FileRoutesById {
@@ -255,26 +287,30 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
-  '/notices': typeof NoticesRoute
+  '/notices': typeof NoticesRouteWithChildren
   '/partner': typeof PartnerRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/verify': typeof VerifyRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/application/$token': typeof ApplicationTokenRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/notices/$slug': typeof NoticesSlugRoute
   '/courses/': typeof CoursesIndexRoute
+  '/notices/': typeof NoticesIndexRoute
   '/_authenticated/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/_authenticated/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/_authenticated/admin/gallery': typeof AuthenticatedAdminGalleryRoute
-  '/_authenticated/admin/notices': typeof AuthenticatedAdminNoticesRoute
+  '/_authenticated/admin/notices': typeof AuthenticatedAdminNoticesRouteWithChildren
   '/_authenticated/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/applications/$id': typeof AuthenticatedAdminApplicationsIdRoute
   '/_authenticated/admin/courses/$id': typeof AuthenticatedAdminCoursesIdRoute
+  '/_authenticated/admin/notices/$id': typeof AuthenticatedAdminNoticesIdRoute
   '/_authenticated/admin/students/$id': typeof AuthenticatedAdminStudentsIdRoute
   '/_authenticated/admin/applications/': typeof AuthenticatedAdminApplicationsIndexRoute
   '/_authenticated/admin/courses/': typeof AuthenticatedAdminCoursesIndexRoute
+  '/_authenticated/admin/notices/': typeof AuthenticatedAdminNoticesIndexRoute
   '/_authenticated/admin/students/': typeof AuthenticatedAdminStudentsIndexRoute
 }
 export interface FileRouteTypes {
@@ -293,7 +329,9 @@ export interface FileRouteTypes {
     | '/admin'
     | '/application/$token'
     | '/courses/$slug'
+    | '/notices/$slug'
     | '/courses/'
+    | '/notices/'
     | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/gallery'
@@ -303,9 +341,11 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/admin/applications/$id'
     | '/admin/courses/$id'
+    | '/admin/notices/$id'
     | '/admin/students/$id'
     | '/admin/applications/'
     | '/admin/courses/'
+    | '/admin/notices/'
     | '/admin/students/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -315,25 +355,27 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/gallery'
-    | '/notices'
     | '/partner'
     | '/sitemap.xml'
     | '/verify'
     | '/application/$token'
     | '/courses/$slug'
+    | '/notices/$slug'
     | '/courses'
+    | '/notices'
     | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/gallery'
-    | '/admin/notices'
     | '/admin/profile'
     | '/admin/users'
     | '/admin'
     | '/admin/applications/$id'
     | '/admin/courses/$id'
+    | '/admin/notices/$id'
     | '/admin/students/$id'
     | '/admin/applications'
     | '/admin/courses'
+    | '/admin/notices'
     | '/admin/students'
   id:
     | '__root__'
@@ -351,7 +393,9 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/application/$token'
     | '/courses/$slug'
+    | '/notices/$slug'
     | '/courses/'
+    | '/notices/'
     | '/_authenticated/admin/admissions'
     | '/_authenticated/admin/attendance'
     | '/_authenticated/admin/gallery'
@@ -361,9 +405,11 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/'
     | '/_authenticated/admin/applications/$id'
     | '/_authenticated/admin/courses/$id'
+    | '/_authenticated/admin/notices/$id'
     | '/_authenticated/admin/students/$id'
     | '/_authenticated/admin/applications/'
     | '/_authenticated/admin/courses/'
+    | '/_authenticated/admin/notices/'
     | '/_authenticated/admin/students/'
   fileRoutesById: FileRoutesById
 }
@@ -375,7 +421,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   GalleryRoute: typeof GalleryRoute
-  NoticesRoute: typeof NoticesRoute
+  NoticesRoute: typeof NoticesRouteWithChildren
   PartnerRoute: typeof PartnerRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   VerifyRoute: typeof VerifyRoute
@@ -491,6 +537,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notices/': {
+      id: '/notices/'
+      path: '/'
+      fullPath: '/notices/'
+      preLoaderRoute: typeof NoticesIndexRouteImport
+      parentRoute: typeof NoticesRoute
+    }
+    '/notices/$slug': {
+      id: '/notices/$slug'
+      path: '/$slug'
+      fullPath: '/notices/$slug'
+      preLoaderRoute: typeof NoticesSlugRouteImport
+      parentRoute: typeof NoticesRoute
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/'
@@ -568,6 +628,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCoursesIdRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/notices/': {
+      id: '/_authenticated/admin/notices/'
+      path: '/'
+      fullPath: '/admin/notices/'
+      preLoaderRoute: typeof AuthenticatedAdminNoticesIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminNoticesRoute
+    }
+    '/_authenticated/admin/notices/$id': {
+      id: '/_authenticated/admin/notices/$id'
+      path: '/$id'
+      fullPath: '/admin/notices/$id'
+      preLoaderRoute: typeof AuthenticatedAdminNoticesIdRouteImport
+      parentRoute: typeof AuthenticatedAdminNoticesRoute
+    }
     '/_authenticated/admin/students/': {
       id: '/_authenticated/admin/students/'
       path: '/students'
@@ -585,11 +659,27 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminNoticesRouteChildren {
+  AuthenticatedAdminNoticesIdRoute: typeof AuthenticatedAdminNoticesIdRoute
+  AuthenticatedAdminNoticesIndexRoute: typeof AuthenticatedAdminNoticesIndexRoute
+}
+
+const AuthenticatedAdminNoticesRouteChildren: AuthenticatedAdminNoticesRouteChildren =
+  {
+    AuthenticatedAdminNoticesIdRoute: AuthenticatedAdminNoticesIdRoute,
+    AuthenticatedAdminNoticesIndexRoute: AuthenticatedAdminNoticesIndexRoute,
+  }
+
+const AuthenticatedAdminNoticesRouteWithChildren =
+  AuthenticatedAdminNoticesRoute._addFileChildren(
+    AuthenticatedAdminNoticesRouteChildren,
+  )
+
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAdmissionsRoute: typeof AuthenticatedAdminAdmissionsRoute
   AuthenticatedAdminAttendanceRoute: typeof AuthenticatedAdminAttendanceRoute
   AuthenticatedAdminGalleryRoute: typeof AuthenticatedAdminGalleryRoute
-  AuthenticatedAdminNoticesRoute: typeof AuthenticatedAdminNoticesRoute
+  AuthenticatedAdminNoticesRoute: typeof AuthenticatedAdminNoticesRouteWithChildren
   AuthenticatedAdminProfileRoute: typeof AuthenticatedAdminProfileRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -605,7 +695,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAdmissionsRoute: AuthenticatedAdminAdmissionsRoute,
   AuthenticatedAdminAttendanceRoute: AuthenticatedAdminAttendanceRoute,
   AuthenticatedAdminGalleryRoute: AuthenticatedAdminGalleryRoute,
-  AuthenticatedAdminNoticesRoute: AuthenticatedAdminNoticesRoute,
+  AuthenticatedAdminNoticesRoute: AuthenticatedAdminNoticesRouteWithChildren,
   AuthenticatedAdminProfileRoute: AuthenticatedAdminProfileRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
@@ -632,6 +722,19 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface NoticesRouteChildren {
+  NoticesSlugRoute: typeof NoticesSlugRoute
+  NoticesIndexRoute: typeof NoticesIndexRoute
+}
+
+const NoticesRouteChildren: NoticesRouteChildren = {
+  NoticesSlugRoute: NoticesSlugRoute,
+  NoticesIndexRoute: NoticesIndexRoute,
+}
+
+const NoticesRouteWithChildren =
+  NoticesRoute._addFileChildren(NoticesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -640,7 +743,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   GalleryRoute: GalleryRoute,
-  NoticesRoute: NoticesRoute,
+  NoticesRoute: NoticesRouteWithChildren,
   PartnerRoute: PartnerRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   VerifyRoute: VerifyRoute,

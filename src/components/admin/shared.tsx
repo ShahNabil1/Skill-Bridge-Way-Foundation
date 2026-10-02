@@ -47,7 +47,7 @@ export function PageTitle({ title, children }: { title: string; children?: React
 /** Uploads an image straight to R2 via a presigned URL and returns its object key. */
 export function useMediaUpload() {
   const sign = useServerFn(createMediaUploadUrl);
-  return async (file: File, folder: "avatars" | "courses" | "gallery") => {
+  return async (file: File, folder: "avatars" | "courses" | "gallery" | "notices") => {
     if (!(IMAGE_TYPES as readonly string[]).includes(file.type)) throw new Error("Use a JPG, PNG or WebP image");
     if (file.size > MAX_DOC_BYTES) throw new Error("Image must be under 5 MB");
     const { uploadUrl, key } = await sign({

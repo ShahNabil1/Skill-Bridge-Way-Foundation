@@ -510,33 +510,39 @@ export type Database = {
       notices: {
         Row: {
           body: string | null
+          cover_image_key: string | null
           created_at: string
           event_date: string | null
           id: string
           is_published: boolean
           slug: string
+          summary: string | null
           title: string
           type: Database["public"]["Enums"]["notice_type"]
           updated_at: string
         }
         Insert: {
           body?: string | null
+          cover_image_key?: string | null
           created_at?: string
           event_date?: string | null
           id?: string
           is_published?: boolean
           slug: string
+          summary?: string | null
           title: string
           type?: Database["public"]["Enums"]["notice_type"]
           updated_at?: string
         }
         Update: {
           body?: string | null
+          cover_image_key?: string | null
           created_at?: string
           event_date?: string | null
           id?: string
           is_published?: boolean
           slug?: string
+          summary?: string | null
           title?: string
           type?: Database["public"]["Enums"]["notice_type"]
           updated_at?: string

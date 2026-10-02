@@ -29,7 +29,7 @@ function Btn({ on, active, label, children, disabled }: { on: () => void; active
     className={`flex h-8 min-w-8 items-center justify-center rounded px-1.5 text-sm transition disabled:opacity-40 ${active ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-muted"}`}>{children}</button>;
 }
 
-function Toolbar({ editor }: { editor: Editor }) {
+function Toolbar({ editor, folder }: { editor: Editor; folder: "courses" | "notices" }) {
   const upload = useMediaUpload();
   const file = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
@@ -76,7 +76,7 @@ function Toolbar({ editor }: { editor: Editor }) {
       <input ref={file} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={async (e) => {
         const f = e.target.files?.[0]; e.target.value = ""; if (!f) return;
         setBusy(true);
-        try { const key = await upload(f, "courses"); c().setImage({ src: cdnUrl(key)!, alt: f.name.replace(/\.[^.]+$/, "") }).run(); } catch (err) { toast.error((err as Error).message); }
+        try { const key = await upload(f, folder); const src = cdnUrl(key); if (src) c().setImage({ src, alt: f.name.replace(/\.[^.]+$/, "") }).run(); } catch (err) { toast.error((err as Error).message); }
         setBusy(false);
       }} />
       <Btn label="Insert table" on={() => c().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}><Table2 className="h-4 w-4" /></Btn>
@@ -91,7 +91,7 @@ function Toolbar({ editor }: { editor: Editor }) {
   );
 }
 
-export function RichTextEditor({ value, onChange }: { value: string; onChange: (html: string) => void }) {
+export function RichTextEditor({ value, onChange, folder = "courses" }: { value: string; onChange: (html: string) => void; folder?: "courses" | "notices" }) {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -101,7 +101,7 @@ export function RichTextEditor({ value, onChange }: { value: string; onChange: (
       Link.configure({ openOnClick: false, HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" } }),
       Image.configure({ HTMLAttributes: { loading: "lazy" } }),
       Table.configure({ resizable: true }), TableRow, TableHeader, TableCell,
-      Placeholder.configure({ placeholder: "Write the full course description…" }),
+      Placeholder.configure({ placeholder: folder === "notices" ? "Write the full notice or event details…" : "Write the full course description…" }),
     ],
     content: descriptionHtml(value),
     editorProps: { attributes: { class: "rich-content min-h-[320px] px-5 py-4 focus:outline-none" } },
@@ -113,5 +113,5 @@ export function RichTextEditor({ value, onChange }: { value: string; onChange: (
     if (editor.getHTML() !== next) editor.commands.setContent(next, false);
   }, [editor, value]);
   if (!editor) return <div className="h-80 animate-pulse rounded-xl border border-border bg-muted/30" />;
-  return <div className="overflow-hidden rounded-xl border border-input bg-background"><Toolbar editor={editor} /><EditorContent editor={editor} /></div>;
+  return <div className="overflow-hidden rounded-xl border border-input bg-background"><Toolbar editor={editor} folder={folder} /><EditorContent editor={editor} /></div>;
 }

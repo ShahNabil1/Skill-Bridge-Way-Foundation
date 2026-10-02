@@ -1,0 +1,1 @@
+ALTER TABLE public.notices ADD COLUMN cover_image_key text, ADD COLUMN summary text;
