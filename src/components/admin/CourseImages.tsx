@@ -33,7 +33,7 @@ function Thumb({ k, i, onRemove }: { k: string; i: number; onRemove: () => void 
   </div>;
 }
 
-export function CourseImages({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
+export function CourseImages({ value, onChange, folder = "courses", max = MAX_COURSE_IMAGES }: { value: string[]; onChange: (v: string[]) => void; folder?: "courses" | "notices"; max?: number }) {
   const upload = useMediaUpload();
   const [queue, setQueue] = useState<File[]>([]);
   const [url, setUrl] = useState<string | null>(null);
@@ -43,7 +43,7 @@ export function CourseImages({ value, onChange }: { value: string[]; onChange: (
   const [busy, setBusy] = useState(false);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   useEffect(() => { const f = queue[0]; if (!f) { setUrl(null); return; } const u = URL.createObjectURL(f); setUrl(u); setPos({ x: 0, y: 0 }); setZoom(1); setArea(null); return () => URL.revokeObjectURL(u); }, [queue]);
-  const left = MAX_COURSE_IMAGES - value.length;
+  const left = max - value.length;
 
   function onDragEnd(e: DragEndEvent) {
     if (!e.over || e.active.id === e.over.id) return;
@@ -52,13 +52,13 @@ export function CourseImages({ value, onChange }: { value: string[]; onChange: (
   async function save() {
     if (!url || !area) return;
     setBusy(true);
-    try { const key = await upload(await crop(url, area), "courses"); onChange([...value, key]); setQueue((q) => q.slice(1)); }
+    try { const key = await upload(await crop(url, area), folder); onChange([...value, key]); setQueue((q) => q.slice(1)); }
     catch (err) { toast.error((err as Error).message); }
     setBusy(false);
   }
 
   return <div className="space-y-3">
-    <p className="text-xs text-muted-foreground">Recommended: <b className="text-foreground">16:9, 1600 × 900 px</b> (JPG/PNG/WebP, under 5 MB). This ratio stays sharp on phones, laptops and large screens and matches social share previews. You'll crop each image after choosing it. Drag to reorder — the first image is the cover. {value.length}/{MAX_COURSE_IMAGES} used, at least 1 required.</p>
+    <p className="text-xs text-muted-foreground">Recommended: <b className="text-foreground">16:9, 1600 × 900 px</b> (JPG/PNG/WebP, under 5 MB). You'll crop each image after choosing it. {max > 1 ? "Drag to reorder — the first image is the cover. " : ""}{value.length}/{max} used{folder === "courses" ? ", at least 1 required" : ", optional"}.</p>
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
       <SortableContext items={value} strategy={rectSortingStrategy}>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
