@@ -38,8 +38,7 @@ const empty: AdmissionForm = {
   course_id: "", motivation: "",
 };
 type Errors = Partial<Record<keyof AdmissionForm | DocSlot, string>>;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _unused = "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring [&>option]:bg-popover";
+const selectCls = "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring [&>option]:bg-popover";
 
 function Admission() {
   const { course: requestedCourse } = Route.useSearch();
