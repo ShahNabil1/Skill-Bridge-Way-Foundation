@@ -96,14 +96,18 @@ export async function generateApplicationPdf(a: ApplicationRecord, viewUrl?: str
     page.drawRectangle({ x: M, y: y - 6, width: 3, height: 16, color: CYAN });
     page.drawText(title.toUpperCase(), { x: M + 10, y: y - 2, size: 10.5, font: head, color: NAVY });
     y -= 22;
+    const labelX = M + 10;
+    const valueX = M + 160;
+    const rightX = W - M;
     for (const [k, v] of rows) {
-      const lines = wrap(clean(v), body, 10, W - 2 * M - 150);
-      ensure(lines.length * 14 + 8);
-      page.drawText(k, { x: M + 10, y, size: 9, font: semi, color: MUTED });
-      lines.forEach((l, i) => page.drawText(l, { x: M + 160, y: y - i * 14, size: 10, font: body, color: INK }));
-      y -= lines.length * 14 + 6;
-      page.drawLine({ start: { x: M + 10, y: y + 2 }, end: { x: W - M, y: y + 2 }, thickness: 0.4, color: LINE });
-      y -= 6;
+      const labels = wrap(k, semi, 9, valueX - labelX - 12);
+      const values = wrap(clean(v), body, 10, rightX - valueX);
+      const rowHeight = Math.max(26, Math.max(labels.length, values.length) * 14 + 12);
+      ensure(rowHeight);
+      labels.forEach((line, i) => page.drawText(line, { x: labelX, y: y - i * 14, size: 9, font: semi, color: MUTED }));
+      values.forEach((line, i) => page.drawText(line, { x: valueX, y: y - i * 14, size: 10, font: body, color: INK }));
+      y -= rowHeight;
+      page.drawLine({ start: { x: labelX, y: y + 7 }, end: { x: rightX, y: y + 7 }, thickness: 0.4, color: LINE });
     }
     y -= 8;
   };
