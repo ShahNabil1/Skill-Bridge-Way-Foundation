@@ -17,7 +17,7 @@ import { ApplicantAvatar, DocumentGrid, StatusBadge } from "@/components/admissi
 import { FIELD_LABELS, composeAddress, copyText, docLabel, docsOf, refOf, type AppDoc, type ApplicationRecord } from "@/lib/application";
 import { DOC_SLOTS } from "@/lib/admission-schema";
 import { ALLOWED_DOC_TYPES, MAX_DOC_BYTES, createAdmissionUploadUrl } from "@/lib/r2.functions";
-import { sendApprovalEmail } from "@/lib/email.functions";
+import { sendApprovalEmail, sendRejectionEmail } from "@/lib/email.functions";
 import { seo } from "@/components/site/PageHero";
 
 export const Route = createFileRoute("/_authenticated/admin/applications/$id")({ staticData: { sitemap: false },
@@ -44,6 +44,7 @@ function Review() {
   const [busy, setBusy] = useState<string | null>(null);
   const getUploadUrl = useServerFn(createAdmissionUploadUrl);
   const notifyApproved = useServerFn(sendApprovalEmail);
+  const notifyRejected = useServerFn(sendRejectionEmail);
   const logged = useRef(false);
 
   const { data: app, isLoading } = useQuery({
@@ -142,6 +143,7 @@ function Review() {
     setBusy(null);
     if (error) { toast.error(error.message); return; }
     toast.success("Application rejected");
+    notifyRejected({ data: { admissionId: id } }).catch(() => {});
     log("rejected", { note: rejectNote.trim().slice(0, 300) });
     refresh();
   }
