@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Add Partner With Us / Sponsor Us page from client copy and link it in public navigation
 - [x] Connect Supabase project (already connected)
 - [x] Phase 1 — Global setup, routing, database schema
 - [x] Phase 2 — Public website
