@@ -24,17 +24,25 @@ function highlight(label: string, value: string) {
 <div style="display:inline-block;margin-top:8px;background:#0A192F;border:1px solid #00A8FF;border-radius:10px;padding:12px 22px;color:#00A8FF;font-size:22px;font-weight:800;letter-spacing:2px;font-family:'Courier New',monospace">${esc(value)}</div></div>`;
 }
 
+const appLink = (t: string) => `${SITE}/application/${encodeURIComponent(t)}`;
+const viewApp = (t: string) => ({ label: "View Your Application", href: appLink(t) });
+const linkLine = (t: string) => `<p style="font-size:13px;color:#8892b0">Your private application link (don't share it):<br><a href="${appLink(t)}" style="color:#00A8FF;word-break:break-all">${appLink(t)}</a></p>`;
+
 export const templates = {
-  received: (name: string, ref: string, course: string | null) => ({
+  received: (name: string, ref: string, course: string | null, token: string) => ({
     subject: "Application received — Skill Bridgeway Foundation",
     html: layout("Application Received",
-      `<p>Dear ${esc(name)},</p><p>Thank you for applying for free admission${course ? ` to <b style="color:#fff">${esc(course)}</b>` : ""}. Your application is now <b style="color:#fff">pending review</b>; our team will contact you soon.</p>${highlight("Your reference number", ref)}<p>Please keep this number for any enquiries.</p>`),
+      `<p>Dear ${esc(name)},</p><p>Thank you for applying for free admission${course ? ` to <b style="color:#fff">${esc(course)}</b>` : ""}. Your application is now <b style="color:#fff">pending review</b>; our team will contact you soon.</p>${highlight("Your reference number", ref)}<p>Please keep this number for any enquiries. You can view your full application, documents and PDF anytime:</p>${linkLine(token)}`, viewApp(token)),
   }),
-  approved: (name: string, studentCode: string, course: string | null) => ({
+  approved: (name: string, studentCode: string, course: string | null, token: string) => ({
     subject: `You're in! Your Student ID is ${studentCode}`,
     html: layout("Application Approved",
-      `<p>Dear ${esc(name)},</p><p>Congratulations! Your admission${course ? ` to <b style="color:#fff">${esc(course)}</b>` : ""} has been <b style="color:#fff">approved</b>. Welcome to Skill Bridgeway Foundation.</p>${highlight("Your unique Student ID", studentCode)}<p>Use this Student ID in all communication with us. We'll share class details shortly.</p>`,
-      { label: "Visit our website", href: SITE }),
+      `<p>Dear ${esc(name)},</p><p>Congratulations! Your admission${course ? ` to <b style="color:#fff">${esc(course)}</b>` : ""} has been <b style="color:#fff">approved</b>. Welcome to Skill Bridgeway Foundation.</p>${highlight("Your unique Student ID", studentCode)}<p>Use this Student ID in all communication with us. We'll share class details shortly.</p>${linkLine(token)}`, viewApp(token)),
+  }),
+  rejected: (name: string, ref: string, course: string | null, note: string | null, token: string) => ({
+    subject: "Update on your application — Skill Bridgeway Foundation",
+    html: layout("Application Update",
+      `<p>Dear ${esc(name)},</p><p>Thank you for your interest${course ? ` in <b style="color:#fff">${esc(course)}</b>` : ""}. After careful review, we are unable to accept your application at this time.</p>${highlight("Reference number", ref)}${note ? `<p><b style="color:#fff">Note from our team:</b> ${esc(note)}</p>` : ""}<p>You are welcome to apply again for this or another course in the future.</p>${linkLine(token)}`, viewApp(token)),
   }),
   certificate: (name: string, course: string | null, serial: string) => {
     const link = `${SITE}/verify?serial=${encodeURIComponent(serial)}`;
@@ -47,7 +55,7 @@ export const templates = {
   },
 };
 
-export async function sendEmail(to: string, msg: { subject: string; html: string }) {
+export async function sendEmail(to: string, msg: { subject: string; html: string }, from: string = FROM) {
   const key = process.env["RESEND_API_KEY"];
   if (!key) {
     console.error("RESEND_API_KEY is not configured; email skipped");
@@ -56,7 +64,7 @@ export async function sendEmail(to: string, msg: { subject: string; html: string
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM, to: [to], subject: msg.subject, html: msg.html }),
+    body: JSON.stringify({ from, to: [to], subject: msg.subject, html: msg.html }),
   });
   if (!res.ok) {
     console.error(`Resend failed [${res.status}]: ${await res.text()}`);

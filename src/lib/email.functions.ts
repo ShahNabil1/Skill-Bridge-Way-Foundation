@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+const ADMISSION_FROM = "Skill Bridgeway Admissions <admission@skillbridgeway.org>";
+
 const idInput = (k: string) => z.object({ [k]: z.string().uuid() });
 
 /** Public: emails the applicant only for a just-created pending application (address comes from the DB, never the caller). */
@@ -12,7 +14,7 @@ export const sendAdmissionReceivedEmail = createServerFn({ method: "POST" })
     const since = new Date(Date.now() - 10 * 60 * 1000).toISOString();
     const { data: a } = await supabaseAdmin
       .from("admissions")
-      .select("id, full_name, email, status, created_at, courses(title)")
+      .select("id, full_name, email, status, created_at, access_token, courses(title)")
       .eq("id", data.admissionId)
       .eq("status", "pending")
       .gte("created_at", since)
@@ -20,7 +22,7 @@ export const sendAdmissionReceivedEmail = createServerFn({ method: "POST" })
     if (!a) return { sent: false };
     const { sendEmail, templates } = await import("./email.server");
     const course = (a.courses as { title: string } | null)?.title ?? null;
-    return sendEmail(a.email, templates.received(a.full_name, `SBF-APP-${a.id.slice(0, 8).toUpperCase()}`, course));
+    return sendEmail(a.email, templates.received(a.full_name, `SBF-APP-${a.id.slice(0, 8).toUpperCase()}`, course, a.access_token), ADMISSION_FROM);
   });
 
 async function assertAdmin(ctx: { supabase: any; userId: string }) {
@@ -35,14 +37,29 @@ export const sendApprovalEmail = createServerFn({ method: "POST" })
     await assertAdmin(context);
     const { data: a } = await context.supabase
       .from("admissions")
-      .select("full_name, email, status, courses(title), students(student_code)")
+      .select("full_name, email, status, access_token, courses(title), students(student_code)")
       .eq("id", data.admissionId)
       .maybeSingle();
     const st = a?.students as { student_code: string } | { student_code: string }[] | null | undefined;
     const code = Array.isArray(st) ? st[0]?.student_code : st?.student_code;
     if (!a || a.status !== "approved" || !code) return { sent: false };
     const { sendEmail, templates } = await import("./email.server");
-    return sendEmail(a.email, templates.approved(a.full_name, code, (a.courses as { title: string } | null)?.title ?? null));
+    return sendEmail(a.email, templates.approved(a.full_name, code, (a.courses as { title: string } | null)?.title ?? null, a.access_token), ADMISSION_FROM);
+  });
+
+export const sendRejectionEmail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => idInput("admissionId").parse(d) as { admissionId: string })
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { data: a } = await context.supabase
+      .from("admissions")
+      .select("id, full_name, email, status, review_note, access_token, courses(title)")
+      .eq("id", data.admissionId)
+      .maybeSingle();
+    if (!a || a.status !== "rejected") return { sent: false };
+    const { sendEmail, templates } = await import("./email.server");
+    return sendEmail(a.email, templates.rejected(a.full_name, `SBF-APP-${a.id.slice(0, 8).toUpperCase()}`, (a.courses as { title: string } | null)?.title ?? null, a.review_note, a.access_token), ADMISSION_FROM);
   });
 
 export const sendCertificateEmail = createServerFn({ method: "POST" })
