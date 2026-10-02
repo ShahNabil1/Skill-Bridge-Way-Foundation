@@ -24,12 +24,27 @@ export function sanitizeHtml(html: string) {
     .replace(/(href|src)\s*=\s*("|')\s*(javascript|vbscript|data:text)[^"']*\2/gi, '$1="#"');
 }
 
-/** Old plain-text descriptions become paragraphs; rich HTML is sanitized. */
+/** Old plain-text descriptions become paragraphs; legacy bullet lines become real lists in both editor and site. */
 export function descriptionHtml(d?: string | null) {
   if (!d) return "";
-  if (/<[a-z][\s\S]*>/i.test(d)) return sanitizeHtml(d);
-  const esc = d.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  return esc.split(/\n{2,}/).map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+  const html = /<[a-z][\s\S]*>/i.test(d)
+    ? sanitizeHtml(d)
+    : d.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .split(/\n{2,}/).map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+  return html.replace(/<p>([\s\S]*?)<\/p>/gi, (whole, body: string) => {
+    if (!/(?:^|<br\s*\/?\s*>|\n)\s*•\s*/i.test(body)) return whole;
+    const lines = body.split(/<br\s*\/?\s*>|\n/i);
+    const parts: string[] = [];
+    let items: string[] = [];
+    const flush = () => { if (items.length) { parts.push(`<ul>${items.join("")}</ul>`); items = []; } };
+    for (const line of lines) {
+      const bullet = line.trim().match(/^•\s*(.*)$/);
+      if (bullet) items.push(`<li>${bullet[1]}</li>`);
+      else { flush(); if (line.trim()) parts.push(`<p>${line.trim()}</p>`); }
+    }
+    flush();
+    return parts.join("");
+  });
 }
 
 export function plainText(html?: string | null) {
