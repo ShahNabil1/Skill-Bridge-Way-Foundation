@@ -37,6 +37,7 @@ export const submitAdmission = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("admissions").insert({ ...data.row, email: data.row.email.toLowerCase(), status: "pending" });
     if (error?.code === "23505") return { ok: false as const, error: "duplicate" as const };
+    if (error?.code === "P0001") return { ok: false as const, error: "closed" as const };
     if (error) { console.error(error.message); return { ok: false as const, error: "save" as const }; }
     return { ok: true as const };
   });
