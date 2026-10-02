@@ -27,7 +27,6 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminAdmissionsRouteImport } from './routes/_authenticated/admin.admissions'
 import { Route as AuthenticatedAdminAttendanceRouteImport } from './routes/_authenticated/admin.attendance'
 import { Route as AuthenticatedAdminGalleryRouteImport } from './routes/_authenticated/admin.gallery'
-import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authenticated/admin.messages'
 import { Route as AuthenticatedAdminNoticesRouteImport } from './routes/_authenticated/admin.notices'
 import { Route as AuthenticatedAdminProfileRouteImport } from './routes/_authenticated/admin.profile'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
@@ -130,12 +129,6 @@ const AuthenticatedAdminGalleryRoute =
     path: '/gallery',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminMessagesRoute =
-  AuthenticatedAdminMessagesRouteImport.update({
-    id: '/messages',
-    path: '/messages',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
 const AuthenticatedAdminNoticesRoute =
   AuthenticatedAdminNoticesRouteImport.update({
     id: '/notices',
@@ -207,7 +200,6 @@ export interface FileRoutesByFullPath {
   '/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
-  '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/notices': typeof AuthenticatedAdminNoticesRoute
   '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -235,7 +227,6 @@ export interface FileRoutesByTo {
   '/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
-  '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/notices': typeof AuthenticatedAdminNoticesRoute
   '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -266,7 +257,6 @@ export interface FileRoutesById {
   '/_authenticated/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/_authenticated/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/_authenticated/admin/gallery': typeof AuthenticatedAdminGalleryRoute
-  '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/_authenticated/admin/notices': typeof AuthenticatedAdminNoticesRoute
   '/_authenticated/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -297,7 +287,6 @@ export interface FileRouteTypes {
     | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/gallery'
-    | '/admin/messages'
     | '/admin/notices'
     | '/admin/profile'
     | '/admin/users'
@@ -325,7 +314,6 @@ export interface FileRouteTypes {
     | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/gallery'
-    | '/admin/messages'
     | '/admin/notices'
     | '/admin/profile'
     | '/admin/users'
@@ -355,7 +343,6 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/admissions'
     | '/_authenticated/admin/attendance'
     | '/_authenticated/admin/gallery'
-    | '/_authenticated/admin/messages'
     | '/_authenticated/admin/notices'
     | '/_authenticated/admin/profile'
     | '/_authenticated/admin/users'
@@ -512,13 +499,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminGalleryRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/messages': {
-      id: '/_authenticated/admin/messages'
-      path: '/messages'
-      fullPath: '/admin/messages'
-      preLoaderRoute: typeof AuthenticatedAdminMessagesRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
     '/_authenticated/admin/notices': {
       id: '/_authenticated/admin/notices'
       path: '/notices'
@@ -589,7 +569,6 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAdmissionsRoute: typeof AuthenticatedAdminAdmissionsRoute
   AuthenticatedAdminAttendanceRoute: typeof AuthenticatedAdminAttendanceRoute
   AuthenticatedAdminGalleryRoute: typeof AuthenticatedAdminGalleryRoute
-  AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
   AuthenticatedAdminNoticesRoute: typeof AuthenticatedAdminNoticesRoute
   AuthenticatedAdminProfileRoute: typeof AuthenticatedAdminProfileRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
@@ -606,7 +585,6 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAdmissionsRoute: AuthenticatedAdminAdmissionsRoute,
   AuthenticatedAdminAttendanceRoute: AuthenticatedAdminAttendanceRoute,
   AuthenticatedAdminGalleryRoute: AuthenticatedAdminGalleryRoute,
-  AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
   AuthenticatedAdminNoticesRoute: AuthenticatedAdminNoticesRoute,
   AuthenticatedAdminProfileRoute: AuthenticatedAdminProfileRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
