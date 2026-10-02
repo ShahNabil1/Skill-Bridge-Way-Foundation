@@ -139,6 +139,7 @@ function Admission() {
       } } });
       if (!res.ok && res.error === "captcha") { setCaptchaReset((n) => n + 1); throw new Error("Security check failed. Please complete the check again."); }
       if (!res.ok && res.error === "duplicate") throw new Error("You have already applied for this course with this email or phone number. Please check your email for your reference number.");
+      if (!res.ok && res.error === "closed") throw new Error("Applications for this course are not open right now.");
       if (!res.ok) throw new Error("Could not save your application");
       sendReceived({ data: { admissionId } }).catch(() => undefined);
       setReference({ ref: refOf(admissionId), token: accessToken });

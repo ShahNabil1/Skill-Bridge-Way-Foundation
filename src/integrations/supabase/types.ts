@@ -371,14 +371,40 @@ export type Database = {
         }
         Relationships: []
       }
+      course_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
+          apply_end: string | null
+          apply_start: string | null
           category: string | null
           cover_image_key: string | null
           created_at: string
           description: string | null
           duration: string | null
+          duration_unit: string | null
+          duration_value: number | null
           id: string
+          image_keys: Json
           is_published: boolean
           level: string | null
           slug: string
@@ -386,14 +412,20 @@ export type Database = {
           summary: string | null
           title: string
           updated_at: string
+          video_url: string | null
         }
         Insert: {
+          apply_end?: string | null
+          apply_start?: string | null
           category?: string | null
           cover_image_key?: string | null
           created_at?: string
           description?: string | null
           duration?: string | null
+          duration_unit?: string | null
+          duration_value?: number | null
           id?: string
+          image_keys?: Json
           is_published?: boolean
           level?: string | null
           slug: string
@@ -401,14 +433,20 @@ export type Database = {
           summary?: string | null
           title: string
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
+          apply_end?: string | null
+          apply_start?: string | null
           category?: string | null
           cover_image_key?: string | null
           created_at?: string
           description?: string | null
           duration?: string | null
+          duration_unit?: string | null
+          duration_value?: number | null
           id?: string
+          image_keys?: Json
           is_published?: boolean
           level?: string | null
           slug?: string
@@ -416,6 +454,7 @@ export type Database = {
           summary?: string | null
           title?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }

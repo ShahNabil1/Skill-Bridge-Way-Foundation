@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { seo } from "@/components/site/PageHero";
 import { CourseCard, CardSkeletonGrid, EmptyState } from "@/components/site/ui-bits";
+import { CourseMedia, EnrollGate, RichContent } from "@/components/site/CourseMedia";
+import { durationLabel, imagesOf, plainText } from "@/lib/course-content";
 import { courseQuery, coursesQuery, isPreviewOnlyCourse, mediaUrl, TEST_ENROLLMENT_SLUG } from "@/lib/public-data";
 
 export const Route = createFileRoute("/courses/$slug")({ staticData: { sitemap: true },
@@ -18,7 +20,7 @@ export const Route = createFileRoute("/courses/$slug")({ staticData: { sitemap: 
   },
   head: ({ params, loaderData: c }) => {
     const name = c?.title ?? params.slug.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
-    const desc = (c?.summary || c?.description || `Free ${name} course by Skill Bridgeway Foundation — details, duration and free admission.`).slice(0, 160);
+    const desc = (c?.summary || plainText(c?.description) || `Free ${name} course by Skill Bridgeway Foundation — details, duration and free admission.`).slice(0, 160);
     return seo(`${name} | Skill Bridgeway Foundation`, desc, {
       path: `/courses/${params.slug}`,
       image: mediaUrl(c?.cover_image_key),
@@ -56,7 +58,6 @@ function CourseDetails() {
       </div>
     );
   }
-  const img = mediaUrl(c.cover_image_key);
   const previewOnly = isPreviewOnlyCourse(c.slug);
   const isTestCourse = c.slug === TEST_ENROLLMENT_SLUG;
   const otherCourses = (related.data ?? []).filter((course) => course.id !== c.id).slice(0, 3);
@@ -74,18 +75,18 @@ function CourseDetails() {
       </section>
       <section className="mx-auto grid max-w-7xl gap-10 px-4 py-14 lg:grid-cols-[1fr_340px]">
         <article className="min-w-0">
-          {img && <img src={img} alt={c.title} className="mb-8 aspect-video w-full rounded-xl border object-cover" />}
+          <CourseMedia images={imagesOf(c)} video={c.video_url} title={c.title} />
           <h2 className="section-title text-xl">Course overview</h2>
-          <div className="mt-4 whitespace-pre-line leading-relaxed text-muted-foreground">{c.description || "Full course details coming soon."}</div>
+          <RichContent html={c.description} className="mt-4" />
         </article>
         <aside className="glass h-fit space-y-4 rounded-xl p-6 lg:sticky lg:top-24">
           <p className="font-heading text-3xl font-extrabold text-primary">{previewOnly ? "PREVIEW" : "FREE"}</p>
           <ul className="space-y-3 text-sm text-muted-foreground">
             {c.category && <li className="flex gap-2"><Tag className="h-4 w-4 text-primary" />{c.category}</li>}
-            {c.duration && <li className="flex gap-2"><Clock className="h-4 w-4 text-primary" />{c.duration}</li>}
+            {durationLabel(c.duration_value, c.duration_unit, c.duration) && <li className="flex gap-2"><Clock className="h-4 w-4 text-primary" />{durationLabel(c.duration_value, c.duration_unit, c.duration)}</li>}
             {c.level && <li className="flex gap-2"><BarChart3 className="h-4 w-4 text-primary" />{c.level}</li>}
           </ul>
-           {previewOnly ? <p className="border-t pt-4 text-sm text-muted-foreground">Preview program only. Enrollment is not open for this sample course.</p> : <><Button asChild size="lg" className="w-full bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/admission" search={{ course: c.id }}>Free Admission</Link></Button>{isTestCourse && <p className="text-xs text-muted-foreground">Demo course · test applications only. Not a live training intake.</p>}</>}
+           {previewOnly ? <p className="border-t pt-4 text-sm text-muted-foreground">Preview program only. Enrollment is not open for this sample course.</p> : <><EnrollGate start={c.apply_start} end={c.apply_end}><Button asChild size="lg" className="w-full bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/admission" search={{ course: c.id }}>Free Admission</Link></Button></EnrollGate>{isTestCourse && <p className="text-xs text-muted-foreground">Demo course · test applications only. Not a live training intake.</p>}</>}
         </aside>
       </section>
       <section className="border-t bg-grid py-14">
