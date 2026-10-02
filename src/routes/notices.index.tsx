@@ -20,7 +20,7 @@ export const Route = createFileRoute("/notices/")({ staticData: { sitemap: true 
 
 function Notices() {
   const { type = "all" } = Route.useSearch();
-  const navigate = useNavigate({ from: "/notices" });
+  const navigate = useNavigate({ from: "/notices/" });
   const { data, isLoading, error } = useQuery(noticesQuery());
   const items = (data ?? []).filter((n) => type === "all" || n.type === type);
   return <>
