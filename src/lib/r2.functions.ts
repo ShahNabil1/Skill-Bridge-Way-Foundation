@@ -43,7 +43,7 @@ export const createAdmissionUploadUrl = createServerFn({ method: "POST" })
   );
 
 const mediaInput = z.object({
-  folder: z.enum(["avatars", "courses", "gallery", "certificates"]),
+  folder: z.enum(["avatars", "courses", "gallery", "notices", "certificates"]),
   fileName: z.string().min(1).max(200),
   contentType: z.enum(ALLOWED_DOC_TYPES),
   size: z.number().int().positive().max(MAX_DOC_BYTES),

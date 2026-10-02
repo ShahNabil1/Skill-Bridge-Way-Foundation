@@ -52,11 +52,24 @@ export const noticesQuery = (limit?: number) =>
     queryFn: async () => {
       let q = supabase
         .from("notices")
-        .select("id,title,slug,body,type,event_date,created_at")
+        .select("id,title,slug,summary,cover_image_key,type,event_date,created_at")
         .eq("is_published", true)
         .order("created_at", { ascending: false });
       if (limit) q = q.limit(limit);
       const { data, error } = await q;
+      if (error) throw error;
+      return data;
+    },
+  });
+
+export const noticeQuery = (slug: string) =>
+  queryOptions({
+    queryKey: ["notice", slug],
+    staleTime: 60_000,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("notices")
+        .select("id,title,slug,summary,body,cover_image_key,type,event_date,created_at,updated_at")
+        .eq("slug", slug).eq("is_published", true).maybeSingle();
       if (error) throw error;
       return data;
     },
