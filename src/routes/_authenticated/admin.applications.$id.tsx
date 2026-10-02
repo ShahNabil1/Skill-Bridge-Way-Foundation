@@ -110,7 +110,7 @@ function Review() {
       const docs = (draft.document_keys as AppDoc[]).filter((d) => d.type !== slot);
       patch({ document_keys: [...docs, { type: slot, key, name: file.name }] });
       toast.success(`${docLabel(slot)} replaced — click Update to save`);
-    } catch { toast.error("Upload failed"); return; } }
+    } catch { toast.error("Upload failed"); }
     setBusy(null);
   }
 
@@ -120,7 +120,7 @@ function Review() {
       const { downloadApplicationPdf } = await import("@/lib/application-pdf");
       await downloadApplicationPdf(app!, app!.access_token ? `${window.location.origin}/application/${app!.access_token}` : undefined);
       log("downloaded_pdf");
-    } catch { toast.error("Could not create the PDF"); return; } }
+    } catch { toast.error("Could not create the PDF"); }
     setBusy(null);
   }
 
