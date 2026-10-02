@@ -16,8 +16,6 @@ export const personalSchema = z.object({
   district: z.string().min(1, "Select your district"),
   upazila: z.string().min(1, "Select your upazila / thana"),
   address_line: z.string().trim().min(3, "Enter village / area, house & road").max(300),
-  post_office: z.string().trim().min(2, "Enter your post office").max(100),
-  postal_code: z.string().trim().regex(/^\d{4}$/, "Post code must be 4 digits"),
 });
 
 export const educationSchema = z.object({

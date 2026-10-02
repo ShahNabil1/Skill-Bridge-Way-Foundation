@@ -17,14 +17,13 @@ export const docLabel = (t?: string) => DOC_SLOTS.find((s) => s.id === t)?.label
 export const photoKey = (a: { document_keys: unknown }) => docsOf(a).find((d) => d.type === "photo" && /\.(jpe?g|png|webp)$/i.test(d.key ?? ""))?.key ?? null;
 
 export function composeAddress(a: Partial<ApplicationRecord>) {
-  const parts = [a.address_line, a.post_office && `Post Office: ${a.post_office}${a.postal_code ? ` - ${a.postal_code}` : ""}`, a.upazila, a.district, a.division].filter(Boolean);
+  const parts = [a.address_line, a.upazila, a.district, a.division].filter(Boolean);
   return parts.length ? parts.join(", ") : a.address ?? "";
 }
 
 export const FIELD_LABELS: Record<string, string> = {
   full_name: "Full name", email: "Email", phone: "Phone", date_of_birth: "Date of birth", gender: "Gender",
-  division: "Division", district: "District", upazila: "Upazila / Thana", address_line: "Village / Area, House & Road",
-  post_office: "Post office", postal_code: "Post code", education_level: "Education level", institution: "Institution",
+  division: "Division", district: "District", upazila: "Upazila / Thana", address_line: "Village / Area, House & Road", education_level: "Education level", institution: "Institution",
   education_board: "Board / University", education_group: "Group / Subject", education_result: "Result",
   passing_year: "Passing year", session: "Session", course_id: "Course", motivation: "Motivation", document_keys: "Documents",
 };

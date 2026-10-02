@@ -35,7 +35,7 @@ const STEPS = ["Personal", "Education", "Course", "Documents", "Review"] as cons
 const NO_COURSE = "undecided";
 const empty: AdmissionForm = {
   full_name: "", email: "", phone: "", date_of_birth: "", gender: "" as AdmissionForm["gender"],
-  division: "", district: "", upazila: "", address_line: "", post_office: "", postal_code: "",
+  division: "", district: "", upazila: "", address_line: "",
   education_level: "", institution: "", education_board: "", education_group: "", education_result: "", passing_year: "", session: "",
   course_id: "", motivation: "",
 };
@@ -122,7 +122,7 @@ function Admission() {
         id: admissionId,
         access_token: accessToken,
         division: form.division, district: form.district, upazila: form.upazila,
-        address_line: form.address_line.trim(), post_office: form.post_office.trim(), postal_code: form.postal_code,
+        address_line: form.address_line.trim(),
         education_board: form.education_board, education_group: form.education_group || null,
         education_result: form.education_result.trim() || null, passing_year: form.passing_year || null, session: form.session.trim() || null,
         full_name: form.full_name.trim(),
