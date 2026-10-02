@@ -1,4 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { Turnstile } from "@/components/auth/Turnstile";
+import { submitAdmission } from "@/lib/admission.functions";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -9,7 +11,6 @@ import { composeAddress, refOf } from "@/lib/application";
 import type { ZodType } from "zod";
 import { toast } from "sonner";
 import { Check, CheckCircle2, Copy, FileText, Loader2, Upload, X } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,6 +26,7 @@ import {
 
 export const Route = createFileRoute("/admission")({ staticData: { sitemap: true },
   validateSearch: (s: Record<string, unknown>): { course?: string } => typeof s["course"] === "string" ? { course: s["course"] } : {},
+  beforeLoad: ({ search }) => { if (!search.course) throw redirect({ to: "/courses", search: {} }); },
   head: () => seo("Free Admission | Skill Bridgeway Foundation", "Apply online for free admission to AI, freelancing and digital skills courses at Skill Bridgeway Foundation.", { path: "/admission" }),
   component: Admission,
 });
@@ -56,6 +58,9 @@ function Admission() {
   }, [requestedCourse]);
   const getUploadUrl = useServerFn(createAdmissionUploadUrl);
   const sendReceived = useServerFn(sendAdmissionReceivedEmail);
+  const save = useServerFn(submitAdmission);
+  const [captcha, setCaptcha] = useState<string | null>(null);
+  const [captchaReset, setCaptchaReset] = useState(0);
 
   const set = (k: keyof AdmissionForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -113,7 +118,7 @@ function Admission() {
       setProgress("Saving your application...");
       const tokenBytes = crypto.getRandomValues(new Uint8Array(9));
       const accessToken = btoa(String.fromCharCode(...tokenBytes)).replace(/\+/g, "-").replace(/\//g, "_");
-      const { error } = await supabase.from("admissions").insert({
+      const res = await save({ data: { captcha: captcha ?? "", row: {
         id: admissionId,
         access_token: accessToken,
         division: form.division, district: form.district, upazila: form.upazila,
@@ -131,14 +136,15 @@ function Admission() {
         course_id: form.course_id === NO_COURSE ? null : form.course_id,
         motivation: form.motivation.trim(),
         document_keys: documentKeys,
-        status: "pending",
-      });
-      if (error?.code === "23505") throw new Error("You have already applied for this course with this email or phone number. Please check your email for your reference number.");
-      if (error) throw new Error("Could not save your application");
+      } } });
+      if (!res.ok && res.error === "captcha") { setCaptchaReset((n) => n + 1); throw new Error("Security check failed. Please complete the check again."); }
+      if (!res.ok && res.error === "duplicate") throw new Error("You have already applied for this course with this email or phone number. Please check your email for your reference number.");
+      if (!res.ok) throw new Error("Could not save your application");
       sendReceived({ data: { admissionId } }).catch(() => undefined);
       setReference({ ref: refOf(admissionId), token: accessToken });
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
+      setCaptchaReset((n) => n + 1);
       toast.error(e instanceof Error ? e.message : "Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
@@ -252,9 +258,12 @@ function Admission() {
             {step < 4 ? (
               <Button onClick={next}>Continue</Button>
             ) : (
-              <Button disabled={submitting} onClick={submit} className="bg-highlight text-highlight-foreground hover:bg-highlight/90">
+              <div className="flex flex-col items-stretch gap-3 sm:items-end">
+              <Turnstile onToken={setCaptcha} resetKey={captchaReset} />
+              <Button disabled={submitting || !captcha} onClick={submit} className="bg-highlight text-highlight-foreground hover:bg-highlight/90">
                 {submitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />{progress || "Submitting..."}</> : "Submit application"}
               </Button>
+              </div>
             )}
           </div>
         </div>

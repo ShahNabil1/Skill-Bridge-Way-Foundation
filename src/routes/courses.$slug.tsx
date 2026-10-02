@@ -85,7 +85,7 @@ function CourseDetails() {
             {c.duration && <li className="flex gap-2"><Clock className="h-4 w-4 text-primary" />{c.duration}</li>}
             {c.level && <li className="flex gap-2"><BarChart3 className="h-4 w-4 text-primary" />{c.level}</li>}
           </ul>
-           {previewOnly ? <p className="border-t pt-4 text-sm text-muted-foreground">Preview program only. Enrollment is not open for this sample course.</p> : <><Button asChild size="lg" className="w-full bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/admission" search={isTestCourse ? { course: c.id } : {}}>Free Admission</Link></Button>{isTestCourse && <p className="text-xs text-muted-foreground">Demo course · test applications only. Not a live training intake.</p>}</>}
+           {previewOnly ? <p className="border-t pt-4 text-sm text-muted-foreground">Preview program only. Enrollment is not open for this sample course.</p> : <><Button asChild size="lg" className="w-full bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/admission" search={{ course: c.id }}>Free Admission</Link></Button>{isTestCourse && <p className="text-xs text-muted-foreground">Demo course · test applications only. Not a live training intake.</p>}</>}
         </aside>
       </section>
       <section className="border-t bg-grid py-14">

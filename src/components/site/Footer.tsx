@@ -38,7 +38,7 @@ export function Footer() {
         <div>
           <p className="section-title text-sm">Start learning</p>
           <p className="mt-4 text-sm text-muted-foreground">Admission is completely free.</p>
-          <Link to="/admission" search={{}} className="mt-4 inline-flex rounded-md bg-highlight px-4 py-2 text-sm font-semibold text-highlight-foreground hover:bg-highlight/90">
+          <Link to="/courses" search={{}} className="mt-4 inline-flex rounded-md bg-highlight px-4 py-2 text-sm font-semibold text-highlight-foreground hover:bg-highlight/90">
             Free Admission
           </Link>
         </div>

@@ -49,7 +49,7 @@ function Index() {
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-highlight text-highlight-foreground hover:bg-highlight/90">
-                 <Link to="/admission" search={{}}>Free Admission <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                 <Link to="/courses" search={{}}>Free Admission <ArrowRight className="ml-1 h-4 w-4" /></Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground">
                 <Link to="/courses">Explore courses</Link>
@@ -153,7 +153,7 @@ function Index() {
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-16 md:flex-row md:items-center md:justify-between">
           <h2 className="section-title text-2xl md:text-3xl">Ready to cross the <span className="text-highlight">bridge</span>?</h2>
           <Button asChild size="lg" className="bg-highlight text-highlight-foreground hover:bg-highlight/90">
-             <Link to="/admission" search={{}}>Free Admission</Link>
+             <Link to="/courses" search={{}}>Free Admission</Link>
           </Button>
         </div>
       </section>
