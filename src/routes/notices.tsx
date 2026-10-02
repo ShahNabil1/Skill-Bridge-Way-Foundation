@@ -1,15 +1,17 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarDays, Megaphone } from "lucide-react";
+import { CalendarDays, Megaphone, ArrowUpRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHero, seo } from "@/components/site/PageHero";
 import { EmptyState } from "@/components/site/ui-bits";
+import { cdnUrl } from "@/lib/cdn";
 import { formatDate, noticesQuery } from "@/lib/public-data";
 
 const TABS = [["all", "All"], ["notice", "Notices"], ["event", "Events"]] as const;
 
 export const Route = createFileRoute("/notices")({ staticData: { sitemap: true },
-  validateSearch: (s: Record<string, unknown>): { type?: "notice" | "event" | undefined } => ({
+  validateSearch: (s: Record<string, unknown>): { type?: "notice" | "event" } => ({
     type: s["type"] === "notice" || s["type"] === "event" ? s["type"] : undefined,
   }),
   head: () => seo("Notices & Events | Skill Bridgeway Foundation", "Latest notices, announcements and upcoming events from Skill Bridgeway Foundation.", { path: "/notices" }),
@@ -19,41 +21,31 @@ export const Route = createFileRoute("/notices")({ staticData: { sitemap: true }
 function Notices() {
   const { type = "all" } = Route.useSearch();
   const navigate = useNavigate({ from: "/notices" });
-  const { data, isLoading } = useQuery(noticesQuery());
+  const { data, isLoading, error } = useQuery(noticesQuery());
   const items = (data ?? []).filter((n) => type === "all" || n.type === type);
-
-  return (
-    <>
-      <PageHero eyebrow="Stay updated" title="Notices & Events" />
-      <section className="mx-auto max-w-4xl px-4 py-12">
-        <div className="flex gap-2">
-          {TABS.map(([v, l]) => (
-            <button key={v} onClick={() => navigate({ search: { type: v === "all" ? undefined : v } })}
-              className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${type === v ? "border-primary bg-primary text-primary-foreground" : "text-muted-foreground hover:border-primary hover:text-primary"}`}>
-              {l}
-            </button>
-          ))}
-        </div>
-        <div className="mt-8 space-y-4">
-          {isLoading ? Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="glass space-y-3 rounded-xl p-6"><Skeleton className="h-5 w-2/3 bg-muted" /><Skeleton className="h-4 w-full bg-muted" /><Skeleton className="h-3 w-1/4 bg-muted" /></div>
-          )) : items.length ? items.map((n) => {
+  return <>
+    <PageHero eyebrow="Stay updated" title="Notices & Events" />
+    <section className="mx-auto max-w-7xl px-4 py-12 md:py-16">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Filter notices">
+        {TABS.map(([v, label]) => <Button key={v} variant={type === v ? "default" : "outline"} size="sm" onClick={() => navigate({ search: { type: v === "all" ? undefined : v } })}>{label}</Button>)}
+      </div>
+      {error && <p role="alert" className="mt-8 text-destructive">Could not load notices. Please try again.</p>}
+      <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {isLoading ? Array.from({ length: 6 }).map((_, i) => <div key={i} className="space-y-3 border-b border-border pb-6"><Skeleton className="aspect-video w-full bg-muted" /><Skeleton className="h-5 w-2/3 bg-muted" /><Skeleton className="h-4 w-full bg-muted" /></div>)
+          : items.map((n) => {
             const Icon = n.type === "event" ? CalendarDays : Megaphone;
-            return (
-              <article key={n.id} className="glass flex gap-4 rounded-xl p-6">
-                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-lg border text-primary"><Icon className="h-5 w-5" /></div>
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-                    {n.type === "event" ? `Event · ${formatDate(n.event_date ?? n.created_at)}` : `Notice · ${formatDate(n.created_at)}`}
-                  </p>
-                  <h2 className="mt-1 text-lg">{n.title}</h2>
-                  {n.body && <p className="mt-2 whitespace-pre-line text-sm text-muted-foreground">{n.body}</p>}
-                </div>
-              </article>
-            );
-          }) : <EmptyState>Nothing posted here yet.</EmptyState>}
-        </div>
-      </section>
-    </>
-  );
+            return <article key={n.id} className="group flex min-w-0 flex-col border-b border-border pb-6">
+              <Link to="/notices/$slug" params={{ slug: n.slug }} className="block overflow-hidden rounded-md bg-muted" aria-label={`Read ${n.title}`}>
+                {n.cover_image_key ? <img src={cdnUrl(n.cover_image_key) ?? ""} alt={n.title} loading="lazy" className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" /> : <div className="flex aspect-video items-center justify-center bg-grid"><Icon className="h-12 w-12 text-primary" /></div>}
+              </Link>
+              <p className="mt-5 flex items-center gap-2 text-xs font-semibold uppercase text-primary"><Icon className="h-4 w-4" />{n.type} · {formatDate(n.event_date ?? n.created_at)}</p>
+              <h2 className="mt-2 text-lg leading-snug"><Link to="/notices/$slug" params={{ slug: n.slug }} className="hover:text-primary">{n.title}</Link></h2>
+              {n.summary && <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">{n.summary}</p>}
+              <Button asChild variant="link" className="mt-auto w-fit px-0"><Link to="/notices/$slug" params={{ slug: n.slug }}>Read more <ArrowUpRight className="h-4 w-4" /></Link></Button>
+            </article>;
+          })}
+      </div>
+      {!isLoading && !error && !items.length && <div className="mt-8"><EmptyState>Nothing posted here yet.</EmptyState></div>}
+    </section>
+  </>;
 }

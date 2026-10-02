@@ -131,7 +131,7 @@ function Index() {
               <li key={n.id} className="flex gap-4 py-4">
                 <CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                 <div className="min-w-0">
-                  <p className="font-medium">{n.title}</p>
+                  <Link to="/notices/$slug" params={{ slug: n.slug }} className="font-medium hover:text-primary">{n.title}</Link>
                   <p className="text-xs text-muted-foreground">{n.type === "event" ? "Event" : "Notice"} · {formatDate(n.event_date ?? n.created_at)}</p>
                 </div>
               </li>
