@@ -2,14 +2,16 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { cloneElement, isValidElement, useId, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { AddressPicker, Field, PhoneInput } from "@/components/admission/FormBits";
+import { EducationFields } from "@/components/admission/EducationFields";
+import { composeAddress, refOf } from "@/lib/application";
 import type { ZodType } from "zod";
 import { toast } from "sonner";
 import { Check, CheckCircle2, Copy, FileText, Loader2, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHero, seo } from "@/components/site/PageHero";
@@ -17,7 +19,7 @@ import { coursesQuery, isPreviewOnlyCourse, TEST_ENROLLMENT_SLUG } from "@/lib/p
 import { sendAdmissionReceivedEmail } from "@/lib/email.functions";
 import { ALLOWED_DOC_TYPES, MAX_DOC_BYTES, createAdmissionUploadUrl } from "@/lib/r2.functions";
 import {
-  DOC_SLOTS, EDUCATION_LEVELS, courseSchema, educationSchema, personalSchema,
+  DOC_SLOTS, courseSchema, educationSchema, personalSchema,
   type AdmissionForm, type DocSlot,
 } from "@/lib/admission-schema";
 
@@ -30,11 +32,14 @@ export const Route = createFileRoute("/admission")({ staticData: { sitemap: true
 const STEPS = ["Personal", "Education", "Course", "Documents", "Review"] as const;
 const NO_COURSE = "undecided";
 const empty: AdmissionForm = {
-  full_name: "", email: "", phone: "", date_of_birth: "", gender: "" as AdmissionForm["gender"], address: "",
-  education_level: "", institution: "", course_id: "", motivation: "",
+  full_name: "", email: "", phone: "", date_of_birth: "", gender: "" as AdmissionForm["gender"],
+  division: "", district: "", upazila: "", address_line: "", post_office: "", postal_code: "",
+  education_level: "", institution: "", education_board: "", education_group: "", education_result: "", passing_year: "", session: "",
+  course_id: "", motivation: "",
 };
 type Errors = Partial<Record<keyof AdmissionForm | DocSlot, string>>;
-const selectCls = "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring [&>option]:bg-popover";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _unused = "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring [&>option]:bg-popover";
 
 function Admission() {
   const { course: requestedCourse } = Route.useSearch();
@@ -44,7 +49,8 @@ function Admission() {
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
   const [progress, setProgress] = useState("");
-  const [reference, setReference] = useState<string | null>(null);
+  const [reference, setReference] = useState<{ ref: string; token: string } | null>(null);
+  const patch = (p: Partial<AdmissionForm>) => setForm((f) => ({ ...f, ...p }));
   const courses = useQuery(coursesQuery());
   useEffect(() => {
     if (requestedCourse) setForm((current) => ({ ...current, course_id: requestedCourse }));
@@ -106,14 +112,21 @@ function Admission() {
         documentKeys.push({ type: slot.id, key, name: file.name });
       }
       setProgress("Saving your application...");
+      const tokenBytes = crypto.getRandomValues(new Uint8Array(9));
+      const accessToken = btoa(String.fromCharCode(...tokenBytes)).replace(/\+/g, "-").replace(/\//g, "_");
       const { error } = await supabase.from("admissions").insert({
         id: admissionId,
+        access_token: accessToken,
+        division: form.division, district: form.district, upazila: form.upazila,
+        address_line: form.address_line.trim(), post_office: form.post_office.trim(), postal_code: form.postal_code,
+        education_board: form.education_board, education_group: form.education_group || null,
+        education_result: form.education_result.trim() || null, passing_year: form.passing_year || null, session: form.session.trim() || null,
         full_name: form.full_name.trim(),
         email: form.email.trim().toLowerCase(),
         phone: form.phone.trim(),
         date_of_birth: form.date_of_birth,
         gender: form.gender,
-        address: form.address.trim(),
+        address: composeAddress(form),
         education_level: form.education_level,
         institution: form.institution.trim(),
         course_id: form.course_id === NO_COURSE ? null : form.course_id,
@@ -121,9 +134,10 @@ function Admission() {
         document_keys: documentKeys,
         status: "pending",
       });
+      if (error?.code === "23505") throw new Error("You have already applied for this course with this email or phone number. Please check your email for your reference number.");
       if (error) throw new Error("Could not save your application");
       sendReceived({ data: { admissionId } }).catch(() => undefined);
-      setReference(`SBF-APP-${admissionId.slice(0, 8).toUpperCase()}`);
+      setReference({ ref: refOf(admissionId), token: accessToken });
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Something went wrong. Please try again.");
@@ -133,7 +147,7 @@ function Admission() {
     }
   }
 
-  if (reference) return <Success reference={reference} email={form.email} />;
+  if (reference) return <Success reference={reference.ref} token={reference.token} email={form.email} />;
 
   const courseName = form.course_id === NO_COURSE ? "Not sure yet — advise me" : courses.data?.find((c) => c.id === form.course_id)?.title ?? "";
 
@@ -157,7 +171,7 @@ function Admission() {
               <Field label="Full name" error={errors.full_name}><Input value={form.full_name} onChange={set("full_name")} autoComplete="name" /></Field>
               <div className="grid gap-5 sm:grid-cols-2">
                 <Field label="Email" error={errors.email}><Input type="email" value={form.email} onChange={set("email")} autoComplete="email" /></Field>
-                <Field label="Mobile number" error={errors.phone}><Input type="tel" value={form.phone} onChange={set("phone")} placeholder="017XXXXXXXX" autoComplete="tel" /></Field>
+                <Field label="Mobile number" error={errors.phone} hint="Use an active number that also has WhatsApp — recommended so we can reach you quickly."><PhoneInput value={form.phone} onChange={(v) => patch({ phone: v })} /></Field>
               </div>
               <div className="grid gap-5 sm:grid-cols-2">
                 <Field label="Date of birth" error={errors.date_of_birth}><Input type="date" value={form.date_of_birth} onChange={set("date_of_birth")} /></Field>
@@ -167,19 +181,14 @@ function Admission() {
                   </select>
                 </Field>
               </div>
-              <Field label="Address" error={errors.address}><Textarea rows={3} value={form.address} onChange={set("address")} /></Field>
+              <h3 className="pt-2 text-sm uppercase text-muted-foreground">Present address</h3>
+              <AddressPicker value={form} onChange={patch} errors={errors} />
             </Section>
           )}
 
           {step === 1 && (
             <Section title="Education">
-              <Field label="Highest education level" error={errors.education_level}>
-                <select className={selectCls} value={form.education_level} onChange={set("education_level")}>
-                  <option value="">Select</option>
-                  {EDUCATION_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
-                </select>
-              </Field>
-              <Field label="Institution name" error={errors.institution}><Input value={form.institution} onChange={set("institution")} /></Field>
+              <EducationFields value={form} onChange={patch} errors={errors} />
             </Section>
           )}
 
@@ -232,8 +241,8 @@ function Admission() {
 
           {step === 4 && (
             <Section title="Review & submit">
-              <Review title="Personal" onEdit={() => setStep(0)} rows={[["Name", form.full_name], ["Email", form.email], ["Mobile", form.phone], ["Date of birth", form.date_of_birth], ["Gender", form.gender], ["Address", form.address]]} />
-              <Review title="Education" onEdit={() => setStep(1)} rows={[["Level", form.education_level], ["Institution", form.institution]]} />
+              <Review title="Personal" onEdit={() => setStep(0)} rows={[["Name", form.full_name], ["Email", form.email], ["Mobile", form.phone], ["Date of birth", form.date_of_birth], ["Gender", form.gender], ["Address", composeAddress(form)]]} />
+              <Review title="Education" onEdit={() => setStep(1)} rows={[["Level", form.education_level], ["Board", form.education_board], ["Institution", form.institution], ["Group", form.education_group], [form.session ? "Session" : "Passing year", form.session || form.passing_year], ["Result", form.education_result]]} />
               <Review title="Course" onEdit={() => setStep(2)} rows={[["Course", courseName], ["Motivation", form.motivation]]} />
               <Review title="Documents" onEdit={() => setStep(3)} rows={DOC_SLOTS.map((s) => [s.label, files[s.id]?.name ?? "—"])} />
             </Section>
@@ -259,12 +268,6 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   return <div className="space-y-5"><h2 className="section-title text-lg">{title}</h2>{children}</div>;
 }
 
-function Field({ label, error, children }: { label: string; error?: string | undefined; children: ReactNode }) {
-  const id = useId();
-  const control = isValidElement<{ id?: string }>(children) ? cloneElement(children, { id }) : children;
-  return <div className="space-y-2"><Label htmlFor={id}>{label}</Label>{control}{error && <p className="text-xs text-destructive">{error}</p>}</div>;
-}
-
 function Review({ title, rows, onEdit }: { title: string; rows: string[][]; onEdit: () => void }) {
   return (
     <div className="rounded-lg border p-4">
@@ -278,7 +281,7 @@ function Review({ title, rows, onEdit }: { title: string; rows: string[][]; onEd
   );
 }
 
-function Success({ reference, email }: { reference: string; email: string }) {
+function Success({ reference, token, email }: { reference: string; token: string; email: string }) {
   return (
     <section className="bg-grid flex min-h-[70vh] items-center px-4 py-16">
       <div className="glass mx-auto w-full max-w-lg rounded-2xl p-8 text-center">
@@ -293,7 +296,11 @@ function Success({ reference, email }: { reference: string; email: string }) {
           </div>
           <p className="mt-2 text-xs text-muted-foreground">Save this number for any future enquiries.</p>
         </div>
-        <Button asChild variant="outline" className="mt-6"><Link to="/">Back to home</Link></Button>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <Button asChild><Link to="/application/$token" params={{ token }}>View my application</Link></Button>
+          <Button asChild variant="outline"><Link to="/">Back to home</Link></Button>
+        </div>
+        <p className="mt-3 text-xs text-muted-foreground">Bookmark your private application link — anyone with it can view your application.</p>
       </div>
     </section>
   );
