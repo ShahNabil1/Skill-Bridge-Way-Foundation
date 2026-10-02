@@ -30,6 +30,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminAdmissionsRouteImport } from './routes/_authenticated/admin.admissions'
 import { Route as AuthenticatedAdminAttendanceRouteImport } from './routes/_authenticated/admin.attendance'
 import { Route as AuthenticatedAdminGalleryRouteImport } from './routes/_authenticated/admin.gallery'
+import { Route as AuthenticatedAdminNoticesRouteImport } from './routes/_authenticated/admin.notices'
 import { Route as AuthenticatedAdminProfileRouteImport } from './routes/_authenticated/admin.profile'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminApplicationsIndexRouteImport } from './routes/_authenticated/admin.applications.index'
@@ -148,6 +149,12 @@ const AuthenticatedAdminGalleryRoute =
     path: '/gallery',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminNoticesRoute =
+  AuthenticatedAdminNoticesRouteImport.update({
+    id: '/notices',
+    path: '/notices',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminProfileRoute =
   AuthenticatedAdminProfileRouteImport.update({
     id: '/profile',
@@ -185,15 +192,15 @@ const AuthenticatedAdminCoursesIdRoute =
   } as any)
 const AuthenticatedAdminNoticesIndexRoute =
   AuthenticatedAdminNoticesIndexRouteImport.update({
-    id: '/notices/',
-    path: '/notices/',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminNoticesRoute,
   } as any)
 const AuthenticatedAdminNoticesIdRoute =
   AuthenticatedAdminNoticesIdRouteImport.update({
-    id: '/notices/$id',
-    path: '/notices/$id',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminNoticesRoute,
   } as any)
 const AuthenticatedAdminStudentsIndexRoute =
   AuthenticatedAdminStudentsIndexRouteImport.update({
@@ -228,6 +235,7 @@ export interface FileRoutesByFullPath {
   '/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
+  '/admin/notices': typeof AuthenticatedAdminNoticesRouteWithChildren
   '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -292,6 +300,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/admissions': typeof AuthenticatedAdminAdmissionsRoute
   '/_authenticated/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
   '/_authenticated/admin/gallery': typeof AuthenticatedAdminGalleryRoute
+  '/_authenticated/admin/notices': typeof AuthenticatedAdminNoticesRouteWithChildren
   '/_authenticated/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -326,6 +335,7 @@ export interface FileRouteTypes {
     | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/gallery'
+    | '/admin/notices'
     | '/admin/profile'
     | '/admin/users'
     | '/admin/'
@@ -389,6 +399,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/admissions'
     | '/_authenticated/admin/attendance'
     | '/_authenticated/admin/gallery'
+    | '/_authenticated/admin/notices'
     | '/_authenticated/admin/profile'
     | '/_authenticated/admin/users'
     | '/_authenticated/admin/'
@@ -568,6 +579,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminGalleryRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/notices': {
+      id: '/_authenticated/admin/notices'
+      path: '/notices'
+      fullPath: '/admin/notices'
+      preLoaderRoute: typeof AuthenticatedAdminNoticesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/profile': {
       id: '/_authenticated/admin/profile'
       path: '/profile'
@@ -612,17 +630,17 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/admin/notices/': {
       id: '/_authenticated/admin/notices/'
-      path: '/notices'
+      path: '/'
       fullPath: '/admin/notices/'
       preLoaderRoute: typeof AuthenticatedAdminNoticesIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      parentRoute: typeof AuthenticatedAdminNoticesRoute
     }
     '/_authenticated/admin/notices/$id': {
       id: '/_authenticated/admin/notices/$id'
-      path: '/notices/$id'
+      path: '/$id'
       fullPath: '/admin/notices/$id'
       preLoaderRoute: typeof AuthenticatedAdminNoticesIdRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      parentRoute: typeof AuthenticatedAdminNoticesRoute
     }
     '/_authenticated/admin/students/': {
       id: '/_authenticated/admin/students/'
@@ -641,20 +659,35 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminNoticesRouteChildren {
+  AuthenticatedAdminNoticesIdRoute: typeof AuthenticatedAdminNoticesIdRoute
+  AuthenticatedAdminNoticesIndexRoute: typeof AuthenticatedAdminNoticesIndexRoute
+}
+
+const AuthenticatedAdminNoticesRouteChildren: AuthenticatedAdminNoticesRouteChildren =
+  {
+    AuthenticatedAdminNoticesIdRoute: AuthenticatedAdminNoticesIdRoute,
+    AuthenticatedAdminNoticesIndexRoute: AuthenticatedAdminNoticesIndexRoute,
+  }
+
+const AuthenticatedAdminNoticesRouteWithChildren =
+  AuthenticatedAdminNoticesRoute._addFileChildren(
+    AuthenticatedAdminNoticesRouteChildren,
+  )
+
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAdmissionsRoute: typeof AuthenticatedAdminAdmissionsRoute
   AuthenticatedAdminAttendanceRoute: typeof AuthenticatedAdminAttendanceRoute
   AuthenticatedAdminGalleryRoute: typeof AuthenticatedAdminGalleryRoute
+  AuthenticatedAdminNoticesRoute: typeof AuthenticatedAdminNoticesRouteWithChildren
   AuthenticatedAdminProfileRoute: typeof AuthenticatedAdminProfileRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminApplicationsIdRoute: typeof AuthenticatedAdminApplicationsIdRoute
   AuthenticatedAdminCoursesIdRoute: typeof AuthenticatedAdminCoursesIdRoute
-  AuthenticatedAdminNoticesIdRoute: typeof AuthenticatedAdminNoticesIdRoute
   AuthenticatedAdminStudentsIdRoute: typeof AuthenticatedAdminStudentsIdRoute
   AuthenticatedAdminApplicationsIndexRoute: typeof AuthenticatedAdminApplicationsIndexRoute
   AuthenticatedAdminCoursesIndexRoute: typeof AuthenticatedAdminCoursesIndexRoute
-  AuthenticatedAdminNoticesIndexRoute: typeof AuthenticatedAdminNoticesIndexRoute
   AuthenticatedAdminStudentsIndexRoute: typeof AuthenticatedAdminStudentsIndexRoute
 }
 
@@ -662,17 +695,16 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAdmissionsRoute: AuthenticatedAdminAdmissionsRoute,
   AuthenticatedAdminAttendanceRoute: AuthenticatedAdminAttendanceRoute,
   AuthenticatedAdminGalleryRoute: AuthenticatedAdminGalleryRoute,
+  AuthenticatedAdminNoticesRoute: AuthenticatedAdminNoticesRouteWithChildren,
   AuthenticatedAdminProfileRoute: AuthenticatedAdminProfileRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminApplicationsIdRoute: AuthenticatedAdminApplicationsIdRoute,
   AuthenticatedAdminCoursesIdRoute: AuthenticatedAdminCoursesIdRoute,
-  AuthenticatedAdminNoticesIdRoute: AuthenticatedAdminNoticesIdRoute,
   AuthenticatedAdminStudentsIdRoute: AuthenticatedAdminStudentsIdRoute,
   AuthenticatedAdminApplicationsIndexRoute:
     AuthenticatedAdminApplicationsIndexRoute,
   AuthenticatedAdminCoursesIndexRoute: AuthenticatedAdminCoursesIndexRoute,
-  AuthenticatedAdminNoticesIndexRoute: AuthenticatedAdminNoticesIndexRoute,
   AuthenticatedAdminStudentsIndexRoute: AuthenticatedAdminStudentsIndexRoute,
 }
 
