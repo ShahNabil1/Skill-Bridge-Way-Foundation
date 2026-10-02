@@ -107,7 +107,7 @@ export async function generateApplicationPdf(a: ApplicationRecord, viewUrl?: str
       labels.forEach((line, i) => page.drawText(line, { x: labelX, y: y - i * 14, size: 9, font: semi, color: MUTED }));
       values.forEach((line, i) => page.drawText(line, { x: valueX, y: y - i * 14, size: 10, font: body, color: INK }));
       y -= rowHeight;
-      page.drawLine({ start: { x: labelX, y: y + 7 }, end: { x: rightX, y: y + 7 }, thickness: 0.4, color: LINE });
+      page.drawLine({ start: { x: labelX, y: y + 11 }, end: { x: rightX, y: y + 11 }, thickness: 0.4, color: LINE });
     }
     y -= 8;
   };
