@@ -7,7 +7,7 @@ import { isPreviewOnlyCourse, mediaUrl } from "@/lib/public-data";
 export function SectionHeading({ eyebrow, title, children }: { eyebrow?: string; title: string; children?: ReactNode }) {
   return (
     <div className="max-w-2xl">
-      {eyebrow && <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">{eyebrow}</p>}
+      {eyebrow && <p className="editorial-kicker">{eyebrow}</p>}
       <h2 className="section-title mt-2 text-2xl md:text-4xl">{title}</h2>
       {children && <p className="mt-3 text-muted-foreground">{children}</p>}
     </div>
@@ -41,7 +41,7 @@ type CourseCardData = {
 export function CourseCard({ c }: { c: CourseCardData }) {
   const img = mediaUrl(c.cover_image_key);
   return (
-    <Link to="/courses/$slug" params={{ slug: c.slug }} className="glass group flex flex-col overflow-hidden rounded-xl transition-colors hover:border-primary/60">
+    <Link to="/courses/$slug" params={{ slug: c.slug }} className="glass editorial-item group flex flex-col overflow-hidden rounded-md transition-all duration-300 hover:border-primary/60">
       <div className="bg-grid relative aspect-video overflow-hidden border-b">
         {img ? (
           <img src={img} alt={c.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />

@@ -2,11 +2,11 @@ import type { ReactNode } from "react";
 
 export function PageHero({ eyebrow, title, children }: { eyebrow?: string; title: string; children?: ReactNode }) {
   return (
-    <section className="bg-grid border-b">
-      <div className="mx-auto max-w-7xl px-4 py-16 md:py-24">
-        {eyebrow && <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">{eyebrow}</p>}
-        <h1 className="section-title mt-3 text-3xl md:text-5xl">{title}</h1>
-        {children && <div className="mt-4 max-w-2xl text-muted-foreground">{children}</div>}
+    <section className="page-intro bg-grid relative overflow-hidden border-b">
+      <div className="relative mx-auto max-w-7xl px-4 py-14 md:py-20">
+        {eyebrow && <p className="editorial-kicker">{eyebrow}</p>}
+        <h1 className="section-title mt-5 max-w-5xl text-4xl leading-tight md:text-6xl">{title}</h1>
+        {children && <div className="mt-6 max-w-2xl border-l border-primary/60 pl-5 text-base text-muted-foreground md:text-lg">{children}</div>}
       </div>
     </section>
   );

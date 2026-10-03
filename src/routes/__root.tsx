@@ -142,7 +142,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen flex-col">
         {!isPrivate && <Header />}
-        <main className="flex-1">
+        <main className={isPrivate ? "flex-1" : "public-site flex-1"}>
           <Outlet />
         </main>
         {!isPrivate && !isCourseDetail && <Footer />}

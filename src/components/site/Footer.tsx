@@ -6,7 +6,7 @@ import { CONTACT_EMAIL, OFFICES } from "@/lib/site-info";
 
 export function Footer() {
   return (
-    <footer className="bg-grid border-t">
+    <footer className="site-footer bg-grid border-t">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div className="sm:col-span-2 lg:col-span-1">
           <img src={logo.url} alt="Skill Bridgeway Foundation logo" width={88} height={88} loading="lazy" className="h-22 w-22 rounded-full" />
