@@ -18,7 +18,7 @@ export const NAV = [
 export function Header() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="sticky top-0 z-50 glass border-x-0 border-t-0">
+    <header className="site-header sticky top-0 z-50 glass border-x-0 border-t-0">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Link to="/" className="flex min-w-0 items-center gap-3">
           <img src={logo.url} alt="Skill Bridgeway Foundation logo" width={40} height={40} className="h-10 w-10 shrink-0 rounded-full" />
@@ -27,7 +27,7 @@ export function Header() {
             <span className="block text-[10px] font-semibold tracking-[0.3em] text-muted-foreground">Foundation</span>
           </span>
         </Link>
-        <nav className="hidden items-center gap-6 lg:flex">
+        <nav className="hidden items-center gap-5 lg:flex">
           {NAV.map((n) => (
             <Link key={n.to} to={n.to} className="text-sm text-muted-foreground transition-colors hover:text-primary" activeProps={{ className: "text-primary" }} activeOptions={{ exact: n.to === "/" }}>
               {n.label}
@@ -42,7 +42,7 @@ export function Header() {
         </Button>
       </div>
       {open && (
-        <nav className="flex flex-col gap-1 border-t px-4 py-3 lg:hidden">
+        <nav className="site-mobile-nav flex flex-col gap-1 border-t px-4 py-3 lg:hidden">
           {NAV.map((n) => (
             <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="py-2 text-muted-foreground hover:text-primary">
               {n.label}

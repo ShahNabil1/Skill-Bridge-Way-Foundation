@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { seo } from "@/components/site/PageHero";
 import { CardSkeletonGrid, CourseCard, EmptyState, SectionHeading } from "@/components/site/ui-bits";
 import { coursesQuery, formatDate, noticesQuery } from "@/lib/public-data";
-import logo from "@/assets/sbf-logo.jpeg.asset.json";
+import workshop from "@/assets/learning-workshop.jpg";
 
 export const Route = createFileRoute("/")({ staticData: { sitemap: true },
   head: () => seo("Skill Bridgeway Foundation — AI, Digital & Freelancing Skills in Bangladesh", "Non-profit building AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities in Bangladesh.", { path: "/" }),
@@ -34,40 +34,16 @@ function Index() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="bg-grid relative overflow-hidden border-b">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 md:py-28 lg:grid-cols-[1.3fr_1fr]">
-          <div className="min-w-0">
-            <p className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              <span className="h-1.5 w-1.5 rounded-full bg-highlight" /> RJSC-registered non-profit · Bangladesh
-            </p>
-            <h1 className="section-title mt-6 text-4xl leading-[1.05] sm:text-5xl md:text-6xl">
-              Where human talent meets <span className="text-primary">AI</span> <span className="text-highlight">opportunity</span>
-            </h1>
-            <p className="mt-6 max-w-xl text-lg font-light text-muted-foreground">
-              Bridging the gap between traditional education and the modern workforce — practical AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities.
-            </p>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="bg-highlight text-highlight-foreground hover:bg-highlight/90">
-                 <Link to="/courses" search={{}}>Free Admission <ArrowRight className="ml-1 h-4 w-4" /></Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground">
-                <Link to="/courses">Explore courses</Link>
-              </Button>
-            </div>
-          </div>
-          <div className="relative mx-auto w-full max-w-sm">
-            <div className="glass rounded-3xl p-6">
-              <img src={logo.url} alt="Skill Bridgeway Foundation emblem" width={400} height={400} className="w-full rounded-full" />
-              <div className="mt-6 grid grid-cols-3 gap-3 text-center">
-                {[["100%", "Free"], ["QR", "Verified"], ["BD", "Nationwide"]].map(([a, b]) => (
-                  <div key={b} className="rounded-lg border p-3">
-                    <p className="font-heading text-lg font-extrabold text-primary">{a}</p>
-                    <p className="text-xs text-muted-foreground">{b}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+      <section className="relative isolate flex min-h-[610px] items-end overflow-hidden border-b sm:min-h-[660px]">
+        <img src={workshop} alt="Young Bangladeshi learners working together on digital skills" width={1600} height={900} className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+        <div className="absolute inset-0 -z-10 bg-background/75" />
+        <div className="mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:pb-16">
+          <p className="editorial-kicker">RJSC-registered non-profit / Bangladesh</p>
+          <h1 className="section-title mt-6 max-w-5xl text-4xl leading-tight sm:text-6xl lg:text-7xl">Skill Bridgeway <span className="text-primary">Foundation</span></h1>
+          <p className="mt-6 max-w-2xl border-l border-primary pl-5 text-base leading-relaxed text-foreground sm:text-lg">Bridging the gap between traditional education and the modern workforce — practical AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities.</p>
+          <div className="mt-9 flex flex-wrap gap-3">
+            <Button asChild size="lg" className="bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/courses" search={{}}>Free Admission <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
+            <Button asChild size="lg" variant="outline" className="border-primary bg-background/50 text-primary hover:bg-primary hover:text-primary-foreground"><Link to="/courses">Explore courses</Link></Button>
           </div>
         </div>
       </section>
@@ -77,7 +53,7 @@ function Index() {
         <SectionHeading eyebrow="What we teach" title="Skills for the future of work" />
         <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {PILLARS.map((p) => (
-            <div key={p.title} className="glass rounded-xl p-6 transition-colors hover:border-primary/60">
+            <div key={p.title} className="editorial-item border-t border-border p-6 transition-colors hover:border-primary/60">
               <p.icon className="h-8 w-8 text-primary" />
               <h3 className="mt-4 text-lg">{p.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{p.text}</p>
@@ -108,7 +84,7 @@ function Index() {
         <SectionHeading eyebrow="Your journey" title="How it works" />
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((s) => (
-            <div key={s.n} className="relative rounded-xl border p-6">
+            <div key={s.n} className="editorial-item relative border-t border-border p-6">
               <span className="font-heading text-4xl font-extrabold text-primary/30">{s.n}</span>
               <h3 className="mt-2 text-base uppercase">{s.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{s.text}</p>

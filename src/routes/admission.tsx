@@ -164,14 +164,14 @@ function Admission() {
         <ol className="grid grid-cols-5 gap-2">
           {STEPS.map((s, i) => (
             <li key={s} className="min-w-0">
-              <div className={`h-1.5 rounded-full ${i <= step ? "bg-primary" : "bg-muted"}`} />
+              <div className={`h-1.5 rounded-full transition-colors duration-300 ${i <= step ? "bg-primary" : "bg-muted"}`} />
               <p className={`mt-2 hidden truncate text-xs sm:block ${i === step ? "text-primary" : "text-muted-foreground"}`}>{i + 1}. {s}</p>
             </li>
           ))}
         </ol>
         <p className="mt-3 text-xs text-muted-foreground sm:hidden">Step {step + 1} of 5 · {STEPS[step]}</p>
 
-        <div className="glass mt-8 rounded-xl p-5 md:p-8">
+        <div className="glass mt-8 rounded-md border-t-2 border-t-primary p-5 md:p-8">
           {step === 0 && (
             <Section title="Personal information">
               <Field label="Full name" error={errors.full_name}><Input value={form.full_name} onChange={set("full_name")} autoComplete="name" /></Field>
@@ -205,11 +205,11 @@ function Admission() {
                 {courses.isLoading ? Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 bg-muted" />) : (
                   [...(courses.data ?? []).filter((c) => !isPreviewOnlyCourse(c.slug)).map((c) => ({ id: c.id, title: c.title, sub: [c.slug === TEST_ENROLLMENT_SLUG ? "Demo · test applications only" : "", c.duration, c.level].filter(Boolean).join(" · ") })),
                    { id: NO_COURSE, title: "Not sure yet — advise me", sub: "Our team will suggest the best fit" }].map((c) => (
-                    <button type="button" key={c.id} onClick={() => setForm((f) => ({ ...f, course_id: c.id }))}
-                      className={`flex items-center justify-between gap-3 rounded-lg border p-4 text-left transition-colors ${form.course_id === c.id ? "border-primary bg-primary/10" : "hover:border-primary/60"}`}>
+                    <Button type="button" variant="outline" key={c.id} onClick={() => setForm((f) => ({ ...f, course_id: c.id }))}
+                      className={`h-auto min-h-16 w-full justify-between gap-3 whitespace-normal rounded-md p-4 text-left transition-colors ${form.course_id === c.id ? "border-primary bg-primary/10" : "hover:border-primary/60"}`}>
                       <span className="min-w-0"><span className="block font-medium">{c.title}</span>{c.sub && <span className="text-xs text-muted-foreground">{c.sub}</span>}</span>
                       {form.course_id === c.id && <Check className="h-5 w-5 shrink-0 text-primary" />}
-                    </button>
+                    </Button>
                   ))
                 )}
               </div>
@@ -230,7 +230,7 @@ function Admission() {
                         <FileText className="h-5 w-5 shrink-0 text-primary" />
                         <span className="min-w-0 flex-1 truncate text-sm">{f.name}</span>
                         <span className="shrink-0 text-xs text-muted-foreground">{(f.size / 1024 / 1024).toFixed(1)} MB</span>
-                        <button type="button" aria-label="Remove file" onClick={() => setFiles((p) => ({ ...p, [s.id]: undefined }))} className="shrink-0 hover:text-destructive"><X className="h-4 w-4" /></button>
+                        <Button type="button" variant="ghost" size="icon" aria-label="Remove file" onClick={() => setFiles((p) => ({ ...p, [s.id]: undefined }))} className="shrink-0 hover:text-destructive"><X className="h-4 w-4" /></Button>
                       </div>
                     ) : (
                       <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary">
@@ -293,7 +293,7 @@ function Review({ title, rows, onEdit }: { title: string; rows: string[][]; onEd
 function Success({ reference, token, email }: { reference: string; token: string; email: string }) {
   return (
     <section className="bg-grid flex min-h-[70vh] items-center px-4 py-16">
-      <div className="glass mx-auto w-full max-w-lg rounded-2xl p-8 text-center">
+       <div className="glass mx-auto w-full max-w-lg rounded-md border-t-2 border-t-primary p-8 text-center">
         <CheckCircle2 className="mx-auto h-14 w-14 text-primary" />
         <h1 className="section-title mt-4 text-2xl md:text-3xl">Application received</h1>
         <p className="mt-3 text-muted-foreground">Thank you! Your application is now pending review. We'll contact you at <span className="text-foreground">{email}</span>.</p>

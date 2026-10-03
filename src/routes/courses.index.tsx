@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { PageHero, seo } from "@/components/site/PageHero";
 import { CardSkeletonGrid, CourseCard, EmptyState } from "@/components/site/ui-bits";
 import { coursesQuery } from "@/lib/public-data";
@@ -41,8 +42,9 @@ export const Route = createFileRoute("/courses/")({ staticData: { sitemap: true 
 
 function Courses() {
   const { q = "", category = "" } = Route.useSearch();
+  const initialCourses = Route.useLoaderData();
   const navigate = useNavigate({ from: "/courses/" });
-  const { data, isLoading } = useQuery(coursesQuery());
+  const { data, isLoading } = useQuery({ ...coursesQuery(), initialData: initialCourses });
   const categories = Array.from(new Set((data ?? []).map((c) => c.category).filter(Boolean))) as string[];
   const filtered = (data ?? []).filter(
     (c) => (!category || c.category === category) && (!q || `${c.title} ${c.summary ?? ""}`.toLowerCase().includes(q.toLowerCase())),
@@ -60,10 +62,9 @@ function Courses() {
           {categories.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {["", ...categories].map((cat) => (
-                <button key={cat || "all"} onClick={() => navigate({ search: (p) => ({ ...p, category: cat || undefined }) })}
-                  className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${category === cat ? "border-primary bg-primary text-primary-foreground" : "text-muted-foreground hover:border-primary hover:text-primary"}`}>
+                <Button key={cat || "all"} variant={category === cat ? "default" : "outline"} size="sm" onClick={() => navigate({ search: (p) => ({ ...p, category: cat || undefined }) })}>
                   {cat || "All"}
-                </button>
+                </Button>
               ))}
             </div>
           )}

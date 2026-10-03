@@ -46,7 +46,7 @@ function VerifyPage() {
       <PageHero eyebrow="Verification portal" title="Verify Certificate" />
       <section className="bg-grid px-4 pb-20">
         <div className="mx-auto max-w-2xl">
-          <form onSubmit={onSubmit} className="glass flex flex-col gap-3 rounded-xl p-4 sm:flex-row">
+          <form onSubmit={onSubmit} className="glass flex flex-col gap-3 rounded-md border-t-2 border-t-primary p-4 sm:flex-row">
             <label htmlFor="serial" className="sr-only">Certificate serial number</label>
             <Input id="serial" value={input} onChange={(e) => setInput(e.target.value)} placeholder="e.g. SBF-CERT-2026-000001"
               className="h-12 font-mono uppercase tracking-wide" autoComplete="off" />
@@ -74,7 +74,7 @@ function VerifyPage() {
               </ResultShell>
             )}
             {data && !isFetching && !data.is_revoked && (
-              <div className="glass overflow-hidden rounded-xl border-primary/40">
+               <div className="glass overflow-hidden rounded-md border-primary/40">
                 <div className="flex items-center gap-3 border-b border-border bg-primary/10 px-6 py-4">
                   <BadgeCheck className="h-8 w-8 text-primary" />
                   <div>

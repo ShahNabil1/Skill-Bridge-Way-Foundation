@@ -43,7 +43,7 @@ function PartnerPage() {
         <img src={workshop} alt="Young learners collaborating around laptops in a digital skills workshop" width={1600} height={1000} className="absolute inset-0 -z-20 h-full w-full object-cover object-[60%_center]" />
         <div className="absolute inset-0 -z-10 bg-background/65 lg:bg-background/55" />
         <div className="mx-auto w-full max-w-7xl px-4 pb-14 pt-32 sm:pb-20 lg:pb-24">
-          <p className="mb-5 flex items-center gap-3 text-xs font-semibold uppercase text-primary"><span className="h-px w-9 bg-primary" /> Partner With Us / Sponsor Us</p>
+          <p className="editorial-kicker mb-5">Partner With Us / Sponsor Us</p>
           <h1 className="max-w-4xl text-3xl font-extrabold uppercase leading-tight text-foreground sm:text-5xl lg:text-6xl">Empower the Future: Partner with <span className="text-primary">Skill Bridgeway Foundation</span></h1>
           <p className="mt-6 max-w-3xl text-base leading-relaxed text-foreground sm:text-lg">We are an emerging start-up on a mission to equip young career aspirants in Bangladesh with essential AI literacy and advanced digital marketing skills. As we begin our journey, we invite forward-thinking organizations and individuals to partner with us. Together, we can bridge the digital skills gap and build a future-ready generation.</p>
           <Button asChild size="lg" className="mt-8 bg-highlight text-highlight-foreground hover:bg-highlight/90"><a href={partnerEmail}>Become a Partner <ArrowRight /></a></Button>
@@ -57,7 +57,7 @@ function PartnerPage() {
         </div>
         <div className="grid gap-x-12 sm:grid-cols-2">
           {reasons.map(({ icon: Icon, title, text }, i) => (
-            <div key={title} className="flex gap-5 border-b py-7 sm:py-9">
+            <div key={title} className="editorial-item flex gap-5 border-b py-7 sm:py-9">
               <span className="font-heading text-sm font-bold text-primary">0{i + 1}</span>
               <div><Icon className="mb-4 h-6 w-6 text-primary" aria-hidden="true" /><h3 className="text-lg">{title}</h3><p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">{text}</p></div>
             </div>
@@ -72,7 +72,7 @@ function PartnerPage() {
           <p className="mt-4 text-muted-foreground">We offer flexible sponsorship packages tailored to your organization's capacity.</p>
           <div className="mt-10 divide-y border-y">
             {tiers.map((tier) => (
-              <div key={tier.name} className="grid gap-4 py-7 md:grid-cols-[3rem_minmax(0,1fr)_minmax(0,1.5fr)_8rem] md:items-center md:gap-8">
+              <div key={tier.name} className="editorial-item grid gap-4 py-7 md:grid-cols-[3rem_minmax(0,1fr)_minmax(0,1.5fr)_8rem] md:items-center md:gap-8">
                 <span className="font-heading text-sm font-bold text-primary">{tier.rank}</span>
                 <h3 className={`text-xl sm:text-2xl ${tier.emphasis ? "text-highlight" : "text-foreground"}`}>{tier.name}</h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">{tier.detail}</p>
@@ -89,7 +89,7 @@ function PartnerPage() {
         <p className="mt-4 text-muted-foreground">We are open to diverse collaborations:</p>
         <div className="mt-10 grid gap-px overflow-hidden rounded-md border bg-border sm:grid-cols-2 lg:grid-cols-4">
           {partnerTypes.map(({ icon: Icon, name, detail }) => (
-            <div key={name} className="bg-background p-6 sm:p-7">
+            <div key={name} className="editorial-item bg-background p-6 sm:p-7">
               <Icon className="h-7 w-7 text-primary" aria-hidden="true" />
               <h3 className="mt-7 text-base">{name}</h3>
               <p className="mt-3 text-sm text-muted-foreground">{detail}</p>

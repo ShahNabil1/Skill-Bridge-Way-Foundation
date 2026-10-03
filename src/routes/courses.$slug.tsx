@@ -75,7 +75,7 @@ function CourseDetails() {
   const otherCourses = (related.data ?? []).filter((course) => course.id !== c.id).slice(0, 3);
   return (
     <>
-      <section className="bg-grid border-b">
+       <section className="page-intro bg-grid border-b">
         <div className="mx-auto max-w-7xl px-4 py-14 md:py-20">
           <Link to="/courses" className="inline-flex items-center gap-1 text-sm text-primary hover:underline"><ArrowLeft className="h-4 w-4" />All courses</Link>
           <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
@@ -91,7 +91,7 @@ function CourseDetails() {
           <h2 className="section-title text-xl">Course overview</h2>
           <RichContent html={c.description} className="mt-4" />
         </article>
-        <aside className="glass h-fit space-y-4 rounded-xl p-6 lg:sticky lg:top-24">
+         <aside className="glass h-fit space-y-4 rounded-md border-t-2 border-t-primary p-6 lg:sticky lg:top-24">
           <p className="font-heading text-3xl font-extrabold text-primary">{previewOnly ? "PREVIEW" : "FREE"}</p>
           <ul className="space-y-3 text-sm text-muted-foreground">
             {c.category && <li className="flex gap-2"><Tag className="h-4 w-4 text-primary" />{c.category}</li>}

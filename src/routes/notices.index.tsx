@@ -30,13 +30,13 @@ function Notices() {
         {TABS.map(([v, label]) => <Button key={v} variant={type === v ? "default" : "outline"} size="sm" onClick={() => navigate({ search: { type: v === "all" ? undefined : v } })}>{label}</Button>)}
       </div>
       {error && <p role="alert" className="mt-8 text-destructive">Could not load notices. Please try again.</p>}
-      <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 grid gap-x-7 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
         {isLoading ? Array.from({ length: 6 }).map((_, i) => <div key={i} className="space-y-3 border-b border-border pb-6"><Skeleton className="aspect-video w-full bg-muted" /><Skeleton className="h-5 w-2/3 bg-muted" /><Skeleton className="h-4 w-full bg-muted" /></div>)
           : items.map((n) => {
             const Icon = n.type === "event" ? CalendarDays : Megaphone;
-            return <article key={n.id} className="group flex min-w-0 flex-col border-b border-border pb-6">
+            return <article key={n.id} className="editorial-item group flex min-w-0 flex-col border-b border-border pb-6 transition-colors hover:border-primary">
               <Link to="/notices/$slug" params={{ slug: n.slug }} className="block overflow-hidden rounded-md bg-muted" aria-label={`Read ${n.title}`}>
-                {n.cover_image_key ? <img src={cdnUrl(n.cover_image_key) ?? ""} alt={n.title} loading="lazy" className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" /> : <div className="flex aspect-video items-center justify-center bg-grid"><Icon className="h-12 w-12 text-primary" /></div>}
+                {n.cover_image_key ? <img src={cdnUrl(n.cover_image_key) ?? ""} alt={n.title} loading="lazy" className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105" /> : <div className="flex aspect-video items-center justify-center bg-grid"><Icon className="h-12 w-12 text-primary" /></div>}
               </Link>
               <p className="mt-5 flex items-center gap-2 text-xs font-semibold uppercase text-primary"><Icon className="h-4 w-4" />{n.type} · {formatDate(n.event_date ?? n.created_at)}</p>
               <h2 className="mt-2 text-lg leading-snug"><Link to="/notices/$slug" params={{ slug: n.slug }} className="hover:text-primary">{n.title}</Link></h2>

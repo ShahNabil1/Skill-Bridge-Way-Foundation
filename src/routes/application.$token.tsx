@@ -39,7 +39,7 @@ function ApplicationPage() {
   return (
     <section className="bg-grid px-4 py-10 md:py-14">
       <div className="mx-auto max-w-4xl space-y-6">
-        <div className="glass flex flex-col items-center gap-5 rounded-2xl p-6 text-center sm:flex-row sm:text-left">
+        <div className="glass flex flex-col items-center gap-5 rounded-md border-t-2 border-t-primary p-6 text-center sm:flex-row sm:text-left">
           <ApplicantAvatar app={app} />
           <div className="min-w-0 flex-1">
             <StatusBadge status={app.status} />
@@ -59,5 +59,5 @@ function ApplicationPage() {
 }
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
-  return <div className="glass rounded-2xl p-6"><h2 className="section-title mb-4 text-lg">{title}</h2>{children}</div>;
+   return <div className="glass rounded-md border-l-2 border-l-primary p-6"><h2 className="section-title mb-4 text-lg">{title}</h2>{children}</div>;
 }
