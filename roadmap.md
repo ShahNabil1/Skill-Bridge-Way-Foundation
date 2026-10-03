@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Upgrade /admin overview into an actionable admissions kanban with read-only lanes, review links, live metrics, today's classes and useful shortcuts; verify layout and loading/error states.
 - [x] Refresh public pages (About, Home, Notices, Gallery, Partner, Verify, Contact, Courses, Admission, application) with a coherent kinetic editorial style and mobile-safe motion; desktop/mobile public routes verified. Private application detail requires a valid token for end-to-end verification.
 - [x] Improve admin gallery with a multi-photo upload queue, individual details, and searchable photo management (admin verification needs sign-in)
 - [x] Rebuild Notices & Events with optional cover pictures, full-page rich-text New/Edit, previews, public detail pages, and category filters (public verified; admin editing needs a signed-in test session)
