@@ -12,11 +12,16 @@ function Contact() {
   return (
     <>
       <PageHero eyebrow="Talk to us" title="Contact">Questions about courses, admission or partnering with us? Reach us directly.</PageHero>
-      <section className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:grid-cols-2">
-        {OFFICES.map((o) => (
-          <div key={o.label} className="glass flex gap-4 rounded-xl p-6"><MapPin className="h-6 w-6 shrink-0 text-primary" /><div><h2 className="section-title text-sm">{o.label}</h2><p className="mt-1 text-sm text-muted-foreground">{o.address}</p></div></div>
-        ))}
-        <div className="glass flex gap-4 rounded-xl p-6"><Mail className="h-6 w-6 shrink-0 text-primary" /><div><h2 className="section-title text-sm">Email</h2><a href={`mailto:${CONTACT_EMAIL}`} className="mt-1 block text-sm text-muted-foreground hover:text-primary">{CONTACT_EMAIL}</a></div></div>
+      <section className="mx-auto max-w-7xl px-4 py-16 md:py-24">
+        <p className="editorial-kicker">Find us / Bangladesh & beyond</p>
+        <div className="mt-8 grid gap-x-12 md:grid-cols-2">
+          {OFFICES.map((o, i) => (
+            <div key={o.label} className="editorial-item grid grid-cols-[2rem_minmax(0,1fr)] gap-5 border-t border-border py-8 transition-colors hover:border-primary">
+              <span className="font-mono text-xs text-primary">0{i + 1}</span><div><MapPin className="mb-5 h-6 w-6 text-primary" /><h2 className="section-title text-lg">{o.label}</h2><p className="mt-2 text-sm text-muted-foreground">{o.address}</p></div>
+            </div>
+          ))}
+          <div className="editorial-item grid grid-cols-[2rem_minmax(0,1fr)] gap-5 border-t border-border py-8 transition-colors hover:border-primary"><span className="font-mono text-xs text-primary">04</span><div><Mail className="mb-5 h-6 w-6 text-primary" /><h2 className="section-title text-lg">Email</h2><a href={`mailto:${CONTACT_EMAIL}`} className="mt-2 block break-all text-sm text-primary hover:underline">{CONTACT_EMAIL}</a></div></div>
+        </div>
       </section>
     </>
   );
