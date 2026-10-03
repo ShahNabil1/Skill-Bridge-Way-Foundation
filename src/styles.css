@@ -133,3 +133,25 @@
 .rich-content .selectedCell { background: color-mix(in oklab, var(--color-primary) 20%, transparent); }
 .rich-content .column-resize-handle { position: absolute; right: -2px; top: 0; bottom: 0; width: 4px; background: var(--color-primary); pointer-events: none; }
 .rich-content .tableWrapper { overflow-x: auto; }
+
+/* Public editorial language: precise rules, open space, and restrained motion. */
+@keyframes editorial-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes editorial-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.public-site .editorial-kicker { display: flex; align-items: center; gap: 0.85rem; color: var(--primary); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; }
+.public-site .editorial-kicker::before { content: ""; width: 2.5rem; height: 1px; background: currentColor; flex: none; }
+.public-site .page-intro::after { content: ""; position: absolute; inset: auto 0 0; height: 1px; background: linear-gradient(90deg, transparent, var(--primary), transparent); opacity: 0.5; transform-origin: left; animation: editorial-line 1s ease-out both; }
+.public-site .page-intro h1, .public-site .page-intro .editorial-kicker, .public-site .page-intro div.border-l { animation: editorial-rise 650ms ease-out both; }
+.public-site .page-intro h1 { animation-delay: 80ms; }
+.public-site .page-intro div.border-l { animation-delay: 160ms; }
+.public-site .editorial-item { position: relative; }
+.public-site .editorial-item:hover { transform: translateY(-4px); box-shadow: 0 18px 45px -28px color-mix(in srgb, var(--primary) 40%, transparent); }
+.public-site .section-title { letter-spacing: 0; }
+.public-site a:focus-visible, .public-site button:focus-visible, .site-header a:focus-visible, .site-footer a:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+.site-header { background: color-mix(in srgb, var(--background) 90%, transparent); border-bottom-color: color-mix(in srgb, var(--primary) 25%, transparent); }
+.site-mobile-nav { animation: editorial-rise 220ms ease-out both; background: var(--background); }
+.site-footer { border-top-color: color-mix(in srgb, var(--primary) 35%, transparent); }
+@media (prefers-reduced-motion: reduce) {
+  .public-site .page-intro::after, .public-site .page-intro h1, .public-site .page-intro .editorial-kicker, .public-site .page-intro div.border-l, .site-mobile-nav { animation: none; }
+  .public-site .editorial-item:hover { transform: none; }
+  .public-site *, .site-header * { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
