@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, BookOpen, CalendarDays, CheckCircle2, Clock3, GraduationCap, Image, Plus, RefreshCw, Users, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminOnly } from "@/components/admin/shared";
-import { ApplicantAvatar, StatusBadge } from "@/components/admission/ApplicationParts";
+import { ApplicantAvatar } from "@/components/admission/ApplicationParts";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/public-data";
@@ -54,7 +54,7 @@ async function getOverview() {
 function Overview() {
   const qc = useQueryClient();
   const { data, isPending, isFetching, isError, refetch } = useQuery({
-    queryKey: ["admin-overview"], queryFn: getOverview, staleTime: 30_000, refetchInterval: 60_000,
+    queryKey: ["admin-overview"], queryFn: getOverview, staleTime: 30_000, refetchOnWindowFocus: true,
   });
   const today = todayISO();
   const todaysClasses = (data?.batches ?? []).filter((b) => b.class_days.includes(weekdayOf(today)));
