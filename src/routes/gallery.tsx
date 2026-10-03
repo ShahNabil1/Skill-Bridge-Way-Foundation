@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { PageHero, seo } from "@/components/site/PageHero";
 import { EmptyState } from "@/components/site/ui-bits";
 import { galleryQuery, mediaUrl } from "@/lib/public-data";
@@ -44,10 +45,10 @@ function Gallery() {
         ) : items.length ? (
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
             {items.map((g, i) => (
-              <button key={g.id} onClick={() => setOpen(i)} className="group relative aspect-square overflow-hidden rounded-lg border focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <Button key={g.id} variant="ghost" onClick={() => setOpen(i)} aria-label={`View ${g.title ?? "gallery photo"}`} className="editorial-item group relative aspect-square h-auto w-full overflow-hidden rounded-md border p-0 focus-visible:ring-2 focus-visible:ring-ring">
                 <img src={g.url} alt={g.title ?? "Skill Bridgeway Foundation training activity"} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                {g.title && <span className="absolute inset-x-0 bottom-0 bg-background/70 p-2 text-left text-xs opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">{g.title}</span>}
-              </button>
+                {g.title && <span className="absolute inset-x-0 bottom-0 bg-background/80 p-2 text-left text-xs backdrop-blur transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100">{g.title}</span>}
+              </Button>
             ))}
           </div>
         ) : <EmptyState>Photos will appear here soon.</EmptyState>}
@@ -55,11 +56,11 @@ function Gallery() {
 
       {current && (
         <div role="dialog" aria-modal="true" aria-label="Photo viewer" className="fixed inset-0 z-[60] flex items-center justify-center bg-background/95 p-4 backdrop-blur" onClick={() => setOpen(null)}>
-          <button aria-label="Close" className="absolute right-4 top-4 rounded-full border p-2 hover:text-primary" onClick={() => setOpen(null)}><X /></button>
+          <Button variant="outline" size="icon" aria-label="Close" className="absolute right-4 top-4" onClick={() => setOpen(null)}><X /></Button>
           {items.length > 1 && (
             <>
-              <button aria-label="Previous" className="absolute left-2 rounded-full border p-2 hover:text-primary md:left-6" onClick={(e) => { e.stopPropagation(); step(-1); }}><ChevronLeft /></button>
-              <button aria-label="Next" className="absolute right-2 rounded-full border p-2 hover:text-primary md:right-6" onClick={(e) => { e.stopPropagation(); step(1); }}><ChevronRight /></button>
+               <Button variant="outline" size="icon" aria-label="Previous" className="absolute left-2 md:left-6" onClick={(e) => { e.stopPropagation(); step(-1); }}><ChevronLeft /></Button>
+               <Button variant="outline" size="icon" aria-label="Next" className="absolute right-2 md:right-6" onClick={(e) => { e.stopPropagation(); step(1); }}><ChevronRight /></Button>
             </>
           )}
           <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
