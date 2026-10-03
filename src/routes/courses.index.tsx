@@ -42,8 +42,9 @@ export const Route = createFileRoute("/courses/")({ staticData: { sitemap: true 
 
 function Courses() {
   const { q = "", category = "" } = Route.useSearch();
+  const initialCourses = Route.useLoaderData();
   const navigate = useNavigate({ from: "/courses/" });
-  const { data, isLoading } = useQuery(coursesQuery());
+  const { data, isLoading } = useQuery({ ...coursesQuery(), initialData: initialCourses });
   const categories = Array.from(new Set((data ?? []).map((c) => c.category).filter(Boolean))) as string[];
   const filtered = (data ?? []).filter(
     (c) => (!category || c.category === category) && (!q || `${c.title} ${c.summary ?? ""}`.toLowerCase().includes(q.toLowerCase())),

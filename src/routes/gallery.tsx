@@ -22,14 +22,25 @@ function Gallery() {
 
   useEffect(() => {
     if (open === null) return;
+    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(null);
       if (e.key === "ArrowRight") step(1);
       if (e.key === "ArrowLeft") step(-1);
+      if (e.key === "Tab") {
+        const buttons = Array.from(document.querySelectorAll<HTMLElement>('[aria-label="Photo viewer"] button'));
+        if (!buttons.length) return;
+        const currentIndex = buttons.indexOf(document.activeElement as HTMLElement);
+        const nextIndex = e.shiftKey ? (currentIndex <= 0 ? buttons.length - 1 : currentIndex - 1) : (currentIndex < 0 || currentIndex === buttons.length - 1 ? 0 : currentIndex + 1);
+        e.preventDefault();
+        buttons[nextIndex]?.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
-    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
+    document.querySelector<HTMLElement>('[aria-label="Photo viewer"] button')?.focus();
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = previousOverflow; previouslyFocused?.focus(); };
   }, [open, step]);
 
   const current = open !== null ? items[open] : null;
