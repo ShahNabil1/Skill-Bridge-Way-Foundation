@@ -75,7 +75,7 @@ function CourseDetails() {
   const isTestCourse = c.slug === TEST_ENROLLMENT_SLUG;
   const otherCourses = (related.data ?? []).filter((course) => course.id !== c.id).slice(0, 3);
   const journeyIndex = PROGRAM.findIndex((course) => course.slug === c.slug);
-  const nextCourse = journeyIndex >= 0 ? PROGRAM[journeyIndex + 1] : undefined;
+  const nextCourse = journeyIndex >= 0 ? PROGRAM.slice(journeyIndex + 1).find((course) => (related.data ?? []).some((published) => published.slug === course.slug)) : undefined;
   return (
     <>
        <section className="page-intro bg-grid border-b">
