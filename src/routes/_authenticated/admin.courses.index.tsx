@@ -15,6 +15,7 @@ import { AdminOnly, PageTitle } from "@/components/admin/shared";
 import { cdnUrl } from "@/lib/cdn";
 import { applyState, imagesOf } from "@/lib/course-content";
 import { seo } from "@/components/site/PageHero";
+import { PROGRAM } from "@/lib/program-pathway";
 
 export const Route = createFileRoute("/_authenticated/admin/courses/")({ staticData: { sitemap: false },
   head: () => seo("Manage Courses | Skill Bridgeway Foundation", "Private course management.", { noindex: true }),
@@ -27,10 +28,11 @@ function SortRow({ c, onToggle, onDelete }: { c: Row; onToggle: () => void; onDe
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: c.id });
   const img = cdnUrl(imagesOf(c)[0]);
   const st = applyState(c.apply_start, c.apply_end);
+  const step = PROGRAM.find((p) => p.slug === c.slug);
   return <li ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} className={`flex items-center gap-3 rounded-xl border bg-card p-3 ${isDragging ? "z-10 border-primary shadow-xl" : "border-border"}`}>
     <button {...attributes} {...listeners} aria-label="Drag to reorder" className="cursor-grab touch-none rounded p-1 text-muted-foreground hover:bg-muted active:cursor-grabbing"><GripVertical className="h-5 w-5" /></button>
     <div className="h-12 w-20 shrink-0 overflow-hidden rounded bg-muted">{img && <img src={img} alt="" className="h-full w-full object-cover" />}</div>
-    <div className="min-w-0 flex-1"><p className="truncate font-medium">{c.title}</p><p className="truncate text-xs text-muted-foreground">{c.category ?? "No category"} · /{c.slug} · <span className={st.phase === "open" ? "text-primary" : "text-highlight"}>{st.phase === "open" ? "Enrollment open" : st.phase === "upcoming" ? "Opens soon" : "Closed"}</span></p></div>
+    <div className="min-w-0 flex-1"><p className="truncate font-medium">{step ? <span className="mr-2 rounded-sm bg-primary/15 px-1.5 py-0.5 font-mono text-[10px] uppercase text-primary">Segment 0{step.segment} · Course {step.number}</span> : c.slug.startsWith("demo-") ? <span className="mr-2 rounded-sm bg-muted px-1.5 py-0.5 text-[10px] uppercase text-muted-foreground">Old demo</span> : null}{c.title}</p><p className="truncate text-xs text-muted-foreground">{c.category ?? "No category"} · /{c.slug} · <span className={st.phase === "open" ? "text-primary" : "text-highlight"}>{st.phase === "open" ? "Enrollment open" : st.phase === "upcoming" ? "Opens soon" : "Closed"}</span></p></div>
     <label className="hidden items-center gap-2 text-xs text-muted-foreground sm:flex">Published<Switch checked={c.is_published} onCheckedChange={onToggle} /></label>
     <Button asChild size="icon" variant="ghost" aria-label="Edit"><Link to="/admin/courses/$id" params={{ id: c.id }}><Pencil className="h-4 w-4" /></Link></Button>
     <Button size="icon" variant="ghost" onClick={onDelete} aria-label="Delete"><Trash2 className="h-4 w-4 text-destructive" /></Button>
