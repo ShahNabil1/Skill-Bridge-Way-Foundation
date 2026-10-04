@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, BarChart3, Clock, Share2, Tag } from "lucide-react";
+import { ArrowLeft, ArrowRight, BarChart3, Clock, Share2, Tag } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,6 +9,7 @@ import { CourseCard, CardSkeletonGrid, EmptyState } from "@/components/site/ui-b
 import { CourseMedia, EnrollGate, RichContent } from "@/components/site/CourseMedia";
 import { durationLabel, imagesOf, plainText } from "@/lib/course-content";
 import { courseQuery, coursesQuery, isPreviewOnlyCourse, mediaUrl, TEST_ENROLLMENT_SLUG } from "@/lib/public-data";
+import { PROGRAM } from "@/lib/program-pathway";
 
 export const Route = createFileRoute("/courses/$slug")({ staticData: { sitemap: true },
   loader: async ({ context, params }) => {
@@ -73,11 +74,14 @@ function CourseDetails() {
   const previewOnly = isPreviewOnlyCourse(c.slug);
   const isTestCourse = c.slug === TEST_ENROLLMENT_SLUG;
   const otherCourses = (related.data ?? []).filter((course) => course.id !== c.id).slice(0, 3);
+  const journeyIndex = PROGRAM.findIndex((course) => course.slug === c.slug);
+  const nextCourse = journeyIndex >= 0 ? PROGRAM.slice(journeyIndex + 1).find((course) => (related.data ?? []).some((published) => published.slug === course.slug)) : undefined;
   return (
     <>
        <section className="page-intro bg-grid border-b">
         <div className="mx-auto max-w-7xl px-4 py-14 md:py-20">
           <Link to="/courses" className="inline-flex items-center gap-1 text-sm text-primary hover:underline"><ArrowLeft className="h-4 w-4" />All courses</Link>
+           {journeyIndex >= 0 && <p className="editorial-kicker mt-5">75-day learning journey / Segment {PROGRAM[journeyIndex]?.segment === 1 ? "01 — Foundation" : "02 — Practical"} / Course {PROGRAM[journeyIndex]?.number} of 04</p>}
           <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
             <h1 className="section-title text-3xl md:text-5xl">{c.title}</h1>
             <Button variant="outline" onClick={() => shareCourse(c.title)} aria-label={`Share ${c.title}`}><Share2 className="h-4 w-4" /> Share</Button>
@@ -90,6 +94,7 @@ function CourseDetails() {
           <CourseMedia images={imagesOf(c)} video={c.video_url} title={c.title} />
           <h2 className="section-title text-xl">Course overview</h2>
           <RichContent html={c.description} className="mt-4" />
+           {nextCourse && <div className="mt-10 border-t border-primary pt-6"><p className="text-xs font-bold uppercase text-primary">Next in your learning journey</p><Link to="/courses/$slug" params={{ slug: nextCourse.slug }} className="mt-3 inline-flex items-center gap-2 text-lg font-semibold hover:text-primary">{nextCourse.number} / {nextCourse.title}<ArrowRight className="h-5 w-5 shrink-0" /></Link></div>}
         </article>
          <aside className="glass h-fit space-y-4 rounded-md border-t-2 border-t-primary p-6 lg:sticky lg:top-24">
           <p className="font-heading text-3xl font-extrabold text-primary">{previewOnly ? "PREVIEW" : "FREE"}</p>

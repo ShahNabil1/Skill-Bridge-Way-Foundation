@@ -24,14 +24,15 @@
 - Account recovery never reveals whether an email is registered and requires explicit code entry after the generic send response; why: Supabase deliberately masks account existence.
 - Auth and profile fields share ASCII validation and digit normalization; why: consistent input feedback prevents mixed-script account details.
 - Avatar images are cropped and resized in-browser before direct R2 upload; why: predictable square images avoid oversized media and keep the existing signed-upload boundary.
-- Demo content lives in Supabase/R2; only the allowlisted AI Literacy demo accepts test applications; why: editors can replace samples and other demos cannot enroll.
+- Supabase/R2 holds demo content; only allowlisted AI Literacy accepts test applications; why: other demos cannot enroll.
 - Admin application edits go through the `update_admission_with_log` DB function, and views/downloads/decisions go through `log_admission_activity`; why: every change is recorded with its old value and the admin's name, in one transaction.
 - Applicants view their own application via a random `access_token` link served by `get_application_by_token`; application PDFs are generated in the browser (`src/lib/application-pdf.ts`) from live data; why: there is no public read access to the table, and the PDF always reflects edits.
 - Admission applications are saved only through the `submitAdmission` server function after server-side Turnstile verification, and `/admission` requires a `course` search param (otherwise it redirects to /courses); why: bots can't flood the form, and applicants always choose a course first.
 - Student learning lives on `enrollments` (batch, progress, learning_status, absence_reminders) with `batches`/`class_sessions`/`attendance`; absence emails send from `sendAbsenceReminders` once per class (`reminded_at`) and only when the toggle is on; why: one source of truth and no duplicate reminders.
 - Admin activity logs page 10 then 20 via `ActivityFeed`; student actions use `log_student_activity`; why: avoids loading whole logs.
 - Admin overview shows recent application previews and counts, not status editing; why: decisions must use the audited review flow.
-- Courses edit on a full page (`/admin/courses/$id`, `new` for create); descriptions are TipTap HTML rendered via `RichContent` with shared `.rich-content` styles and deterministic `sanitizeHtml`; why: editor preview and public page look identical and SSR matches hydration.
+- Courses edit on a full page (`/admin/courses/$id`); TipTap HTML uses `RichContent` and deterministic sanitization; why: editor and public view match.
+- The public pathway's sequence lives in `program-pathway.ts`; course details and admission stay in CMS records; why: a coherent journey preserves application history.
 - Course images use `image_keys` (1–5; first is cover), cropped 16:9; apply windows are DB-enforced; why: legacy cards work and closed intakes can't be bypassed.
 - Notices use a full-page admin editor, optional R2 cover and shared rich-text rendering; why: preview matches public content under existing RLS.
 - Gallery uploads retain R2 keys on retry and paginate admin photos; why: failed inserts needn't reupload and older photos stay visible.

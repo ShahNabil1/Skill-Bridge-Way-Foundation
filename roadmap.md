@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Replace the three demo listings with the four-course, two-segment 75-day learning pathway in the CMS and public Courses page; preserve historical applications. Desktop/mobile listings, course detail and admission entry verified; full submission still needs a real applicant and security check.
 - [x] Upgrade /admin overview into an actionable admissions kanban with read-only lanes, review links, live metrics, today's classes and useful shortcuts. Build and signed-out guard verified; signed-in visual/data flow awaits a test session for this external Supabase project.
 - [x] Refresh public pages (About, Home, Notices, Gallery, Partner, Verify, Contact, Courses, Admission, application) with a coherent kinetic editorial style and mobile-safe motion; desktop/mobile public routes verified. Private application detail requires a valid token for end-to-end verification.
 - [x] Improve admin gallery with a multi-photo upload queue, individual details, and searchable photo management (admin verification needs sign-in)
