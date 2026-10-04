@@ -38,6 +38,29 @@ function AdminLayout() {
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [open]);
+  useEffect(() => {
+    if (!open) return;
+    const scrollY = window.scrollY;
+    const previous = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      width: document.body.style.width,
+      paddingRight: document.body.style.paddingRight,
+    };
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const currentPadding = parseFloat(window.getComputedStyle(document.body).paddingRight) || 0;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+    if (scrollbarWidth > 0) document.body.style.paddingRight = `${currentPadding + scrollbarWidth}px`;
+    return () => {
+      document.body.style.position = previous.position;
+      document.body.style.top = previous.top;
+      document.body.style.width = previous.width;
+      document.body.style.paddingRight = previous.paddingRight;
+      window.scrollTo(0, scrollY);
+    };
+  }, [open]);
 
   async function signOut() {
     if (!(await confirmAction({ title: "Sign out?", description: "You will need to sign in again to access the admin panel.", confirmText: "Sign out", destructive: true }))) return;
@@ -56,7 +79,7 @@ function AdminLayout() {
         <Link to="/admin" className="font-heading text-sm font-extrabold uppercase text-foreground">Skill Bridgeway <span className="text-primary">/ Admin</span></Link>
       </header>
       <div className={`fixed inset-0 top-16 z-40 bg-background/70 transition-opacity duration-300 motion-reduce:transition-none ${open ? "opacity-100" : "pointer-events-none opacity-0"}`} onClick={() => setOpen(false)} aria-hidden="true" />
-      <aside id="admin-menu" aria-label="Admin menu" inert={!open} className={`fixed inset-y-0 left-0 top-16 z-50 w-[min(19rem,85vw)] overflow-y-auto border-r border-border bg-sidebar p-4 shadow-xl transition-transform duration-300 ease-out motion-reduce:transition-none ${open ? "translate-x-0" : "-translate-x-full"}`}>
+      <aside id="admin-menu" aria-label="Admin menu" inert={!open} className={`fixed inset-y-0 left-0 top-16 z-50 w-[min(19rem,85vw)] overflow-y-auto overscroll-contain border-r border-border bg-sidebar p-4 shadow-xl transition-transform duration-300 ease-out motion-reduce:transition-none ${open ? "translate-x-0" : "-translate-x-full"}`}>
         <nav className="flex flex-col gap-1">
           {NAV.filter((n) => !n.admin || isAdmin).map((n) => (
             <Link key={n.to} to={n.to} preload="intent" onClick={() => setOpen(false)} activeOptions={{ exact: "exact" in n }}
