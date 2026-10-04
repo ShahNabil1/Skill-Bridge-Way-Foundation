@@ -70,7 +70,7 @@ function CoursesAdmin() {
   return (
     <>
       <PageTitle title="Courses"><Button asChild><Link to="/admin/courses/$id" params={{ id: "new" }}><Plus className="h-4 w-4" />New course</Link></Button></PageTitle>
-      <p className="mb-3 text-xs text-muted-foreground">Drag the handle to change the order shown on the website.</p>
+      <p className="mb-3 text-xs text-muted-foreground">Drag the handle to change the order shown on the website. The four 75-day program courses are labelled by segment; keep their web address (slug) unchanged so the Courses page journey stays connected. Old demos are unpublished to keep past applications.</p>
       {isLoading ? <p className="text-muted-foreground">Loading...</p> : rows.length === 0 ? <p className="glass rounded-xl p-6 text-muted-foreground">No courses yet.</p> : (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
           <SortableContext items={rows.map((r) => r.id)} strategy={verticalListSortingStrategy}>
