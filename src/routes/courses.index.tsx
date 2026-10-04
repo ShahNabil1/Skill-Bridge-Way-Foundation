@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowRight, BookOpen, Clock3, CalendarDays, Sparkles, Check, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PageHero, seo } from "@/components/site/PageHero";
+import { seo } from "@/components/site/PageHero";
 import { PROGRAM } from "@/lib/program-pathway";
 import workshop from "@/assets/digital-skills-program.jpg";
 
