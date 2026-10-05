@@ -6,6 +6,14 @@ export const OFFICES = [
 
 export const CONTACT_EMAIL = "info@skillbridgeway.org";
 
+export const CONTACT_WHATSAPP_NUMBER = "8801717224952";
+
+/** Opens a WhatsApp chat to the foundation's number, with an optional prefilled message. */
+export const whatsappChatLink = (text?: string) =>
+  text
+    ? `https://wa.me/${CONTACT_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`
+    : `https://wa.me/${CONTACT_WHATSAPP_NUMBER}`;
+
 export const SOCIAL_LINKS = [
   { name: "Facebook", href: "https://www.facebook.com/share/19MfQGX43q/" },
   { name: "Instagram", href: "https://www.instagram.com/skillbridgeway2026?stkn=MTk1ZTB5OWlwMHlqOA==" },
