@@ -37,3 +37,4 @@
 - Notices use a full-page admin editor, optional R2 cover and shared rich-text rendering; why: preview matches public content under existing RLS.
 - Gallery uploads retain R2 keys on retry and paginate admin photos; why: failed inserts needn't reupload and older photos stay visible.
 - Social profiles use `SocialLinks`; visible wordmarks use `BrandName`; why: shared brand data and styling stay consistent.
+- Partners live in the `partners` table (tier, logo in R2 `partners/`, publish toggle, sort order), managed at `/admin/partners` and rendered via `PartnerShowcase`; tier perks come from `src/lib/partners.ts`; why: one source for admin, home and /partner.
