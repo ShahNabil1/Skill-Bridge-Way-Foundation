@@ -202,15 +202,30 @@ function Index() {
 
           <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
             <div className="glass rounded-xl p-6 sm:p-8">
-              <p className="text-xs font-semibold uppercase text-primary">Sponsorship opportunities</p>
-              <ul className="mt-5 divide-y">
-                <li className="flex items-baseline justify-between gap-4 py-3"><span className="font-heading font-bold text-highlight">Platinum Partner</span><span className="text-sm text-muted-foreground">Title sponsorship · 50 students</span></li>
-                <li className="flex items-baseline justify-between gap-4 py-3"><span className="font-heading font-bold text-foreground">Gold Partner</span><span className="text-sm text-muted-foreground">Website + social media · 20 students</span></li>
-                <li className="flex items-baseline justify-between gap-4 py-3"><span className="font-heading font-bold text-foreground">Silver Partner</span><span className="text-sm text-muted-foreground">Website recognition · 5 students</span></li>
-              </ul>
-              <div className="mt-6 flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <p className="text-xs font-semibold uppercase text-primary">Sponsorship opportunities</p>
+                <p className="text-xs text-muted-foreground">Flexible packages · tailored to your capacity</p>
+              </div>
+              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                {PARTNER_TIERS.filter((t) => t.students).map((t) => {
+                  const top = t.id === "platinum";
+                  return (
+                    <div key={t.id} className={`relative flex flex-col rounded-lg border p-5 transition-all hover:-translate-y-1 ${top ? "border-highlight/60 bg-highlight/5 hover:shadow-[0_0_24px_-6px_hsl(var(--highlight)/0.5)]" : "hover:border-primary/60"}`}>
+                      {top && <span className="absolute -top-2.5 left-4 rounded-full bg-highlight px-2 py-0.5 text-[10px] font-bold uppercase text-highlight-foreground">Top tier</span>}
+                      <p className={`font-heading font-bold ${top ? "text-highlight" : "text-foreground"}`}>{t.label}</p>
+                      <p className="mt-3 font-heading text-4xl font-extrabold text-foreground">{t.students}</p>
+                      <p className="text-xs uppercase text-muted-foreground">students sponsored</p>
+                      <ul className="mt-4 space-y-2 border-t pt-4">
+                        {t.perks.map((perk) => <li key={perk} className="flex gap-2 text-xs leading-relaxed text-muted-foreground"><BadgeCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />{perk}</li>)}
+                      </ul>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="mt-6 text-xs font-semibold uppercase text-muted-foreground">Partnership types</p>
+              <div className="mt-3 flex flex-wrap gap-2">
                 {PARTNER_TYPES.map(({ icon: Icon, name }) => (
-                  <span key={name} className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium text-foreground"><Icon className="h-3.5 w-3.5 text-primary" aria-hidden="true" />{name}</span>
+                  <span key={name} className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary"><Icon className="h-3.5 w-3.5 text-primary" aria-hidden="true" />{name}</span>
                 ))}
               </div>
             </div>
