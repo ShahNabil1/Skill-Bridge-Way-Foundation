@@ -165,15 +165,17 @@ function Index() {
             <div className="relative max-w-md">
               <div className="absolute -left-3 -top-3 h-20 w-20 border-l border-t border-primary" aria-hidden="true" />
               <figure className="relative overflow-hidden border border-border bg-card editorial-item">
-                <img
-                  src={teamPortrait.url}
-                  alt="Md. Ziaul Haque Manik, Executive Director (Operations) of Skill Bridgeway Foundation"
-                  width={768}
-                  height={963}
-                  loading="lazy"
-                  className="aspect-[4/5] w-full object-cover object-top"
-                />
-                <figcaption className="absolute inset-x-0 bottom-0 border-t border-border bg-background/90 px-5 py-4 backdrop-blur-md sm:px-6">
+                <div className="bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--primary)_18%,transparent),transparent_70%)] px-6 pt-6 sm:px-8 sm:pt-8">
+                  <img
+                    src={teamPortrait.url}
+                    alt="Md. Ziaul Haque Manik, Executive Director (Operations) of Skill Bridgeway Foundation"
+                    width={768}
+                    height={963}
+                    loading="lazy"
+                    className="mx-auto h-auto w-full max-w-sm object-contain"
+                  />
+                </div>
+                <figcaption className="border-t border-border bg-background/90 px-5 py-4 sm:px-6">
                   <p className="font-heading text-lg font-extrabold uppercase text-foreground">Md. Ziaul Haque Manik</p>
                   <p className="mt-1 text-sm text-primary">Executive Director (Operations)</p>
                 </figcaption>
