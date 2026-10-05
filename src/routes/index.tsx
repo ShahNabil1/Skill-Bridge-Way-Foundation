@@ -7,6 +7,7 @@ import { seo } from "@/components/site/PageHero";
 import { CardSkeletonGrid, CourseCard, EmptyState, SectionHeading } from "@/components/site/ui-bits";
 import { BrandName } from "@/components/site/BrandName";
 import { coursesQuery, formatDate, noticesQuery } from "@/lib/public-data";
+import { whatsappChatLink } from "@/lib/site-info";
 import workshop from "@/assets/learning-workshop.jpg";
 import chairmanPortrait from "@/assets/md-saiful-azam-chairman.png.asset.json";
 
