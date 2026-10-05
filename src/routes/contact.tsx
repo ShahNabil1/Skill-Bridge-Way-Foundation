@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Mail, MapPin } from "lucide-react";
 import { PageHero, seo } from "@/components/site/PageHero";
 import { CONTACT_EMAIL, OFFICES } from "@/lib/site-info";
+import { SocialLinks } from "@/components/site/SocialLinks";
 
 export const Route = createFileRoute("/contact")({ staticData: { sitemap: true },
   head: () => seo("Contact | Skill Bridgeway Foundation", "Get in touch with Skill Bridgeway Foundation about courses, admission or partnerships.", { path: "/contact" }),
@@ -21,6 +22,7 @@ function Contact() {
             </div>
           ))}
           <div className="editorial-item grid grid-cols-[2rem_minmax(0,1fr)] gap-5 border-t border-border py-8 transition-colors hover:border-primary"><span className="font-mono text-xs text-primary">04</span><div><Mail className="mb-5 h-6 w-6 text-primary" /><h2 className="section-title text-lg">Email</h2><a href={`mailto:${CONTACT_EMAIL}`} className="mt-2 block break-all text-sm text-primary hover:underline">{CONTACT_EMAIL}</a></div></div>
+          <div className="editorial-item grid grid-cols-[2rem_minmax(0,1fr)] gap-5 border-t border-border py-8 transition-colors hover:border-primary"><span className="font-mono text-xs text-primary">05</span><div><h2 className="section-title mb-5 text-lg">Follow us</h2><SocialLinks labeled /></div></div>
         </div>
       </section>
     </>

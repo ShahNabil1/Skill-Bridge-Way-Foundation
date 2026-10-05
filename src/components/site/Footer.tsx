@@ -3,6 +3,7 @@ import { Mail, MapPin } from "lucide-react";
 import { NAV } from "./Header";
 import logo from "@/assets/sbf-logo.jpeg.asset.json";
 import { CONTACT_EMAIL, OFFICES } from "@/lib/site-info";
+import { SocialLinks } from "./SocialLinks";
 
 export function Footer() {
   return (
@@ -13,6 +14,7 @@ export function Footer() {
           <p className="mt-4 text-sm text-muted-foreground">
             An RJSC-registered non-profit expanding access to practical, future-relevant skills and economic opportunities for young people and underserved communities in Bangladesh.
           </p>
+          <div className="mt-6"><SocialLinks /></div>
         </div>
         <div>
           <p className="section-title text-sm">Explore</p>

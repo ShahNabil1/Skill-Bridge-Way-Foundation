@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BookOpen, Building2, GraduationCap, Handshake, Mail, MapPin, Megaphone, MessageCircle, Sparkles, Users, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { seo } from "@/components/site/PageHero";
+import { SocialLinks } from "@/components/site/SocialLinks";
 import workshop from "@/assets/partner-workshop.jpg";
 
 export const Route = createFileRoute("/partner")({
@@ -114,6 +115,7 @@ function PartnerPage() {
             <a className="flex items-start gap-4 py-3 text-foreground hover:text-primary" href="mailto:info@skillbridgeway.org"><Mail className="mt-0.5 h-5 w-5 shrink-0 text-primary" />info@skillbridgeway.org</a>
             <a className="flex items-start gap-4 py-3 text-foreground hover:text-primary" href="https://wa.me/8801717224952" target="_blank" rel="noopener noreferrer"><MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />WhatsApp: 01717224952</a>
             <p className="flex items-start gap-4 py-3 text-foreground"><MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />Bogura, Bangladesh</p>
+             <div className="mt-5"><SocialLinks /></div>
           </address>
         </div>
       </section>
