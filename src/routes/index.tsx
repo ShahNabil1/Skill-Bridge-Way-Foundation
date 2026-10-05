@@ -48,13 +48,15 @@ function Index() {
   return (
     <>
       <section className="relative isolate flex min-h-[610px] items-end overflow-hidden border-b sm:min-h-[660px]">
-        <img src={workshop} alt="Young Bangladeshi learners working together on digital skills" width={1600} height={900} className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+        <img src={workshop} alt="Young Bangladeshi learners working together on digital skills" width={1600} height={900} className="hero-img absolute inset-0 -z-20 h-full w-full object-cover object-center" />
         <div className="absolute inset-0 -z-10 bg-background/75" />
+        <div className="hero-orb hero-orb-a -z-10" aria-hidden="true" />
+        <div className="hero-orb hero-orb-b -z-10" aria-hidden="true" />
         <div className="mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:pb-16">
-          <p className="editorial-kicker">RJSC-registered non-profit / Bangladesh</p>
-          <h1 className="section-title mt-6 max-w-5xl text-4xl leading-tight sm:text-6xl lg:text-7xl"><BrandName /></h1>
-          <p className="mt-6 max-w-2xl border-l border-primary pl-5 text-base leading-relaxed text-foreground sm:text-lg">Bridging the gap between traditional education and the modern workforce — practical AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities.</p>
-          <div className="mt-9 flex flex-wrap gap-3">
+          <p className="editorial-kicker hero-reveal hero-reveal-1">RJSC-registered non-profit / Bangladesh</p>
+          <h1 className="section-title hero-reveal hero-reveal-2 mt-6 max-w-5xl text-4xl leading-tight sm:text-6xl lg:text-7xl"><BrandName /></h1>
+          <p className="hero-reveal hero-reveal-3 mt-6 max-w-2xl border-l border-primary pl-5 text-base leading-relaxed text-foreground sm:text-lg">Bridging the gap between traditional education and the modern workforce — practical AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities.</p>
+          <div className="hero-reveal hero-reveal-4 mt-9 flex flex-wrap gap-3">
             <Button asChild size="lg" className="cta-shine bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/courses" search={{}}>Free Admission <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
             <Button asChild size="lg" variant="outline" className="cta-outline-glow border-primary bg-background/50 text-primary hover:bg-primary hover:text-primary-foreground"><Link to="/courses">Explore courses</Link></Button>
           </div>

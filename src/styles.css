@@ -198,6 +198,7 @@ a:hover .brand-wordmark, .brand-wordmark:hover { transform: translateY(-1px); fi
   .brand-bridge, .brand-way { animation: none; }
   .brand-wordmark, a:hover .brand-wordmark, .brand-wordmark:hover, .cta-shine:hover, .cta-outline-glow:hover, .cta-shine:hover svg { transform: none; filter: none; }
   .cta-shine::after { display: none; }
+  .cta-shine, .hero-img, .hero-orb, .hero-reveal { animation: none; }
   .public-site .page-intro::after, .public-site .page-intro h1, .public-site .page-intro .editorial-kicker, .public-site .page-intro div.border-l, .site-mobile-nav { animation: none; }
   .public-site .editorial-item:hover { transform: none; }
   .public-site *, .site-header * { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
