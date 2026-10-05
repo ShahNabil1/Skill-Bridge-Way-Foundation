@@ -31,7 +31,7 @@ export function Header() {
               {n.label}
             </Link>
           ))}
-          <Button asChild className="bg-highlight text-highlight-foreground hover:bg-highlight/90">
+          <Button asChild className="cta-shine bg-highlight text-highlight-foreground hover:bg-highlight/90">
             <Link to="/courses" search={{}}>Apply Free</Link>
           </Button>
         </nav>
