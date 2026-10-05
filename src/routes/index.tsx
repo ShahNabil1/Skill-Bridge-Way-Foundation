@@ -7,6 +7,7 @@ import { seo } from "@/components/site/PageHero";
 import { CardSkeletonGrid, CourseCard, EmptyState, SectionHeading } from "@/components/site/ui-bits";
 import { BrandName } from "@/components/site/BrandName";
 import { coursesQuery, formatDate, noticesQuery } from "@/lib/public-data";
+import { whatsappChatLink } from "@/lib/site-info";
 import workshop from "@/assets/learning-workshop.jpg";
 import chairmanPortrait from "@/assets/md-saiful-azam-chairman.png.asset.json";
 
@@ -219,7 +220,7 @@ function Index() {
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">Become a partner, sponsor a student's learning journey, or support us with a donation. Let's discuss how we can create a lasting impact together.</p>
               </div>
               <div className="mt-6 flex flex-col gap-3">
-                <Button asChild className="bg-highlight text-highlight-foreground hover:bg-highlight/90"><a href="mailto:info@skillbridgeway.org?subject=Partnership%20enquiry%20%E2%80%94%20Skill%20Bridgeway%20Foundation">Become a Partner <ArrowRight /></a></Button>
+                <Button asChild className="bg-highlight text-highlight-foreground hover:bg-highlight/90"><a href={whatsappChatLink("Hello Skill Bridgeway Foundation! I'd like to learn more about becoming a partner or sponsoring your programs.")} target="_blank" rel="noopener noreferrer">Become a Partner <ArrowRight /></a></Button>
                 <Button asChild variant="outline"><Link to="/contact">Contact Us for Details</Link></Button>
               </div>
             </div>
