@@ -180,7 +180,7 @@ function Index() {
                       <Link to="/notices/$slug" params={{ slug: featured.slug }} className="group glass block overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-elegant">
                         {featured.cover_image_key && (
                           <div className="relative aspect-[16/9] overflow-hidden">
-                            <img src={cdnUrl(featured.cover_image_key)} alt={featured.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            <img src={cdnUrl(featured.cover_image_key!)} alt={featured.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                             <span className="absolute left-4 top-4 rounded-full bg-highlight px-3 py-1 font-heading text-xs font-bold uppercase tracking-wider text-highlight-foreground">{featured.type === "event" ? "Event" : "Notice"}</span>
                           </div>
                         )}
