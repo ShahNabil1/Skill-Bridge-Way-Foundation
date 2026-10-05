@@ -192,16 +192,6 @@ function Index() {
               <blockquote className="mt-6 border-l-2 border-highlight pl-5 text-base leading-8 text-muted-foreground sm:text-lg">
                 “Responsible for the overall management and daily operations of the Foundation, reporting to the Governing Body.”
               </blockquote>
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                <div className="editorial-item border border-border bg-card px-5 py-4">
-                  <p className="font-heading text-sm font-extrabold uppercase text-foreground">Daily operations</p>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Leads the Foundation’s day-to-day management and keeps every program running smoothly.</p>
-                </div>
-                <div className="editorial-item border border-border bg-card px-5 py-4">
-                  <p className="font-heading text-sm font-extrabold uppercase text-foreground">Reporting to the Governing Body</p>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Accountable to the Foundation’s Governing Body with transparent, responsible leadership.</p>
-                </div>
-              </div>
             </article>
           </div>
         </div>
