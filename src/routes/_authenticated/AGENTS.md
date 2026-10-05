@@ -1,0 +1,6 @@
+- Admin activity logs page 10 then 20 via `ActivityFeed`; student actions use `log_student_activity`; why: avoids loading whole logs.
+- Admin overview shows recent application previews and counts, not status editing; why: decisions must use the audited review flow.
+- Courses edit on a full page (`/admin/courses/$id`); TipTap HTML uses `RichContent` and deterministic sanitization; why: editor and public view match.
+- Notices use a full-page admin editor, optional R2 cover and shared rich-text rendering; why: preview matches public content under existing RLS.
+- Gallery uploads retain R2 keys on retry and paginate admin photos; why: failed inserts needn't reupload and older photos stay visible.
+- Partners live in the `partners` table (tier, logo in R2 `partners/`, publish toggle, sort order), managed at `/admin/partners` and rendered via `PartnerShowcase`; tier perks come from `src/lib/partners.ts`; why: one source for admin, home and /partner.

@@ -549,6 +549,48 @@ export type Database = {
         }
         Relationships: []
       }
+      partners: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_published: boolean
+          logo_key: string | null
+          name: string
+          partner_type: string | null
+          sort_order: number
+          tier: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean
+          logo_key?: string | null
+          name: string
+          partner_type?: string | null
+          sort_order?: number
+          tier?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean
+          logo_key?: string | null
+          name?: string
+          partner_type?: string | null
+          sort_order?: number
+          tier?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null

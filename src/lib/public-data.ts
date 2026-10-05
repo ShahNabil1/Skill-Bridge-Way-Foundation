@@ -92,3 +92,19 @@ export const galleryQuery = () =>
 export function formatDate(d: string) {
   return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
+
+export const partnersQuery = () =>
+  queryOptions({
+    queryKey: ["partners"],
+    staleTime: 60_000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("partners")
+        .select("id,name,tier,partner_type,logo_key,website_url,description,sort_order")
+        .eq("is_published", true)
+        .order("sort_order")
+        .order("created_at");
+      if (error) throw error;
+      return data;
+    },
+  });
