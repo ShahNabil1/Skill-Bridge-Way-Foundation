@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { seo } from "@/components/site/PageHero";
 import { CardSkeletonGrid, CourseCard, EmptyState, SectionHeading } from "@/components/site/ui-bits";
+import { BrandName } from "@/components/site/BrandName";
 import { coursesQuery, formatDate, noticesQuery } from "@/lib/public-data";
 import workshop from "@/assets/learning-workshop.jpg";
 import chairmanPortrait from "@/assets/md-saiful-azam-chairman.png.asset.json";
@@ -40,7 +41,7 @@ function Index() {
         <div className="absolute inset-0 -z-10 bg-background/75" />
         <div className="mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:pb-16">
           <p className="editorial-kicker">RJSC-registered non-profit / Bangladesh</p>
-          <h1 className="section-title mt-6 max-w-5xl text-4xl leading-tight sm:text-6xl lg:text-7xl">Skill Bridgeway <span className="text-primary">Foundation</span></h1>
+          <h1 className="section-title mt-6 max-w-5xl text-4xl leading-tight sm:text-6xl lg:text-7xl"><BrandName /></h1>
           <p className="mt-6 max-w-2xl border-l border-primary pl-5 text-base leading-relaxed text-foreground sm:text-lg">Bridging the gap between traditional education and the modern workforce — practical AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities.</p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Button asChild size="lg" className="bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/courses" search={{}}>Free Admission <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
@@ -83,7 +84,7 @@ function Index() {
                   />
                   <figcaption className="absolute inset-x-0 bottom-0 border-t border-border bg-background/90 px-5 py-4 backdrop-blur-md sm:px-6">
                     <p className="font-heading text-lg font-extrabold uppercase text-foreground">Md Saiful Azam</p>
-                    <p className="mt-1 text-sm text-primary">Chairman · Skill Bridgeway Foundation</p>
+                    <p className="mt-1 text-sm text-primary">Chairman · <BrandName className="font-semibold" /></p>
                   </figcaption>
                 </figure>
                 <div className="absolute -bottom-3 -right-3 h-20 w-20 border-b border-r border-highlight" aria-hidden="true" />
@@ -112,7 +113,7 @@ function Index() {
             <div className="mt-9 border-t border-border pt-6">
               <p className="font-heading text-lg font-extrabold uppercase text-foreground">Md Saiful Azam</p>
               <p className="mt-1 text-sm text-primary">Chairman</p>
-              <p className="text-sm text-muted-foreground">Skill Bridgeway Foundation</p>
+              <BrandName className="text-sm font-semibold" />
             </div>
           </article>
         </div>

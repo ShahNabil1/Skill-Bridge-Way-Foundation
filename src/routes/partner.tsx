@@ -3,6 +3,7 @@ import { ArrowRight, BookOpen, Building2, GraduationCap, Handshake, Mail, MapPin
 import { Button } from "@/components/ui/button";
 import { seo } from "@/components/site/PageHero";
 import { SocialLinks } from "@/components/site/SocialLinks";
+import { BrandName } from "@/components/site/BrandName";
 import workshop from "@/assets/partner-workshop.jpg";
 
 export const Route = createFileRoute("/partner")({
@@ -45,7 +46,7 @@ function PartnerPage() {
         <div className="absolute inset-0 -z-10 bg-background/65 lg:bg-background/55" />
         <div className="mx-auto w-full max-w-7xl px-4 pb-14 pt-32 sm:pb-20 lg:pb-24">
           <p className="editorial-kicker mb-5">Partner With Us / Sponsor Us</p>
-          <h1 className="max-w-4xl text-3xl font-extrabold uppercase leading-tight text-foreground sm:text-5xl lg:text-6xl">Empower the Future: Partner with <span className="text-primary">Skill Bridgeway Foundation</span></h1>
+          <h1 className="max-w-4xl text-3xl font-extrabold uppercase leading-tight text-foreground sm:text-5xl lg:text-6xl">Empower the Future: Partner with <BrandName /></h1>
           <p className="mt-6 max-w-3xl text-base leading-relaxed text-foreground sm:text-lg">We are an emerging start-up on a mission to equip young career aspirants in Bangladesh with essential AI literacy and advanced digital marketing skills. As we begin our journey, we invite forward-thinking organizations and individuals to partner with us. Together, we can bridge the digital skills gap and build a future-ready generation.</p>
           <Button asChild size="lg" className="mt-8 bg-highlight text-highlight-foreground hover:bg-highlight/90"><a href={partnerEmail}>Become a Partner <ArrowRight /></a></Button>
         </div>

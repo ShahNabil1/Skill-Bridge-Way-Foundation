@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { BrandName } from "@/components/site/BrandName";
 import logo from "@/assets/sbf-logo.jpeg.asset.json";
 
 export const NAV = [
@@ -22,10 +23,7 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Link to="/" className="flex min-w-0 items-center gap-3">
           <img src={logo.url} alt="Skill Bridgeway Foundation logo" width={40} height={40} className="h-10 w-10 shrink-0 rounded-full" />
-          <span className="truncate font-heading text-sm font-extrabold uppercase leading-tight tracking-wider">
-            Skill <span className="text-primary">Bridge</span><span className="text-highlight">way</span>
-            <span className="block text-[10px] font-semibold tracking-[0.3em] text-muted-foreground">Foundation</span>
-          </span>
+          <BrandName stacked className="min-w-0 font-heading text-sm font-extrabold uppercase leading-tight" />
         </Link>
         <nav className="hidden items-center gap-5 lg:flex">
           {NAV.map((n) => (
