@@ -1,6 +1,7 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Turnstile } from "@/components/auth/Turnstile";
 import { submitAdmission } from "@/lib/admission.functions";
+import { trackEvent } from "@/lib/analytics";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -146,6 +147,7 @@ function Admission() {
       if (!res.ok && res.error === "closed") throw new Error("Applications for this course are not open right now.");
       if (!res.ok) throw new Error("Could not save your application");
       sendReceived({ data: { admissionId } }).catch(() => undefined);
+      trackEvent("generate_lead", { form: "admission", course_id: form.course_id, occupation: form.occupation });
       setReference({ ref: refOf(admissionId), token: accessToken });
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {

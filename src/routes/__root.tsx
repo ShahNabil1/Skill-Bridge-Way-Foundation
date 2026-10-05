@@ -13,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { trackPageView } from "../lib/analytics";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -125,6 +126,12 @@ function RootComponent() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const isPrivate = /^\/(admin|auth)(\/|$)/.test(pathname);
   const isCourseDetail = /^\/(courses\/[^/]+|admission|application\/[^/]+)\/?$/.test(pathname);
+
+  useEffect(() => {
+    // Wait a tick so the new page's <title> is in place before sending.
+    const t = window.setTimeout(() => trackPageView(pathname), 50);
+    return () => window.clearTimeout(t);
+  }, [pathname]);
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {

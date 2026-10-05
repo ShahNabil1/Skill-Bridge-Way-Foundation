@@ -36,7 +36,7 @@ function VerifyPage() {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const v = input.trim().toUpperCase();
-    if (v) navigate({ search: { serial: v } });
+    if (v) { trackEvent("certificate_verify"); navigate({ search: { serial: v } }); }
   }
 
   const pdf = cdnUrl(data?.pdf_key);
