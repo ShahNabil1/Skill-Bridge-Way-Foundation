@@ -65,7 +65,7 @@ function PartnersAdmin() {
     toast.success(p.is_published ? "Hidden from website" : "Now featured on website"); refresh();
   };
   const remove = async (p: Partner) => {
-    if (!(await confirmAction({ title: `Remove ${p.name}?`, description: "This partner will be removed from the website permanently.", confirmLabel: "Remove", destructive: true }))) return;
+    if (!(await confirmAction({ title: `Remove ${p.name}?`, description: "This partner will be removed from the website permanently.", confirmText: "Remove", destructive: true }))) return;
     const { error } = await supabase.from("partners").delete().eq("id", p.id);
     if (error) return toast.error(error.message);
     toast.success("Partner removed"); refresh();
