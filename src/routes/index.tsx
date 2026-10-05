@@ -23,6 +23,20 @@ const PILLARS = [
   { icon: HeartHandshake, title: "Human-Centred Skills", text: "Critical thinking, communication, creativity and problem-solving." },
 ];
 
+const PARTNER_REASONS = [
+  { icon: Handshake, title: "Social Impact & CSR", text: "Contribute directly to youth skill development and digital empowerment in Bangladesh." },
+  { icon: Megaphone, title: "Brand Visibility", text: "Be recognized across our website, social media, training materials and events." },
+  { icon: Users, title: "Access to Talent", text: "Connect with motivated, certified young professionals trained in AI and digital tools." },
+  { icon: BookOpen, title: "Shape the Curriculum", text: "Co-design training modules aligned with your industry's needs." },
+];
+
+const PARTNER_TYPES = [
+  { icon: GraduationCap, name: "Academic" },
+  { icon: Wrench, name: "Technology" },
+  { icon: Megaphone, name: "Media" },
+  { icon: Building2, name: "Corporate" },
+];
+
 
 function Index() {
   const courses = useQuery(coursesQuery(3));
