@@ -13,6 +13,7 @@ import { PARTNER_TIERS } from "@/lib/partners";
 import { PartnerShowcase } from "@/components/site/PartnerShowcase";
 import workshop from "@/assets/learning-workshop.jpg";
 import chairmanPortrait from "@/assets/md-saiful-azam-chairman.png.asset.json";
+import teamPortrait from "@/assets/ziaul-haque-manik.png.asset.json";
 
 export const Route = createFileRoute("/")({ staticData: { sitemap: true },
   head: () => seo("Skill Bridgeway Foundation — AI, Digital & Freelancing Skills in Bangladesh", "Non-profit building AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities in Bangladesh.", { path: "/" }),
@@ -148,6 +149,57 @@ function Index() {
               <BrandName className="text-sm font-semibold" />
             </div>
           </article>
+        </div>
+      </section>
+
+      {/* Our team / management */}
+      <section className="border-t bg-grid" aria-labelledby="our-team-title">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
+          <div className="border-b pb-6">
+            <p className="editorial-kicker">Our team</p>
+            <h2 id="our-team-title" className="section-title mt-3 text-2xl sm:text-4xl">The people behind the bridge</h2>
+            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">A dedicated leadership team keeps the Foundation running — so learning, operations and accountability stay on track every single day.</p>
+          </div>
+
+          <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_1.3fr]">
+            <div className="relative max-w-md">
+              <div className="absolute -left-3 -top-3 h-20 w-20 border-l border-t border-primary" aria-hidden="true" />
+              <figure className="relative overflow-hidden border border-border bg-card editorial-item">
+                <img
+                  src={teamPortrait.url}
+                  alt="Md. Ziaul Haque Manik, Executive Director (Operations) of Skill Bridgeway Foundation"
+                  width={768}
+                  height={963}
+                  loading="lazy"
+                  className="aspect-[4/5] w-full object-cover object-top"
+                />
+                <figcaption className="absolute inset-x-0 bottom-0 border-t border-border bg-background/90 px-5 py-4 backdrop-blur-md sm:px-6">
+                  <p className="font-heading text-lg font-extrabold uppercase text-foreground">Md. Ziaul Haque Manik</p>
+                  <p className="mt-1 text-sm text-primary">Executive Director (Operations)</p>
+                </figcaption>
+              </figure>
+              <div className="absolute -bottom-3 -right-3 h-20 w-20 border-b border-r border-highlight" aria-hidden="true" />
+            </div>
+
+            <article className="px-1 sm:px-4">
+              <p className="editorial-kicker">Management</p>
+              <h3 className="mt-5 font-heading text-2xl font-extrabold uppercase leading-tight text-foreground sm:text-3xl">Md. Ziaul Haque Manik</h3>
+              <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-primary">Executive Director (Operations)</p>
+              <blockquote className="mt-6 border-l-2 border-highlight pl-5 text-base leading-8 text-muted-foreground sm:text-lg">
+                “Responsible for the overall management and daily operations of the Foundation, reporting to the Governing Body.”
+              </blockquote>
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                <div className="editorial-item border border-border bg-card px-5 py-4">
+                  <p className="font-heading text-sm font-extrabold uppercase text-foreground">Daily operations</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Leads the Foundation’s day-to-day management and keeps every program running smoothly.</p>
+                </div>
+                <div className="editorial-item border border-border bg-card px-5 py-4">
+                  <p className="font-heading text-sm font-extrabold uppercase text-foreground">Reporting to the Governing Body</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Accountable to the Foundation’s Governing Body with transparent, responsible leadership.</p>
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 
