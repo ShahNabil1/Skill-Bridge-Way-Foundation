@@ -3,6 +3,7 @@ import { BarChart3, Eye, Handshake, Lightbulb, MapPin, Scale, Sprout, Target, Us
 import { Button } from "@/components/ui/button";
 import { seo } from "@/components/site/PageHero";
 import { SectionHeading } from "@/components/site/ui-bits";
+import { BrandName } from "@/components/site/BrandName";
 import workshop from "@/assets/learning-workshop.jpg";
 
 export const Route = createFileRoute("/about")({ staticData: { sitemap: true },
@@ -33,7 +34,7 @@ function About() {
         <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 pb-12 pt-28 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.7fr)] lg:items-end lg:pb-16">
           <div className="min-w-0">
             <p className="editorial-kicker">Who we are / Bangladesh</p>
-            <h1 className="section-title mt-6 max-w-4xl text-4xl leading-tight sm:text-6xl lg:text-7xl">Skill Bridgeway <span className="text-primary">Foundation</span></h1>
+            <h1 className="section-title mt-6 max-w-4xl text-4xl leading-tight sm:text-6xl lg:text-7xl"><BrandName /></h1>
             <p className="mt-6 max-w-2xl border-l border-primary pl-5 text-base leading-relaxed text-foreground sm:text-lg">A Bangladesh-based, non-profit organisation incorporated with the Registrar of Joint Stock Companies and Firms (RJSC), expanding access to practical, future-relevant skills and economic opportunities.</p>
           </div>
           <div className="grid grid-cols-2 gap-5 border-t border-primary/60 pt-5 text-sm text-muted-foreground lg:grid-cols-1 lg:border-l lg:border-t-0 lg:pl-6">

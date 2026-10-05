@@ -4,6 +4,7 @@ import { NAV } from "./Header";
 import logo from "@/assets/sbf-logo.jpeg.asset.json";
 import { CONTACT_EMAIL, OFFICES } from "@/lib/site-info";
 import { SocialLinks } from "./SocialLinks";
+import { BrandName } from "./BrandName";
 
 export function Footer() {
   return (
@@ -11,6 +12,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div className="sm:col-span-2 lg:col-span-1">
           <img src={logo.url} alt="Skill Bridgeway Foundation logo" width={88} height={88} loading="lazy" className="h-22 w-22 rounded-full" />
+          <BrandName className="mt-4 font-heading text-base font-extrabold uppercase" />
           <p className="mt-4 text-sm text-muted-foreground">
             An RJSC-registered non-profit expanding access to practical, future-relevant skills and economic opportunities for young people and underserved communities in Bangladesh.
           </p>
@@ -46,7 +48,9 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t">
-        <p className="mx-auto max-w-7xl px-4 py-5 text-xs text-muted-foreground">© {new Date().getFullYear()} Skill Bridgeway Foundation. All rights reserved.</p>
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-2 px-4 py-5 text-xs text-muted-foreground">
+          <span>© {new Date().getFullYear()}</span><BrandName className="font-heading font-bold uppercase" /><span>All rights reserved.</span>
+        </div>
       </div>
     </footer>
   );
