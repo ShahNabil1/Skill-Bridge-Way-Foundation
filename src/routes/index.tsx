@@ -176,6 +176,57 @@ function Index() {
         </div>
       </section>
 
+      {/* Partner with us */}
+      <section className="border-t bg-grid">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
+          <div className="flex flex-wrap items-end justify-between gap-6 border-b pb-6">
+            <div>
+              <p className="editorial-kicker">Partner With Us / Sponsor Us</p>
+              <h2 className="section-title mt-3 text-2xl sm:text-4xl">Empower the future together</h2>
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">We invite forward-thinking organizations and individuals to partner with us — through sponsorship, empowerment programs and donations — to bridge the digital skills gap and build a future-ready generation.</p>
+            </div>
+            <Button asChild variant="outline"><Link to="/partner">Explore partnership <ArrowRight /></Link></Button>
+          </div>
+
+          <div className="grid gap-x-12 sm:grid-cols-2 lg:grid-cols-4">
+            {PARTNER_REASONS.map(({ icon: Icon, title, text }, i) => (
+              <div key={title} className="editorial-item border-b py-7">
+                <span className="font-heading text-sm font-bold text-primary">0{i + 1}</span>
+                <Icon className="mb-4 mt-3 h-6 w-6 text-primary" aria-hidden="true" />
+                <h3 className="text-lg">{title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+            <div className="glass rounded-xl p-6 sm:p-8">
+              <p className="text-xs font-semibold uppercase text-primary">Sponsorship opportunities</p>
+              <ul className="mt-5 divide-y">
+                <li className="flex items-baseline justify-between gap-4 py-3"><span className="font-heading font-bold text-highlight">Platinum Partner</span><span className="text-sm text-muted-foreground">Title sponsorship · 50 students</span></li>
+                <li className="flex items-baseline justify-between gap-4 py-3"><span className="font-heading font-bold text-foreground">Gold Partner</span><span className="text-sm text-muted-foreground">Website + social media · 20 students</span></li>
+                <li className="flex items-baseline justify-between gap-4 py-3"><span className="font-heading font-bold text-foreground">Silver Partner</span><span className="text-sm text-muted-foreground">Website recognition · 5 students</span></li>
+              </ul>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {PARTNER_TYPES.map(({ icon: Icon, name }) => (
+                  <span key={name} className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium text-foreground"><Icon className="h-3.5 w-3.5 text-primary" aria-hidden="true" />{name}</span>
+                ))}
+              </div>
+            </div>
+            <div className="glass flex flex-col justify-between rounded-xl p-6 sm:p-8">
+              <div>
+                <p className="text-xs font-semibold uppercase text-primary">Ready to make a difference?</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">Become a partner, sponsor a student's learning journey, or support us with a donation. Let's discuss how we can create a lasting impact together.</p>
+              </div>
+              <div className="mt-6 flex flex-col gap-3">
+                <Button asChild className="bg-highlight text-highlight-foreground hover:bg-highlight/90"><a href="mailto:info@skillbridgeway.org?subject=Partnership%20enquiry%20%E2%80%94%20Skill%20Bridgeway%20Foundation">Become a Partner <ArrowRight /></a></Button>
+                <Button asChild variant="outline"><Link to="/contact">Contact Us for Details</Link></Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="border-t bg-grid">
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-16 md:flex-row md:items-center md:justify-between">
