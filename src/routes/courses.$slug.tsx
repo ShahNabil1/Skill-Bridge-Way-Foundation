@@ -10,6 +10,7 @@ import { CourseMedia, EnrollGate, RichContent } from "@/components/site/CourseMe
 import { durationLabel, imagesOf, plainText } from "@/lib/course-content";
 import { courseQuery, coursesQuery, isPreviewOnlyCourse, mediaUrl, TEST_ENROLLMENT_SLUG } from "@/lib/public-data";
 import { PROGRAM } from "@/lib/program-pathway";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 
 export const Route = createFileRoute("/courses/$slug")({ staticData: { sitemap: true },
   loader: async ({ context, params }) => {
@@ -37,9 +38,15 @@ export const Route = createFileRoute("/courses/$slug")({ staticData: { sitemap: 
       description: desc,
       url: `https://skillbridgeway.org/courses/${params.slug}`,
       ...(image ? { image } : {}),
-      provider: { "@type": "Organization", name: "Skill Bridgeway Foundation", sameAs: "https://skillbridgeway.org" },
+      inLanguage: "en",
+      isAccessibleForFree: true,
+      educationalLevel: c.level ?? undefined,
+      offers: { "@type": "Offer", price: 0, priceCurrency: "BDT", category: "Free", availability: "https://schema.org/InStock" },
+      hasCourseInstance: { "@type": "CourseInstance", courseMode: "Onsite", location: { "@type": "Place", name: "Skill Bridgeway Foundation Training Center, Bogura" } },
+      provider: { "@id": "https://skillbridgeway.org/#organization", "@type": "Organization", name: "Skill Bridgeway Foundation", sameAs: "https://skillbridgeway.org" },
     };
-    return { ...base, scripts: [{ type: "application/ld+json", children: JSON.stringify(jsonLd) }] };
+    const crumbs = breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Courses", path: "/courses" }, { name: c.title, path: `/courses/${params.slug}` }]);
+    return { ...base, scripts: [{ type: "application/ld+json", children: JSON.stringify(jsonLd) }, { type: "application/ld+json", children: JSON.stringify(crumbs) }] };
   },
   component: CourseDetails,
 });

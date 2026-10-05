@@ -1,3 +1,4 @@
+import { trackEvent } from "@/lib/analytics";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -36,7 +37,7 @@ function VerifyPage() {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const v = input.trim().toUpperCase();
-    if (v) navigate({ search: { serial: v } });
+    if (v) { trackEvent("certificate_verify"); navigate({ search: { serial: v } }); }
   }
 
   const pdf = cdnUrl(data?.pdf_key);
