@@ -23,12 +23,6 @@ const PILLARS = [
   { icon: HeartHandshake, title: "Human-Centred Skills", text: "Critical thinking, communication, creativity and problem-solving." },
 ];
 
-const STEPS = [
-  { n: "01", title: "Apply free", text: "Fill in the online admission form — no fees, ever." },
-  { n: "02", title: "Get your Student ID", text: "Approved learners receive a unique Student ID." },
-  { n: "03", title: "Learn by doing", text: "Practical, hands-on learning connected to real-world opportunities." },
-  { n: "04", title: "Earn a verified certificate", text: "Every certificate carries a QR code anyone can verify." },
-];
 
 function Index() {
   const courses = useQuery(coursesQuery(3));
@@ -64,60 +58,6 @@ function Index() {
         </div>
       </section>
 
-      {/* Chairman's message */}
-      <section className="relative overflow-hidden border-y bg-grid" aria-labelledby="chairman-message-title">
-        <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px bg-border lg:block" aria-hidden="true" />
-        <div className="mx-auto grid max-w-7xl lg:grid-cols-2">
-          <div className="relative border-b border-border px-4 py-12 sm:px-8 sm:py-16 lg:border-b-0 lg:border-r lg:px-12 lg:py-24">
-            <div className="lg:sticky lg:top-28">
-              <p className="editorial-kicker">Leadership</p>
-              <div className="relative mt-7 max-w-xl">
-                <div className="absolute -left-3 -top-3 h-20 w-20 border-l border-t border-primary" aria-hidden="true" />
-                <figure className="relative overflow-hidden border border-border bg-card">
-                  <img
-                    src={chairmanPortrait.url}
-                    alt="Md Saiful Azam, Chairman of Skill Bridgeway Foundation"
-                    width={768}
-                    height={963}
-                    loading="lazy"
-                    className="aspect-[4/5] w-full object-cover object-top"
-                  />
-                  <figcaption className="absolute inset-x-0 bottom-0 border-t border-border bg-background/90 px-5 py-4 backdrop-blur-md sm:px-6">
-                    <p className="font-heading text-lg font-extrabold uppercase text-foreground">Md Saiful Azam</p>
-                    <p className="mt-1 text-sm text-primary">Chairman · <BrandName className="font-semibold" /></p>
-                  </figcaption>
-                </figure>
-                <div className="absolute -bottom-3 -right-3 h-20 w-20 border-b border-r border-highlight" aria-hidden="true" />
-              </div>
-            </div>
-          </div>
-
-          <article className="px-4 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-24">
-            <div className="flex items-start justify-between gap-5">
-              <div>
-                <p className="editorial-kicker">From the Chairman</p>
-                <h2 id="chairman-message-title" className="section-title mt-5 max-w-xl text-3xl leading-tight sm:text-4xl">Message from the Chairman</h2>
-              </div>
-              <Quote className="mt-1 hidden h-14 w-14 shrink-0 text-primary/25 sm:block" strokeWidth={1.25} aria-hidden="true" />
-            </div>
-
-            <div className="mt-8 space-y-5 text-[0.96rem] leading-8 text-muted-foreground sm:text-base">
-              <p>I believe that the young people of Bangladesh have no shortage of talent or potential. What they need is the right guidance, opportunities for practical learning, and the confidence to put their abilities to use. Skill Bridgeway Foundation began its journey with this belief.</p>
-              <p>Technology and artificial intelligence are changing how we learn and work. We want the opportunities arising from this change to reach beyond cities and privileged communities. Young people in rural areas, madrasah students, and underserved communities should also have the opportunity to develop the skills they need to build dignified livelihoods.</p>
-              <p>Our goal is to create an effective bridge between education and working life. Through training in digital skills, AI literacy, freelancing, and entrepreneurship, we aim to build a learning environment where students develop the ability to solve real problems. Alongside these practical skills, we place importance on creativity, communication, ethics, and the responsible use of technology.</p>
-              <p>For me, the success of this initiative goes beyond the number of training sessions delivered or certificates awarded. The true measure of our work will be how effectively learners apply their skills, how confident they become about their future, and how they contribute to their families and communities.</p>
-              <p>I invite students, parents, trainers, development partners, and supporters to join us on this journey. We are committed to moving forward with transparency, accountability, and a clear focus on the quality of learning.</p>
-              <p className="border-l-2 border-highlight pl-5 font-medium text-foreground">Together, let us create opportunities that allow each person’s future to be shaped by their potential rather than their limitations.</p>
-            </div>
-
-            <div className="mt-9 border-t border-border pt-6">
-              <p className="font-heading text-lg font-extrabold uppercase text-foreground">Md Saiful Azam</p>
-              <p className="mt-1 text-sm text-primary">Chairman</p>
-              <BrandName className="text-sm font-semibold" />
-            </div>
-          </article>
-        </div>
-      </section>
 
       {/* Courses */}
       <section className="border-y bg-grid">
