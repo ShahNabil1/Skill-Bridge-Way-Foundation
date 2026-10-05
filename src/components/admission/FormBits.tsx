@@ -48,6 +48,10 @@ export function AddressPicker({ value, onChange, errors = {}, disabled }: { valu
       <Field label="District (Zilla)" error={errors.district}><Select value={value.district} disabled={disabled || !value.division} options={districts} placeholder={value.division ? "Select district" : "Select division first"} onChange={(v) => onChange({ district: v, upazila: "" })} /></Field>
       <Field label="Upazila / Thana" error={errors.upazila}><Select value={value.upazila} disabled={disabled || !value.district} options={upazilas} placeholder={value.district ? "Select upazila" : "Select district first"} onChange={(v) => onChange({ upazila: v })} /></Field>
     </div>
-    <Field label="Village / Area, House & Road" error={errors.address_line} hint="e.g. House 12, Road 3, Malotinagar"><Input disabled={disabled} value={value.address_line} maxLength={300} onChange={(e) => onChange({ address_line: e.target.value })} /></Field>
+    <div className="grid gap-5 sm:grid-cols-2">
+      <Field label="Union / Ward" error={errors.union_name} hint="e.g. Gokul Union or Ward 5"><Input disabled={disabled} value={value.union_name} maxLength={100} onChange={(e) => onChange({ union_name: e.target.value })} /></Field>
+      <Field label="Village / Area" error={errors.village} hint="e.g. Malotinagar"><Input disabled={disabled} value={value.village} maxLength={120} onChange={(e) => onChange({ village: e.target.value })} /></Field>
+    </div>
+    <Field label="House, Road / Para (optional)" error={errors.address_line} hint="e.g. House 12, Road 3"><Input disabled={disabled} value={value.address_line} maxLength={300} onChange={(e) => onChange({ address_line: e.target.value })} /></Field>
   </div>;
 }

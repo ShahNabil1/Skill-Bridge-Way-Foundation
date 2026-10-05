@@ -12,10 +12,13 @@ export const personalSchema = z.object({
     return age >= 12 && age <= 80;
   }, "Age must be between 12 and 80"),
   gender: z.enum(["male", "female", "other"], { message: "Select gender" }),
+  occupation: z.string().refine((v) => (OCCUPATIONS as readonly string[]).includes(v), "Select your occupation"),
   division: z.string().min(1, "Select your division"),
   district: z.string().min(1, "Select your district"),
   upazila: z.string().min(1, "Select your upazila / thana"),
-  address_line: z.string().trim().min(3, "Enter village / area, house & road").max(300),
+  union_name: z.string().trim().min(2, "Enter your union / ward").max(100),
+  village: z.string().trim().min(2, "Enter your village / area").max(120),
+  address_line: z.string().trim().max(300),
 });
 
 export const educationSchema = z.object({
@@ -36,7 +39,13 @@ export const educationSchema = z.object({
 export const courseSchema = z.object({
   course_id: z.string().min(1, "Choose a course"),
   motivation: z.string().trim().min(20, "Tell us a bit more (at least 20 characters)").max(1500),
+  digital_access: z.array(z.string()).min(1, "Select at least one device you can use"),
+  attendance_commitment: z.string().refine((v) => (ATTENDANCE_OPTIONS as readonly string[]).includes(v), "Select your attendance commitment"),
 });
+
+export const OCCUPATIONS = ["Student", "Job seeker", "Entrepreneur", "Freelancer", "Young professional", "Technology enthusiast"] as const;
+export const DIGITAL_DEVICES = ["Laptop", "Desktop computer", "Smartphone"] as const;
+export const ATTENDANCE_OPTIONS = ["100", "90", "80", "75"] as const;
 
 export type AdmissionForm = z.infer<typeof personalSchema> & z.infer<typeof educationSchema> & z.infer<typeof courseSchema>;
 
@@ -49,6 +58,6 @@ export const PASSING_YEARS = Array.from({ length: now - 1979 }, (_, i) => String
 export const DOC_SLOTS = [
   { id: "photo", label: "Passport-size photo", required: true },
   { id: "nid", label: "NID / Birth certificate", required: true },
-  { id: "certificate", label: "Latest academic certificate", required: false },
+  { id: "certificate", label: "Latest academic certificate", required: true },
 ] as const;
 export type DocSlot = (typeof DOC_SLOTS)[number]["id"];
