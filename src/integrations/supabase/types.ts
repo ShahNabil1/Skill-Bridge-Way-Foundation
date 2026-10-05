@@ -60,9 +60,11 @@ export type Database = {
           access_token: string
           address: string | null
           address_line: string | null
+          attendance_commitment: number | null
           course_id: string | null
           created_at: string
           date_of_birth: string | null
+          digital_access: string[] | null
           district: string | null
           division: string | null
           document_keys: Json
@@ -76,6 +78,7 @@ export type Database = {
           id: string
           institution: string | null
           motivation: string | null
+          occupation: string | null
           passing_year: string | null
           phone: string
           phone_normalized: string | null
@@ -85,16 +88,20 @@ export type Database = {
           reviewed_at: string | null
           session: string | null
           status: Database["public"]["Enums"]["admission_status"]
+          union_name: string | null
           upazila: string | null
           updated_at: string
+          village: string | null
         }
         Insert: {
           access_token?: string
           address?: string | null
           address_line?: string | null
+          attendance_commitment?: number | null
           course_id?: string | null
           created_at?: string
           date_of_birth?: string | null
+          digital_access?: string[] | null
           district?: string | null
           division?: string | null
           document_keys?: Json
@@ -108,6 +115,7 @@ export type Database = {
           id?: string
           institution?: string | null
           motivation?: string | null
+          occupation?: string | null
           passing_year?: string | null
           phone: string
           phone_normalized?: string | null
@@ -117,16 +125,20 @@ export type Database = {
           reviewed_at?: string | null
           session?: string | null
           status?: Database["public"]["Enums"]["admission_status"]
+          union_name?: string | null
           upazila?: string | null
           updated_at?: string
+          village?: string | null
         }
         Update: {
           access_token?: string
           address?: string | null
           address_line?: string | null
+          attendance_commitment?: number | null
           course_id?: string | null
           created_at?: string
           date_of_birth?: string | null
+          digital_access?: string[] | null
           district?: string | null
           division?: string | null
           document_keys?: Json
@@ -140,6 +152,7 @@ export type Database = {
           id?: string
           institution?: string | null
           motivation?: string | null
+          occupation?: string | null
           passing_year?: string | null
           phone?: string
           phone_normalized?: string | null
@@ -149,8 +162,10 @@ export type Database = {
           reviewed_at?: string | null
           session?: string | null
           status?: Database["public"]["Enums"]["admission_status"]
+          union_name?: string | null
           upazila?: string | null
           updated_at?: string
+          village?: string | null
         }
         Relationships: [
           {
