@@ -24,6 +24,9 @@
   --color-highlight: var(--highlight);
   --color-highlight-foreground: var(--highlight-foreground);
   --color-whatsapp: #25D366;
+  --color-brand-facebook: var(--brand-facebook);
+  --color-brand-instagram: var(--brand-instagram);
+  --color-brand-linkedin: var(--brand-linkedin);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
@@ -56,6 +59,9 @@
   --primary-foreground: #0A192F;
   --highlight: #FF9900;
   --highlight-foreground: #0A192F;
+  --brand-facebook: #1877F2;
+  --brand-instagram: #E879A6;
+  --brand-linkedin: #61B4F3;
   --secondary: color-mix(in srgb, #F4F6F8 10%, #0A192F 90%);
   --secondary-foreground: #FFFFFF;
   --muted: color-mix(in srgb, #F4F6F8 10%, #0A192F 90%);

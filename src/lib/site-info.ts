@@ -5,3 +5,9 @@ export const OFFICES = [
 ] as const;
 
 export const CONTACT_EMAIL = "info@skillbridgeway.org";
+
+export const SOCIAL_LINKS = [
+  { name: "Facebook", href: "https://www.facebook.com/share/19MfQGX43q/" },
+  { name: "Instagram", href: "https://www.instagram.com/skillbridgeway2026?stkn=MTk1ZTB5OWlwMHlqOA==" },
+  { name: "LinkedIn", href: "https://www.linkedin.com/company/skill-bridgeway-foundation/" },
+] as const;

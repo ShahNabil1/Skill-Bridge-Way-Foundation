@@ -36,3 +36,4 @@
 - Course images use `image_keys` (1–5; first is cover), cropped 16:9; apply windows are DB-enforced; why: legacy cards work and closed intakes can't be bypassed.
 - Notices use a full-page admin editor, optional R2 cover and shared rich-text rendering; why: preview matches public content under existing RLS.
 - Gallery uploads retain R2 keys on retry and paginate admin photos; why: failed inserts needn't reupload and older photos stay visible.
+- Official social profiles live in `site-info.ts` and render through `SocialLinks`; why: footer and contact surfaces must share one maintained set of links.
