@@ -7,6 +7,7 @@ import { seo } from "@/components/site/PageHero";
 import { CardSkeletonGrid, CourseCard, EmptyState, SectionHeading } from "@/components/site/ui-bits";
 import { BrandName } from "@/components/site/BrandName";
 import { coursesQuery, formatDate, noticesQuery } from "@/lib/public-data";
+import { cdnUrl } from "@/lib/cdn";
 import { whatsappChatLink } from "@/lib/site-info";
 import { PARTNER_TIERS } from "@/lib/partners";
 import { PartnerShowcase } from "@/components/site/PartnerShowcase";
