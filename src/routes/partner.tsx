@@ -115,7 +115,7 @@ function PartnerPage() {
           <address className="not-italic lg:border-l lg:pl-12">
             <p className="mb-6 text-xs font-semibold uppercase text-primary">Contact Us</p>
             <a className="flex items-start gap-4 py-3 text-foreground hover:text-primary" href="mailto:info@skillbridgeway.org"><Mail className="mt-0.5 h-5 w-5 shrink-0 text-primary" />info@skillbridgeway.org</a>
-            <a className="flex items-start gap-4 py-3 text-foreground hover:text-primary" href="https://wa.me/8801717224952" target="_blank" rel="noopener noreferrer"><MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />WhatsApp: 01717224952</a>
+            <a className="flex items-start gap-4 py-3 text-foreground hover:text-primary" href={whatsappChatLink("Hello Skill Bridgeway Foundation! I'd like to discuss a partnership or sponsorship.")} target="_blank" rel="noopener noreferrer"><MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />WhatsApp: 01717224952</a>
             <p className="flex items-start gap-4 py-3 text-foreground"><MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />Bogura, Bangladesh</p>
              <div className="mt-5"><SocialLinks /></div>
           </address>
