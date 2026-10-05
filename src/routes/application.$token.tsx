@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { seo } from "@/components/site/PageHero";
-import { composeAddress, copyText, refOf, type ApplicationRecord } from "@/lib/application";
+import { attendanceText, composeAddress, copyText, devicesText, refOf, type ApplicationRecord } from "@/lib/application";
 import { formatDate } from "@/lib/public-data";
 import { ApplicantAvatar, DocumentGrid, InfoGrid, StatusBadge } from "@/components/admission/ApplicationParts";
 
