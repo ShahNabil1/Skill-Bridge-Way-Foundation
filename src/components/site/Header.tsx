@@ -27,7 +27,7 @@ export function Header() {
         </Link>
         <nav className="hidden items-center gap-5 lg:flex">
           {NAV.map((n) => (
-            <Link key={n.to} to={n.to} className="text-sm text-muted-foreground transition-colors hover:text-primary" activeProps={{ className: "text-primary" }} activeOptions={{ exact: n.to === "/" }}>
+            <Link key={n.to} to={n.to} className="nav-link text-sm text-muted-foreground transition-colors hover:text-primary" activeProps={{ className: "text-primary nav-link-active" }} activeOptions={{ exact: n.to === "/" }}>
               {n.label}
             </Link>
           ))}
@@ -42,7 +42,7 @@ export function Header() {
       {open && (
         <nav className="site-mobile-nav flex flex-col gap-1 border-t px-4 py-3 lg:hidden">
           {NAV.map((n) => (
-            <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="py-2 text-muted-foreground hover:text-primary">
+            <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="nav-link-mobile py-2 font-medium text-muted-foreground hover:text-primary">
               {n.label}
             </Link>
           ))}
