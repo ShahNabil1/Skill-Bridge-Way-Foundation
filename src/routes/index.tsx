@@ -38,8 +38,8 @@ function Index() {
           <h1 className="section-title mt-6 max-w-5xl text-4xl leading-tight sm:text-6xl lg:text-7xl"><BrandName /></h1>
           <p className="mt-6 max-w-2xl border-l border-primary pl-5 text-base leading-relaxed text-foreground sm:text-lg">Bridging the gap between traditional education and the modern workforce — practical AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities.</p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/courses" search={{}}>Free Admission <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
-            <Button asChild size="lg" variant="outline" className="border-primary bg-background/50 text-primary hover:bg-primary hover:text-primary-foreground"><Link to="/courses">Explore courses</Link></Button>
+            <Button asChild size="lg" className="cta-shine bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/courses" search={{}}>Free Admission <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
+            <Button asChild size="lg" variant="outline" className="cta-outline-glow border-primary bg-background/50 text-primary hover:bg-primary hover:text-primary-foreground"><Link to="/courses">Explore courses</Link></Button>
           </div>
         </div>
       </section>
