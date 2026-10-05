@@ -9,6 +9,7 @@ import { BrandName } from "@/components/site/BrandName";
 import { coursesQuery, formatDate, noticesQuery } from "@/lib/public-data";
 import { cdnUrl } from "@/lib/cdn";
 import { whatsappChatLink } from "@/lib/site-info";
+import { HOME_JSONLD } from "@/lib/structured-data";
 import { PARTNER_TIERS } from "@/lib/partners";
 import { PartnerShowcase } from "@/components/site/PartnerShowcase";
 import workshop from "@/assets/learning-workshop.jpg";
@@ -16,7 +17,10 @@ import chairmanPortrait from "@/assets/md-saiful-azam-chairman.png.asset.json";
 import teamPortrait from "@/assets/ziaul-haque-manik.png.asset.json";
 
 export const Route = createFileRoute("/")({ staticData: { sitemap: true },
-  head: () => seo("Skill Bridgeway Foundation — AI, Digital & Freelancing Skills in Bangladesh", "Non-profit building AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities in Bangladesh.", { path: "/" }),
+  head: () => ({
+    ...seo("Skill Bridgeway Foundation — AI, Digital & Freelancing Skills in Bangladesh", "Non-profit building AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities in Bangladesh.", { path: "/" }),
+    scripts: [{ type: "application/ld+json", children: JSON.stringify(HOME_JSONLD) }],
+  }),
   component: Index,
 });
 

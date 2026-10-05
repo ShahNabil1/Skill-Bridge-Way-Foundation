@@ -1,0 +1,23 @@
+# Skill Bridgeway Foundation
+
+> RJSC-registered non-profit in Bangladesh (head office: Bogura) offering free, practical, beginner-friendly training in AI literacy, digital skills, freelancing, digital marketing and entrepreneurship for rural youth, madrasah students and underserved communities.
+
+Key facts:
+- Flagship: a 75-day Practical AI & Digital Skills Program — 4 sequential courses in 2 segments, from absolute beginner to intermediate, project-based.
+- Admission is free; apply online from a course page.
+- Certificates carry unique serials and can be verified publicly at https://skillbridgeway.org/verify
+- Chairman: Md Saiful Azam. Executive Director (Operations): Md. Ziaul Haque Manik.
+- Contact: info@skillbridgeway.org · WhatsApp +880 1717-224952 · Offices in Bogura (Bangladesh) and London (UK).
+
+## Main pages
+- [Home](https://skillbridgeway.org/): Overview, programs, leadership and partners
+- [About](https://skillbridgeway.org/about): Mission, vision and core values
+- [Courses](https://skillbridgeway.org/courses): The 75-day learning pathway and every course
+- [Notices & Events](https://skillbridgeway.org/notices): Announcements and upcoming events
+- [Partner With Us](https://skillbridgeway.org/partner): Sponsorship tiers (Platinum, Gold, Silver) and partnership types
+- [Verify a certificate](https://skillbridgeway.org/verify)
+- [Contact](https://skillbridgeway.org/contact)
+- [Gallery](https://skillbridgeway.org/gallery)
+
+## Optional
+- [Sitemap](https://skillbridgeway.org/sitemap.xml)
