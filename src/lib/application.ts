@@ -17,7 +17,7 @@ export const docsOf = (a: { document_keys: unknown }) => (Array.isArray(a.docume
 export const docLabel = (t?: string) => DOC_SLOTS.find((s) => s.id === t)?.label ?? t ?? "Document";
 export const photoKey = (a: { document_keys: unknown }) => docsOf(a).find((d) => d.type === "photo" && /\.(jpe?g|png|webp)$/i.test(d.key ?? ""))?.key ?? null;
 
-export function composeAddress(a: Partial<ApplicationRecord>) {
+export function composeAddress(a: Partial<Pick<ApplicationRecord, "address_line" | "village" | "union_name" | "upazila" | "district" | "division" | "address">>) {
   const parts = [a.address_line, a.village, a.union_name, a.upazila, a.district, a.division].filter(Boolean);
   return parts.length ? parts.join(", ") : a.address ?? "";
 }
