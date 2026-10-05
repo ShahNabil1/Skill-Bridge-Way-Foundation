@@ -44,30 +44,30 @@ function PartnersAdmin() {
 
   const save = async () => {
     if (!form) return;
-    if (!form.name.trim()) return toast.error("Partner name is required");
+    if (!form.name.trim()) { toast.error("Partner name is required"); return; }
     let url = form.website_url.trim();
     if (url && !/^https?:\/\//i.test(url)) url = `https://${url}`;
-    if (url) { try { new URL(url); } catch { return toast.error("Enter a valid website link"); } }
+    if (url) { try { new URL(url); } catch { { toast.error("Enter a valid website link"); return; } } }
     setSaving(true);
     const payload = { name: form.name.trim(), tier: form.tier, partner_type: form.partner_type || null, logo_key: form.logo_key, website_url: url || null, description: form.description.trim() || null, is_published: form.is_published };
     const res = form.id
       ? await supabase.from("partners").update(payload).eq("id", form.id)
       : await supabase.from("partners").insert({ ...payload, sort_order: rows.length ? Math.max(...rows.map((r) => r.sort_order)) + 1 : 0 });
     setSaving(false);
-    if (res.error) return toast.error(res.error.message);
+    if (res.error) { toast.error(res.error.message); return; }
     toast.success(form.id ? "Partner updated" : "Partner added");
     setForm(null); refresh();
   };
 
   const toggle = async (p: Partner) => {
     const { error } = await supabase.from("partners").update({ is_published: !p.is_published }).eq("id", p.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(p.is_published ? "Hidden from website" : "Now featured on website"); refresh();
   };
   const remove = async (p: Partner) => {
     if (!(await confirmAction({ title: `Remove ${p.name}?`, description: "This partner will be removed from the website permanently.", confirmText: "Remove", destructive: true }))) return;
     const { error } = await supabase.from("partners").delete().eq("id", p.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Partner removed"); refresh();
   };
   const move = async (i: number, dir: -1 | 1) => {
