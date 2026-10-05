@@ -113,10 +113,10 @@ export async function generateApplicationPdf(a: ApplicationRecord, viewUrl?: str
     y -= 8;
   };
 
-  section("Personal information", [["Full name", a.full_name], ["Email", a.email], ["Mobile", a.phone ? `+88 ${a.phone}` : ""], ["Date of birth", a.date_of_birth], ["Gender", a.gender ? a.gender[0]!.toUpperCase() + a.gender.slice(1) : ""]]);
-  section("Address", a.division ? [["Division", a.division], ["District", a.district], ["Upazila / Thana", a.upazila], ["Village / Area", a.address_line]] : [["Address", composeAddress(a)]]);
+  section("Personal information", [["Full name", a.full_name], ["Email", a.email], ["Mobile", a.phone ? `+88 ${a.phone}` : ""], ["Date of birth", a.date_of_birth], ["Gender", a.gender ? a.gender[0]!.toUpperCase() + a.gender.slice(1) : ""], ["Occupation", a.occupation]]);
+  section("Address", a.division ? [["Division", a.division], ["District", a.district], ["Upazila / Thana", a.upazila], ["Union / Ward", a.union_name], ["Village / Area", a.village], ["House, Road / Para", a.address_line]] : [["Address", composeAddress(a)]]);
   section("Education", [["Level", a.education_level], ["Institution", a.institution], ["Board / University", a.education_board], ["Group / Subject", a.education_group], [/running/i.test(a.education_level ?? "") ? "Session" : "Passing year", a.session || a.passing_year], ["Result", a.education_result]]);
-  section("Course", [["Course", a.course_title ?? "Not decided — advise me"], ["Motivation", a.motivation]]);
+  section("Course", [["Course", a.course_title ?? "Not decided — advise me"], ["Motivation", a.motivation], ["Devices", devicesText(a.digital_access)], ["Attendance", attendanceText(a.attendance_commitment)]]);
   section("Submitted documents", docsOf(a).map((d) => [docLabel(d.type), d.name ?? d.key ?? ""]));
   if (viewUrl) {
     ensure(30);
