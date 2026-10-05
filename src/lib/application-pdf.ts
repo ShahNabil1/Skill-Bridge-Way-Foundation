@@ -1,7 +1,7 @@
 import { PDFDocument, rgb, StandardFonts, type PDFFont, type PDFImage, type PDFPage } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import { cdnUrl } from "./cdn";
-import { composeAddress, docLabel, docsOf, photoKey, refOf, type ApplicationRecord } from "./application";
+import { attendanceText, composeAddress, devicesText, docLabel, docsOf, photoKey, refOf, type ApplicationRecord } from "./application";
 
 const LOGO_URL = "https://cdn.skillbridgeway.org/logo.png";
 const FONT_HEAD = "https://cdn.jsdelivr.net/fontsource/fonts/montserrat@latest/latin-800-normal.ttf";
