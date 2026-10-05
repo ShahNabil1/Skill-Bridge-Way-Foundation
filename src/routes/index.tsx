@@ -173,7 +173,7 @@ function Index() {
               <>
                 {/* Featured notice */}
                 {(() => {
-                  const featured = notices.data[0];
+                  const featured = notices.data[0]!;
                   const rest = notices.data.slice(1);
                   return (
                     <>
