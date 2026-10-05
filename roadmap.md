@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Add the chairman's supplied portrait and verbatim message to the homepage in a polished responsive section.
 - [x] Add official Facebook, Instagram, and LinkedIn links with recognizable brand icons to the public footer, Contact page, and Partner contact area.
 - [x] Replace the three demo listings with the four-course, two-segment 75-day learning pathway in the CMS and public Courses page; preserve historical applications. Desktop/mobile listings, course detail and admission entry verified; full submission still needs a real applicant and security check.
 - [x] Upgrade /admin overview into an actionable admissions kanban with read-only lanes, review links, live metrics, today's classes and useful shortcuts. Build and signed-out guard verified; signed-in visual/data flow awaits a test session for this external Supabase project.
