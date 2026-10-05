@@ -35,7 +35,7 @@ export function PhoneInput({ value, onChange, disabled, id }: { value: string; o
   </div>;
 }
 
-export type AddressValue = { division: string; district: string; upazila: string; address_line: string };
+export type AddressValue = { division: string; district: string; upazila: string; union_name: string; village: string; address_line: string };
 type Errs = Partial<Record<keyof AddressValue, string>>;
 
 /** Division → District → Upazila picker plus detailed address, shared by the public form and admin editing. */
@@ -48,6 +48,35 @@ export function AddressPicker({ value, onChange, errors = {}, disabled }: { valu
       <Field label="District (Zilla)" error={errors.district}><Select value={value.district} disabled={disabled || !value.division} options={districts} placeholder={value.division ? "Select district" : "Select division first"} onChange={(v) => onChange({ district: v, upazila: "" })} /></Field>
       <Field label="Upazila / Thana" error={errors.upazila}><Select value={value.upazila} disabled={disabled || !value.district} options={upazilas} placeholder={value.district ? "Select upazila" : "Select district first"} onChange={(v) => onChange({ upazila: v })} /></Field>
     </div>
-    <Field label="Village / Area, House & Road" error={errors.address_line} hint="e.g. House 12, Road 3, Malotinagar"><Input disabled={disabled} value={value.address_line} maxLength={300} onChange={(e) => onChange({ address_line: e.target.value })} /></Field>
+    <div className="grid gap-5 sm:grid-cols-2">
+      <Field label="Union / Ward" error={errors.union_name} hint="e.g. Gokul Union or Ward 5"><Input disabled={disabled} value={value.union_name} maxLength={100} onChange={(e) => onChange({ union_name: e.target.value })} /></Field>
+      <Field label="Village / Area" error={errors.village} hint="e.g. Malotinagar"><Input disabled={disabled} value={value.village} maxLength={120} onChange={(e) => onChange({ village: e.target.value })} /></Field>
+    </div>
+    <Field label="House, Road / Para (optional)" error={errors.address_line} hint="e.g. House 12, Road 3"><Input disabled={disabled} value={value.address_line} maxLength={300} onChange={(e) => onChange({ address_line: e.target.value })} /></Field>
+  </div>;
+}
+
+/** Multi-select device chips (Laptop / Desktop / Smartphone). */
+export function DeviceChecks({ value, onChange, disabled, options }: { value: string[]; onChange: (v: string[]) => void; disabled?: boolean | undefined; options: readonly string[] }) {
+  return <div className="grid gap-2 sm:grid-cols-3">
+    {options.map((o) => {
+      const on = value.includes(o);
+      return <label key={o} className={`flex cursor-pointer items-center gap-3 rounded-md border px-3 py-2.5 text-sm transition-colors ${on ? "border-primary bg-primary/10" : "hover:border-primary/60"} ${disabled ? "pointer-events-none opacity-60" : ""}`}>
+        <input type="checkbox" className="h-4 w-4 accent-[var(--color-primary)]" checked={on} disabled={disabled} onChange={() => onChange(on ? value.filter((x) => x !== o) : [...value, o])} />{o}
+      </label>;
+    })}
+  </div>;
+}
+
+/** Single-choice minimum attendance commitment. */
+export function AttendancePicker({ value, onChange, disabled, options }: { value: string; onChange: (v: string) => void; disabled?: boolean | undefined; options: readonly string[] }) {
+  return <div role="radiogroup" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+    {options.map((o) => {
+      const on = value === o;
+      return <button key={o} type="button" role="radio" aria-checked={on} disabled={disabled} onClick={() => onChange(o)}
+        className={`rounded-md border px-3 py-3 text-center transition-colors disabled:opacity-60 ${on ? "border-primary bg-primary/10 text-primary" : "hover:border-primary/60"}`}>
+        <span className="block font-heading text-lg font-extrabold">{o}%</span><span className="text-xs text-muted-foreground">minimum</span>
+      </button>;
+    })}
   </div>;
 }

@@ -13,13 +13,18 @@ const input = z.object({
     date_of_birth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     gender: z.enum(["male", "female", "other"]),
     division: z.string().min(1).max(60), district: z.string().min(1).max(60), upazila: z.string().min(1).max(80),
-    address_line: z.string().trim().min(3).max(300),
+    union_name: z.string().trim().min(2).max(100), village: z.string().trim().min(2).max(120),
+    address_line: opt(300),
+    occupation: z.enum(["Student", "Job seeker", "Entrepreneur", "Freelancer", "Young professional", "Technology enthusiast"]),
+    digital_access: z.array(z.enum(["Laptop", "Desktop computer", "Smartphone"])).min(1).max(3),
+    attendance_commitment: z.union([z.literal(100), z.literal(90), z.literal(80), z.literal(75)]),
     address: z.string().max(800),
     education_level: z.string().min(1).max(80), institution: z.string().trim().min(2).max(200),
     education_board: z.string().min(1).max(80), education_group: opt(100), education_result: opt(50), passing_year: opt(4), session: opt(20),
     course_id: z.string().uuid().nullable(),
     motivation: z.string().trim().min(20).max(1500),
-    document_keys: z.array(z.object({ type: z.enum(["photo", "nid", "certificate"]), key: z.string().max(300).startsWith("admissions/"), name: z.string().max(200) })).max(3),
+    document_keys: z.array(z.object({ type: z.enum(["photo", "nid", "certificate"]), key: z.string().max(300).startsWith("admissions/"), name: z.string().max(200) })).length(3)
+      .refine((d) => new Set(d.map((x) => x.type)).size === 3, "All three documents are required"),
   }),
 });
 

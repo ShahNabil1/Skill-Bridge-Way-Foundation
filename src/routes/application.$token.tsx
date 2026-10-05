@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { seo } from "@/components/site/PageHero";
-import { composeAddress, copyText, refOf, type ApplicationRecord } from "@/lib/application";
+import { attendanceText, composeAddress, copyText, devicesText, refOf, type ApplicationRecord } from "@/lib/application";
 import { formatDate } from "@/lib/public-data";
 import { ApplicantAvatar, DocumentGrid, InfoGrid, StatusBadge } from "@/components/admission/ApplicationParts";
 
@@ -49,9 +49,9 @@ function ApplicationPage() {
           </div>
           <Button onClick={pdf} disabled={busy} className="bg-highlight text-highlight-foreground hover:bg-highlight/90">{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}Download PDF</Button>
         </div>
-        <Card title="Personal"><InfoGrid rows={[["Email", app.email], ["Mobile", `+88 ${app.phone}`], ["Date of birth", app.date_of_birth], ["Gender", app.gender], ["Address", composeAddress(app)]]} /></Card>
+        <Card title="Personal"><InfoGrid rows={[["Email", app.email], ["Mobile", `+88 ${app.phone}`], ["Date of birth", app.date_of_birth], ["Gender", app.gender], ["Occupation", app.occupation], ["Address", composeAddress(app)]]} /></Card>
         <Card title="Education"><InfoGrid rows={[["Level", app.education_level], ["Board / University", app.education_board], ["Institution", app.institution], ["Group / Subject", app.education_group], [app.session ? "Session" : "Passing year", app.session || app.passing_year], ["Result", app.education_result]]} /></Card>
-        <Card title="Course"><InfoGrid rows={[["Course", app.course_title ?? "Not decided — advise me"], ["Motivation", app.motivation]]} /></Card>
+        <Card title="Course"><InfoGrid rows={[["Course", app.course_title ?? "Not decided — advise me"], ["Motivation", app.motivation], ["Devices", devicesText(app.digital_access)], ["Attendance", attendanceText(app.attendance_commitment)]]} /></Card>
         <Card title="Documents"><DocumentGrid app={app} /></Card>
       </div>
     </section>

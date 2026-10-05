@@ -12,11 +12,11 @@ import { Label } from "@/components/ui/label";
 import { AdminOnly } from "@/components/admin/shared";
 import { ActivityFeed } from "@/components/admin/ActivityFeed";
 import { confirmAction } from "@/components/ConfirmDialog";
-import { AddressPicker, Field, PhoneInput, Select } from "@/components/admission/FormBits";
+import { AddressPicker, AttendancePicker, DeviceChecks, Field, PhoneInput, Select } from "@/components/admission/FormBits";
 import { EducationFields } from "@/components/admission/EducationFields";
 import { ApplicantAvatar, DocumentGrid, StatusBadge } from "@/components/admission/ApplicationParts";
 import { FIELD_LABELS, composeAddress, copyText, docLabel, docsOf, refOf, type AppDoc, type ApplicationRecord } from "@/lib/application";
-import { DOC_SLOTS } from "@/lib/admission-schema";
+import { ATTENDANCE_OPTIONS, DIGITAL_DEVICES, DOC_SLOTS, OCCUPATIONS } from "@/lib/admission-schema";
 import { ALLOWED_DOC_TYPES, MAX_DOC_BYTES, createAdmissionUploadUrl } from "@/lib/r2.functions";
 import { sendApprovalEmail, sendRejectionEmail } from "@/lib/email.functions";
 import { seo } from "@/components/site/PageHero";
@@ -26,10 +26,15 @@ export const Route = createFileRoute("/_authenticated/admin/applications/$id")({
   component: () => <AdminOnly><Review /></AdminOnly>,
 });
 
-const EDITABLE = ["full_name", "email", "phone", "date_of_birth", "gender", "division", "district", "upazila", "address_line", "education_level", "institution", "education_board", "education_group", "education_result", "passing_year", "session", "course_id", "motivation", "document_keys"] as const;
+const EDITABLE = ["full_name", "email", "phone", "date_of_birth", "gender", "occupation", "division", "district", "upazila", "union_name", "village", "address_line", "education_level", "institution", "education_board", "education_group", "education_result", "passing_year", "session", "course_id", "motivation", "digital_access", "attendance_commitment", "document_keys"] as const;
 type Draft = Record<(typeof EDITABLE)[number], unknown>;
-const pick = (a: ApplicationRecord): Draft => Object.fromEntries(EDITABLE.map((k) => [k, k === "document_keys" ? docsOf(a) : (a[k] ?? "")])) as Draft;
-const norm = (d: Draft) => Object.fromEntries(EDITABLE.map((k) => [k, k === "document_keys" ? d[k] : (typeof d[k] === "string" ? (d[k] as string).trim() || null : d[k])]));
+const pick = (a: ApplicationRecord): Draft => Object.fromEntries(EDITABLE.map((k) => [k, k === "document_keys" ? docsOf(a) : k === "digital_access" ? (a.digital_access ?? []) : k === "attendance_commitment" ? (a.attendance_commitment ? String(a.attendance_commitment) : "") : (a[k] ?? "")])) as Draft;
+const norm = (d: Draft) => Object.fromEntries(EDITABLE.map((k) => {
+  if (k === "document_keys") return [k, d[k]];
+  if (k === "digital_access") { const v = (d[k] as string[] | null) ?? []; return [k, v.length ? v : null]; }
+  if (k === "attendance_commitment") return [k, d[k] ? Number(d[k]) : null];
+  return [k, typeof d[k] === "string" ? (d[k] as string).trim() || null : d[k]];
+}));
 
 function WhatsAppIcon() {
   return <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.05 21.5h-.01a9.4 9.4 0 0 1-4.8-1.31l-.34-.2-3.57.94.95-3.48-.22-.36a9.43 9.43 0 1 1 7.99 4.41zm8.02-17.45A11.32 11.32 0 0 0 12.05.75C5.8.75.72 5.83.72 12.08c0 2 .52 3.95 1.52 5.66L.62 23.25l5.64-1.48a11.3 11.3 0 0 0 5.79 1.48h.01c6.25 0 11.33-5.08 11.33-11.33 0-3.03-1.18-5.87-3.32-8.01z" /></svg>;
@@ -175,10 +180,11 @@ function Review() {
               <Field label="Mobile number"><PhoneInput disabled={!editing} value={s("phone")} onChange={(v) => patch({ phone: v })} /></Field>
               <Field label="Date of birth"><Input disabled={!editing} type="date" value={s("date_of_birth")} onChange={(e) => patch({ date_of_birth: e.target.value })} /></Field>
               <Field label="Gender"><Select disabled={!editing} value={s("gender")} options={["male", "female", "other"]} onChange={(v) => patch({ gender: v })} /></Field>
+              <Field label="Occupation"><Select disabled={!editing} value={s("occupation")} options={[...OCCUPATIONS]} placeholder="Not provided" onChange={(v) => patch({ occupation: v })} /></Field>
             </div>
             <h3 className="mt-6 mb-3 text-sm uppercase text-muted-foreground">Address</h3>
             {!app.division && !editing && app.address && <p className="mb-3 text-sm text-muted-foreground">Legacy address: {app.address}</p>}
-            <AddressPicker disabled={!editing} value={{ division: s("division"), district: s("district"), upazila: s("upazila"), address_line: s("address_line") }} onChange={patch} />
+            <AddressPicker disabled={!editing} value={{ division: s("division"), district: s("district"), upazila: s("upazila"), union_name: s("union_name"), village: s("village"), address_line: s("address_line") }} onChange={patch} />
           </Card>
           <Card title="Education">
             <EducationFields disabled={!editing} value={{ education_level: s("education_level"), institution: s("institution"), education_board: s("education_board"), education_group: s("education_group"), education_result: s("education_result"), passing_year: s("passing_year"), session: s("session") }} onChange={patch} />
@@ -192,6 +198,12 @@ function Review() {
                 </select>
               </Field>
               <Field label="Motivation"><Textarea disabled={!editing} rows={4} value={s("motivation")} onChange={(e) => patch({ motivation: e.target.value })} /></Field>
+              <Field label="Digital access (devices)">
+                <DeviceChecks disabled={!editing} options={DIGITAL_DEVICES} value={(view.digital_access as string[] | null) ?? []} onChange={(v) => patch({ digital_access: v })} />
+              </Field>
+              <Field label="Attendance commitment (minimum)">
+                <AttendancePicker disabled={!editing} options={ATTENDANCE_OPTIONS} value={s("attendance_commitment")} onChange={(v) => patch({ attendance_commitment: v })} />
+              </Field>
             </div>
           </Card>
           <Card title="Documents">

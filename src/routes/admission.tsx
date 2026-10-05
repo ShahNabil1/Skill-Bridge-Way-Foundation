@@ -5,9 +5,9 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState, type ReactNode } from "react";
-import { AddressPicker, Field, PhoneInput } from "@/components/admission/FormBits";
+import { AddressPicker, AttendancePicker, DeviceChecks, Field, PhoneInput } from "@/components/admission/FormBits";
 import { EducationFields } from "@/components/admission/EducationFields";
-import { composeAddress, refOf } from "@/lib/application";
+import { attendanceText, composeAddress, devicesText, refOf } from "@/lib/application";
 import type { ZodType } from "zod";
 import { toast } from "sonner";
 import { Check, CheckCircle2, Copy, FileText, Loader2, Upload, X } from "lucide-react";
@@ -20,7 +20,7 @@ import { coursesQuery, isPreviewOnlyCourse, TEST_ENROLLMENT_SLUG } from "@/lib/p
 import { sendAdmissionReceivedEmail } from "@/lib/email.functions";
 import { ALLOWED_DOC_TYPES, MAX_DOC_BYTES, createAdmissionUploadUrl } from "@/lib/r2.functions";
 import {
-  DOC_SLOTS, courseSchema, educationSchema, personalSchema,
+  ATTENDANCE_OPTIONS, DIGITAL_DEVICES, DOC_SLOTS, OCCUPATIONS, courseSchema, educationSchema, personalSchema,
   type AdmissionForm, type DocSlot,
 } from "@/lib/admission-schema";
 
@@ -34,10 +34,10 @@ export const Route = createFileRoute("/admission")({ staticData: { sitemap: true
 const STEPS = ["Personal", "Education", "Course", "Documents", "Review"] as const;
 const NO_COURSE = "undecided";
 const empty: AdmissionForm = {
-  full_name: "", email: "", phone: "", date_of_birth: "", gender: "" as AdmissionForm["gender"],
-  division: "", district: "", upazila: "", address_line: "",
+  full_name: "", email: "", phone: "", date_of_birth: "", gender: "" as AdmissionForm["gender"], occupation: "",
+  division: "", district: "", upazila: "", union_name: "", village: "", address_line: "",
   education_level: "", institution: "", education_board: "", education_group: "", education_result: "", passing_year: "", session: "",
-  course_id: "", motivation: "",
+  course_id: "", motivation: "", digital_access: [], attendance_commitment: "",
 };
 type Errors = Partial<Record<keyof AdmissionForm | DocSlot, string>>;
 const selectCls = "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring [&>option]:bg-popover";
@@ -122,7 +122,11 @@ function Admission() {
         id: admissionId,
         access_token: accessToken,
         division: form.division, district: form.district, upazila: form.upazila,
-        address_line: form.address_line.trim(),
+        union_name: form.union_name.trim(), village: form.village.trim(),
+        address_line: form.address_line.trim() || null,
+        occupation: form.occupation,
+        digital_access: form.digital_access,
+        attendance_commitment: Number(form.attendance_commitment),
         education_board: form.education_board, education_group: form.education_group || null,
         education_result: form.education_result.trim() || null, passing_year: form.passing_year || null, session: form.session.trim() || null,
         full_name: form.full_name.trim(),
@@ -187,6 +191,12 @@ function Admission() {
                   </select>
                 </Field>
               </div>
+              <Field label="Occupation" error={errors.occupation}>
+                <select className={selectCls} value={form.occupation} onChange={set("occupation")}>
+                  <option value="">Select your current occupation</option>
+                  {OCCUPATIONS.map((o) => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </Field>
               <h3 className="pt-2 text-sm uppercase text-muted-foreground">Present address</h3>
               <AddressPicker value={form} onChange={patch} errors={errors} />
             </Section>
@@ -214,6 +224,13 @@ function Admission() {
                 )}
               </div>
               <Field label="Why do you want to join?" error={errors.motivation}><Textarea rows={4} value={form.motivation} onChange={set("motivation")} /></Field>
+              <h3 className="pt-2 text-sm uppercase text-muted-foreground">Learning readiness</h3>
+              <Field label="Which devices can you use for learning?" error={errors.digital_access} hint="Select all that apply.">
+                <DeviceChecks options={DIGITAL_DEVICES} value={form.digital_access} onChange={(v) => patch({ digital_access: v })} />
+              </Field>
+              <Field label="Do you agree to attend classes regularly? Choose your minimum attendance." error={errors.attendance_commitment} hint="Regular attendance is required to complete the course and earn a certificate.">
+                <AttendancePicker options={ATTENDANCE_OPTIONS} value={form.attendance_commitment} onChange={(v) => patch({ attendance_commitment: v })} />
+              </Field>
             </Section>
           )}
 
@@ -247,9 +264,9 @@ function Admission() {
 
           {step === 4 && (
             <Section title="Review & submit">
-              <Review title="Personal" onEdit={() => setStep(0)} rows={[["Name", form.full_name], ["Email", form.email], ["Mobile", form.phone], ["Date of birth", form.date_of_birth], ["Gender", form.gender], ["Address", composeAddress(form)]]} />
+              <Review title="Personal" onEdit={() => setStep(0)} rows={[["Name", form.full_name], ["Email", form.email], ["Mobile", form.phone], ["Date of birth", form.date_of_birth], ["Gender", form.gender], ["Occupation", form.occupation], ["Address", composeAddress(form)]]} />
               <Review title="Education" onEdit={() => setStep(1)} rows={[["Level", form.education_level], ["Board", form.education_board], ["Institution", form.institution], ["Group", form.education_group], [form.session ? "Session" : "Passing year", form.session || form.passing_year], ["Result", form.education_result]]} />
-              <Review title="Course" onEdit={() => setStep(2)} rows={[["Course", courseName], ["Motivation", form.motivation]]} />
+              <Review title="Course" onEdit={() => setStep(2)} rows={[["Course", courseName], ["Motivation", form.motivation], ["Devices", devicesText(form.digital_access)], ["Attendance", attendanceText(form.attendance_commitment)]]} />
               <Review title="Documents" onEdit={() => setStep(3)} rows={DOC_SLOTS.map((s) => [s.label, files[s.id]?.name ?? "—"])} />
             </Section>
           )}
