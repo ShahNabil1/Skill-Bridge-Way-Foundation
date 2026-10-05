@@ -23,12 +23,6 @@ const PILLARS = [
   { icon: HeartHandshake, title: "Human-Centred Skills", text: "Critical thinking, communication, creativity and problem-solving." },
 ];
 
-const STEPS = [
-  { n: "01", title: "Apply free", text: "Fill in the online admission form — no fees, ever." },
-  { n: "02", title: "Get your Student ID", text: "Approved learners receive a unique Student ID." },
-  { n: "03", title: "Learn by doing", text: "Practical, hands-on learning connected to real-world opportunities." },
-  { n: "04", title: "Earn a verified certificate", text: "Every certificate carries a QR code anyone can verify." },
-];
 
 function Index() {
   const courses = useQuery(coursesQuery(3));
@@ -61,6 +55,24 @@ function Index() {
               <p className="mt-2 text-sm text-muted-foreground">{p.text}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+
+      {/* Courses */}
+      <section className="border-y bg-grid">
+        <div className="mx-auto max-w-7xl px-4 py-20">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <SectionHeading eyebrow="Courses" title="Featured programs" />
+            <Link to="/courses" className="text-sm text-primary hover:underline">View all courses →</Link>
+          </div>
+          <div className="mt-10">
+            {courses.isLoading ? <CardSkeletonGrid /> : courses.data?.length ? (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {courses.data.map((c) => <CourseCard key={c.id} c={c} />)}
+              </div>
+            ) : <EmptyState>New courses will be announced soon.</EmptyState>}
+          </div>
         </div>
       </section>
 
@@ -116,37 +128,6 @@ function Index() {
               <BrandName className="text-sm font-semibold" />
             </div>
           </article>
-        </div>
-      </section>
-
-      {/* Courses */}
-      <section className="border-y bg-grid">
-        <div className="mx-auto max-w-7xl px-4 py-20">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeading eyebrow="Courses" title="Featured programs" />
-            <Link to="/courses" className="text-sm text-primary hover:underline">View all courses →</Link>
-          </div>
-          <div className="mt-10">
-            {courses.isLoading ? <CardSkeletonGrid /> : courses.data?.length ? (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {courses.data.map((c) => <CourseCard key={c.id} c={c} />)}
-              </div>
-            ) : <EmptyState>New courses will be announced soon.</EmptyState>}
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="mx-auto max-w-7xl px-4 py-20">
-        <SectionHeading eyebrow="Your journey" title="How it works" />
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((s) => (
-            <div key={s.n} className="editorial-item relative border-t border-border p-6">
-              <span className="font-heading text-4xl font-extrabold text-primary/30">{s.n}</span>
-              <h3 className="mt-2 text-base uppercase">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.text}</p>
-            </div>
-          ))}
         </div>
       </section>
 
