@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { seo } from "@/components/site/PageHero";
 import { SocialLinks } from "@/components/site/SocialLinks";
 import { BrandName } from "@/components/site/BrandName";
+import { whatsappChatLink } from "@/lib/site-info";
 import workshop from "@/assets/partner-workshop.jpg";
 
 export const Route = createFileRoute("/partner")({
