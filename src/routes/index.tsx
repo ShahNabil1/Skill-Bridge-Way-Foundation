@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, BadgeCheck, Bot, Briefcase, CalendarDays, HeartHandshake, Laptop, Quote, Rocket, ShieldCheck } from "lucide-react";
+import { ArrowRight, BadgeCheck, BookOpen, Bot, Briefcase, Building2, CalendarDays, GraduationCap, Handshake, HeartHandshake, Laptop, Megaphone, Quote, Rocket, ShieldCheck, Users, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { seo } from "@/components/site/PageHero";
