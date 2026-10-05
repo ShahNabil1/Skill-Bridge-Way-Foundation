@@ -7,6 +7,7 @@ import { seo } from "@/components/site/PageHero";
 import { CardSkeletonGrid, CourseCard, EmptyState, SectionHeading } from "@/components/site/ui-bits";
 import { BrandName } from "@/components/site/BrandName";
 import { coursesQuery, formatDate, noticesQuery } from "@/lib/public-data";
+import { cdnUrl } from "@/lib/cdn";
 import { whatsappChatLink } from "@/lib/site-info";
 import { PARTNER_TIERS } from "@/lib/partners";
 import { PartnerShowcase } from "@/components/site/PartnerShowcase";
@@ -151,33 +152,86 @@ function Index() {
       </section>
 
       {/* Notices + verify */}
-      <section className="mx-auto grid max-w-7xl gap-8 px-4 pb-20 lg:grid-cols-[1.5fr_1fr]">
-        <div className="glass rounded-xl p-6">
-          <div className="flex items-center justify-between gap-4">
-            <h2 className="section-title text-xl">Latest notices</h2>
-            <Link to="/notices" className="text-sm text-primary hover:underline">All →</Link>
+      <section className="border-t bg-grid">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
+          <div className="flex flex-wrap items-end justify-between gap-6 border-b pb-6">
+            <div>
+              <p className="editorial-kicker">Stay updated</p>
+              <h2 className="section-title mt-3 text-2xl sm:text-4xl">Latest notices & events</h2>
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">Important announcements, admission updates and upcoming events from Skill Bridgeway Foundation.</p>
+            </div>
+            <Button asChild variant="outline"><Link to="/notices">All notices <ArrowRight /></Link></Button>
           </div>
-          <ul className="mt-6 divide-y">
-            {notices.isLoading ? Array.from({ length: 3 }).map((_, i) => (
-              <li key={i} className="space-y-2 py-4"><Skeleton className="h-4 w-2/3 bg-muted" /><Skeleton className="h-3 w-1/4 bg-muted" /></li>
-            )) : notices.data?.length ? notices.data.map((n) => (
-              <li key={n.id} className="flex gap-4 py-4">
-                <CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                <div className="min-w-0">
-                  <Link to="/notices/$slug" params={{ slug: n.slug }} className="font-medium hover:text-primary">{n.title}</Link>
-                  <p className="text-xs text-muted-foreground">{n.type === "event" ? "Event" : "Notice"} · {formatDate(n.event_date ?? n.created_at)}</p>
-                </div>
-              </li>
-            )) : <li className="py-4 text-sm text-muted-foreground">No notices yet.</li>}
-          </ul>
-        </div>
-        <div className="glass flex flex-col justify-between rounded-xl p-6">
-          <div>
-            <ShieldCheck className="h-8 w-8 text-primary" />
-            <h2 className="section-title mt-4 text-xl">Verify a certificate</h2>
-            <p className="mt-2 text-sm text-muted-foreground">Employers can confirm any Skill Bridgeway certificate instantly by serial number or QR code.</p>
+
+          <div className="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
+            {notices.isLoading ? (
+              <>
+                <div className="space-y-4"><Skeleton className="aspect-[16/9] w-full rounded-xl bg-muted" /><Skeleton className="h-6 w-2/3 bg-muted" /><Skeleton className="h-4 w-1/3 bg-muted" /></div>
+                <div className="space-y-4">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-xl bg-muted" />)}</div>
+              </>
+            ) : notices.data?.length ? (
+              <>
+                {/* Featured notice */}
+                {(() => {
+                  const featured = notices.data[0]!;
+                  const rest = notices.data.slice(1);
+                  return (
+                    <>
+                      <Link to="/notices/$slug" params={{ slug: featured.slug }} className="group glass block overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-elegant">
+                        {featured.cover_image_key && (
+                          <div className="relative aspect-[16/9] overflow-hidden">
+                            <img src={cdnUrl(featured.cover_image_key) ?? undefined} alt={featured.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            <span className="absolute left-4 top-4 rounded-full bg-highlight px-3 py-1 font-heading text-xs font-bold uppercase tracking-wider text-highlight-foreground">{featured.type === "event" ? "Event" : "Notice"}</span>
+                          </div>
+                        )}
+                        <div className="p-6">
+                          {!featured.cover_image_key && <span className="mb-3 inline-block rounded-full bg-highlight px-3 py-1 font-heading text-xs font-bold uppercase tracking-wider text-highlight-foreground">{featured.type === "event" ? "Event" : "Notice"}</span>}
+                          <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-primary"><CalendarDays className="h-3.5 w-3.5" />{formatDate(featured.event_date ?? featured.created_at)}</p>
+                          <h3 className="mt-3 font-heading text-xl font-bold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-2xl">{featured.title}</h3>
+                          {featured.summary && <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{featured.summary}</p>}
+                          <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">Read more <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+                        </div>
+                      </Link>
+
+                      <div className="flex flex-col gap-6">
+                        <ul className="divide-y divide-border">
+                          {rest.map((n, i) => (
+                            <li key={n.id}>
+                              <Link to="/notices/$slug" params={{ slug: n.slug }} className="group flex items-start gap-4 py-5 transition-colors">
+                                <span className="font-heading text-sm font-bold text-primary/60">0{i + 2}</span>
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span className={`rounded-full px-2.5 py-0.5 font-heading text-[10px] font-bold uppercase tracking-wider ${n.type === "event" ? "bg-highlight/15 text-highlight" : "bg-primary/15 text-primary"}`}>{n.type === "event" ? "Event" : "Notice"}</span>
+                                    <span className="text-xs text-muted-foreground">{formatDate(n.event_date ?? n.created_at)}</span>
+                                  </div>
+                                  <h3 className="mt-2 font-medium leading-snug text-foreground transition-colors group-hover:text-primary">{n.title}</h3>
+                                </div>
+                                <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-primary" />
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+
+                        {/* Verify card */}
+                        <div className="glass rounded-xl border-l-2 border-l-primary p-6">
+                          <ShieldCheck className="h-8 w-8 text-primary" />
+                          <h3 className="section-title mt-4 text-lg">Verify a certificate</h3>
+                          <p className="mt-2 text-sm text-muted-foreground">Employers can confirm any Skill Bridgeway certificate instantly by serial number or QR code.</p>
+                          <Button asChild className="mt-5 w-full"><Link to="/verify"><BadgeCheck className="mr-1 h-4 w-4" />Verify now</Link></Button>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
+              </>
+            ) : (
+              <div className="glass rounded-xl p-10 text-center lg:col-span-2">
+                <Megaphone className="mx-auto h-10 w-10 text-primary" />
+                <p className="mt-4 font-medium text-foreground">No notices published yet</p>
+                <p className="mt-1 text-sm text-muted-foreground">Check back soon for announcements and events.</p>
+              </div>
+            )}
           </div>
-          <Button asChild className="mt-6 w-full"><Link to="/verify"><BadgeCheck className="mr-1 h-4 w-4" />Verify now</Link></Button>
         </div>
       </section>
 
