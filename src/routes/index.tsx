@@ -8,6 +8,8 @@ import { CardSkeletonGrid, CourseCard, EmptyState, SectionHeading } from "@/comp
 import { BrandName } from "@/components/site/BrandName";
 import { coursesQuery, formatDate, noticesQuery } from "@/lib/public-data";
 import { whatsappChatLink } from "@/lib/site-info";
+import { PARTNER_TIERS } from "@/lib/partners";
+import { PartnerShowcase } from "@/components/site/PartnerShowcase";
 import workshop from "@/assets/learning-workshop.jpg";
 import chairmanPortrait from "@/assets/md-saiful-azam-chairman.png.asset.json";
 
@@ -241,6 +243,18 @@ function Index() {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Our partners (managed in Admin → Partners) */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="editorial-kicker">Our partners & sponsors</p>
+            <h2 className="section-title mt-3 text-2xl sm:text-4xl">Together we build the bridge</h2>
+            <p className="mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">Organizations whose support makes free, practical skills training possible for young people across Bangladesh.</p>
+          </div>
+        </div>
+        <PartnerShowcase compact />
       </section>
 
       {/* CTA */}

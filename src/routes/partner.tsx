@@ -5,6 +5,7 @@ import { seo } from "@/components/site/PageHero";
 import { SocialLinks } from "@/components/site/SocialLinks";
 import { BrandName } from "@/components/site/BrandName";
 import { whatsappChatLink } from "@/lib/site-info";
+import { PartnerShowcase } from "@/components/site/PartnerShowcase";
 import workshop from "@/assets/partner-workshop.jpg";
 
 export const Route = createFileRoute("/partner")({
@@ -98,6 +99,15 @@ function PartnerPage() {
               <p className="mt-3 text-sm text-muted-foreground">{detail}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="border-t">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:py-24">
+          <p className="text-xs font-semibold uppercase text-primary">Recognition</p>
+          <h2 className="mt-2 text-2xl sm:text-4xl">Our Partners & Sponsors</h2>
+          <p className="mb-10 mt-4 max-w-2xl text-muted-foreground">We proudly feature the organizations that stand with our mission.</p>
+          <PartnerShowcase />
         </div>
       </section>
 
