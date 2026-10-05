@@ -143,19 +143,16 @@
 /* Public editorial language: precise rules, open space, and restrained motion. */
 @keyframes editorial-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes editorial-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes brand-glint { 0%, 82%, 100% { background-position: 140% 50%; } 92% { background-position: -40% 50%; } }
+@keyframes brand-glint {
+  0% { opacity: 0; transform: translateY(0.25em); text-shadow: none; }
+  45% { opacity: 1; transform: translateY(0); text-shadow: 0 0 0.6em currentColor; }
+  100% { opacity: 1; transform: translateY(0); text-shadow: 0 0 0 transparent; }
+}
 .brand-wordmark { letter-spacing: 0; isolation: isolate; transition: transform 280ms ease, filter 280ms ease; }
 .brand-skill, .brand-foundation { color: var(--foreground); }
-.brand-bridge, .brand-way {
-  color: transparent;
-  background-repeat: no-repeat;
-  background-size: 240% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  animation: brand-glint 6s ease-in-out infinite;
-}
-.brand-bridge { background-image: linear-gradient(105deg, var(--primary) 0 46%, var(--foreground) 50%, var(--primary) 54% 100%); }
-.brand-way { background-image: linear-gradient(105deg, var(--highlight) 0 46%, var(--foreground) 50%, var(--highlight) 54% 100%); animation-delay: 160ms; }
+.brand-bridge, .brand-way { display: inline-block; animation: brand-glint 1.2s ease-out 0.2s 1 both; }
+.brand-bridge { color: var(--primary); }
+.brand-way { color: var(--highlight); animation-delay: 0.4s; }
 .cta-shine { position: relative; overflow: hidden; isolation: isolate; transition: transform 240ms ease, box-shadow 240ms ease, background-color 240ms ease, color 240ms ease; }
 .cta-shine::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(110deg, transparent 35%, color-mix(in srgb, var(--foreground) 35%, transparent) 50%, transparent 65%); transform: translateX(-120%); transition: transform 650ms ease; }
 .cta-shine:hover { transform: translateY(-2px); box-shadow: 0 10px 28px -10px color-mix(in srgb, var(--highlight) 70%, transparent); }
@@ -181,7 +178,7 @@ a:hover .brand-wordmark, .brand-wordmark:hover { transform: translateY(-1px); fi
 .site-mobile-nav { animation: editorial-rise 220ms ease-out both; background: var(--background); }
 .site-footer { border-top-color: color-mix(in srgb, var(--primary) 35%, transparent); }
 @media (prefers-reduced-motion: reduce) {
-  .brand-bridge, .brand-way { animation: none; background-position: 0 50%; }
+  .brand-bridge, .brand-way { animation: none; }
   .brand-wordmark, a:hover .brand-wordmark, .brand-wordmark:hover, .cta-shine:hover, .cta-outline-glow:hover, .cta-shine:hover svg { transform: none; filter: none; }
   .cta-shine::after { display: none; }
   .public-site .page-intro::after, .public-site .page-intro h1, .public-site .page-intro .editorial-kicker, .public-site .page-intro div.border-l, .site-mobile-nav { animation: none; }
