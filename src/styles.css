@@ -188,6 +188,27 @@ a:hover .brand-wordmark, .brand-wordmark:hover { transform: translateY(-1px); fi
 .site-mobile-nav { animation: editorial-rise 220ms ease-out both; background: var(--background); }
 .site-footer { border-top-color: color-mix(in srgb, var(--primary) 35%, transparent); }
 
+.footer-credit-link {
+  position: relative;
+  color: var(--foreground);
+  transition: color 0.25s ease;
+}
+.footer-credit-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 2px;
+  width: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--highlight));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.footer-credit-link:hover { color: var(--primary); }
+.footer-credit-link:hover::after { transform: scaleX(1); }
+
 /* Hero: ambient motion that plays on its own, no hover needed. */
 @keyframes hero-kenburns { from { transform: scale(1); } to { transform: scale(1.08); } }
 @keyframes hero-reveal { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
