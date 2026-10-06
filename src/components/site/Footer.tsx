@@ -48,8 +48,21 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-2 px-4 py-5 text-xs text-muted-foreground">
-          <span>© {new Date().getFullYear()}</span><BrandName className="font-heading font-bold uppercase" /><span>All rights reserved.</span>
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-5 text-xs text-muted-foreground">
+          <span className="flex flex-wrap items-center gap-x-2">
+            <span>© {new Date().getFullYear()}</span><BrandName className="font-heading font-bold uppercase" /><span>All rights reserved.</span>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span>Design &amp; Developed By</span>
+            <a
+              href="https://brantatech.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-credit-link font-heading font-bold uppercase tracking-wide"
+            >
+              Branta Tech
+            </a>
+          </span>
         </div>
       </div>
     </footer>
