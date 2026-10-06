@@ -77,6 +77,8 @@ export async function generateCertificatePdf(d: CertificateData): Promise<Uint8A
   const semi = semiB ? await pdf.embedFont(semiB) : await pdf.embedFont(StandardFonts.HelveticaBold);
   const body = bodyB ? await pdf.embedFont(bodyB) : await pdf.embedFont(StandardFonts.Helvetica);
   const italic = italicB ? await pdf.embedFont(italicB) : await pdf.embedFont(StandardFonts.HelveticaBoldOblique);
+  const safeBold = await pdf.embedFont(StandardFonts.HelveticaBold);
+  const safeItalic = await pdf.embedFont(StandardFonts.HelveticaBoldOblique);
 
   const page = pdf.addPage([842, 595]); // A4 landscape
   const W = page.getWidth();
@@ -112,24 +114,21 @@ export async function generateCertificatePdf(d: CertificateData): Promise<Uint8A
   page.drawText("CERTIFICATE NO:", { x: 626, y: 421, size: 10, font: semi, color: BLACK });
   page.drawText(d.serial, { x: 626, y: 402, size: 10, font: semi, color: NAVY });
 
-  centered(page, "This certificate is proudly presented to", 379, semi, 15, BLACK, 500);
+  centered(page, "This certificate is proudly presented to", 379, safeBold, 15, BLACK, 500);
   centered(page, d.studentName.toUpperCase(), 329, head, 30, NAVY, 560);
   page.drawLine({ start: { x: 270, y: 316 }, end: { x: 572, y: 316 }, thickness: 0.8, color: MID_BLUE });
 
-  centered(page, "This is to certify that this learner has successfully completed practical training in", 279, italic, 13, BLACK, 700);
-  centered(page, d.courseTitle, 247, head, 19, NAVY, 650);
+  centered(page, "This is to certify that this learner has successfully completed practical training in", 279, safeItalic, 13, BLACK, 700);
+  centered(page, d.courseTitle, 247, safeBold, 19, NAVY, 650);
   centered(page, "at Skill Bridgeway Foundation.", 221, semi, 14, BLACK, 500);
   centered(page, "We appreciate this commitment to learning and wish every success in the future career.", 181, italic, 12, BLACK, 690);
 
-  // Issue details and a scannable verification mark.
-  const issued = new Date(d.issuedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  // Scannable verification mark.
   const qrUrl = await QRCode.toDataURL(VERIFY_BASE + encodeURIComponent(d.serial), { margin: 1, width: 300, color: { dark: "#0A192F", light: "#FFFFFF" } });
   const qr = await pdf.embedPng(qrUrl);
   const q = 58;
   page.drawImage(qr, { x: W - 112, y: 116, width: q, height: q });
   page.drawText("SCAN TO VERIFY", { x: W - 116, y: 104, size: 6.5, font: semi, color: NAVY });
-  page.drawText(`Issued ${issued}`, { x: 56, y: 99, size: 7.5, font: body, color: GREY });
-
   signature(page, 183, "Chairman", semi);
   signature(page, 421, "Executive Director (Operations)", semi);
   signature(page, 659, "Chief Trainer", semi);
