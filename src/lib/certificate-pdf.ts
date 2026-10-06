@@ -138,12 +138,17 @@ export async function generateCertificatePdf(d: CertificateData): Promise<Uint8A
   centered(page, "at Skill Bridgeway Foundation.", 221, semi, 14, BLACK, 500);
   centered(page, "We appreciate this commitment to learning and wish every success in the future career.", 181, italic, 12, BLACK, 690);
 
-  // Scannable verification mark.
+  // Scannable verification mark — placed at the marked top-right spot,
+  // aligned with the certificate-number column below it.
   const qrUrl = await QRCode.toDataURL(VERIFY_BASE + encodeURIComponent(d.serial), { margin: 1, width: 300, color: { dark: "#0A192F", light: "#FFFFFF" } });
   const qr = await pdf.embedPng(qrUrl);
-  const q = 58;
-  page.drawImage(qr, { x: W - 112, y: 116, width: q, height: q });
-  page.drawText("SCAN TO VERIFY", { x: W - 116, y: 104, size: 6.5, font: semi, color: NAVY });
+  const q = 78;
+  const qrX = W - 54 - q;
+  const qrY = 442;
+  page.drawImage(qr, { x: qrX, y: qrY, width: q, height: q });
+  const scanLabel = "SCAN TO VERIFY";
+  const scanLabelWidth = semi.widthOfTextAtSize(scanLabel, 7);
+  page.drawText(scanLabel, { x: qrX + (q - scanLabelWidth) / 2, y: qrY - 12, size: 7, font: semi, color: NAVY });
   signature(page, 183, "Chairman", semi);
   signature(page, 421, "Executive Director (Operations)", semi);
   signature(page, 659, "Chief Trainer", semi);
