@@ -84,9 +84,9 @@ function Courses() {
           {FACTS.map((fact) => <div key={fact.label} className="min-w-0 bg-background px-3 py-6 sm:px-6"><fact.icon className="h-5 w-5 text-primary" aria-hidden="true" /><p className="mt-3 text-xs uppercase text-muted-foreground">{fact.label}</p><p className="mt-1 text-sm font-semibold leading-snug sm:text-base">{fact.value}</p></div>)}
         </div>
       </section>
-      <section className="mx-auto max-w-7xl px-4 py-16 md:py-20">
+<section aria-labelledby="journey-title" className="mx-auto max-w-7xl px-4 py-16 md:py-20">
         <p className="editorial-kicker">The pathway</p>
-        <h2 className="section-title mt-3 text-3xl md:text-4xl">Your Learning Journey</h2>
+        <h2 id="journey-title" className="section-title mt-3 text-3xl md:text-4xl">Your Learning Journey</h2>
         <p className="mt-4 max-w-3xl text-muted-foreground">Learners progress step-by-step. We begin with digital confidence and professional foundations before moving into practical AI and technology projects.</p>
         <ol className="mt-9 grid gap-3 md:grid-cols-4">
           {journey.map((course, i) => <li key={course.slug} className="relative min-w-0 border-t-2 border-primary bg-card p-5 md:min-h-48">
@@ -110,7 +110,7 @@ function Courses() {
                 <div className="min-w-0"><p className="text-xs font-bold uppercase text-primary">Course {course.number} / {course.level}</p><h3 className="mt-3 text-xl leading-tight md:text-2xl">{course.title}</h3><p className="mt-4 text-muted-foreground">{course.purpose}</p>
                   <p className="mt-5 text-xs font-bold uppercase text-primary">Practical project</p><p className="mt-1 text-sm text-foreground">{course.project}</p>
                   <p className="mt-5 text-xs font-bold uppercase text-primary">Learner outcome</p><p className="mt-1 text-sm text-muted-foreground">{course.outcome}</p>
-                  <Button asChild variant="outline" className="mt-6"><Link to="/courses/$slug" params={{ slug: course.slug }}>View Details <ArrowRight className="h-4 w-4" /></Link></Button>
+                  <Button asChild className="cta-shine mt-6 bg-primary font-bold text-primary-foreground shadow-lg shadow-primary/30 hover:bg-primary/90"><Link to="/courses/$slug" params={{ slug: course.slug }} aria-label={`View details of ${course.title}`}>View Details <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></Button>
                 </div>
                 <div className="min-w-0 bg-card p-5 sm:p-6"><h4 className="font-heading text-sm font-bold uppercase">Main topics</h4><ul className="mt-4 grid gap-x-5 gap-y-3 sm:grid-cols-2">{course.topics.map((topic, topicIndex) => <li key={`${topic}-${topicIndex}`} className="flex gap-2 text-sm text-muted-foreground"><Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{topic}</li>)}</ul></div>
               </div>
