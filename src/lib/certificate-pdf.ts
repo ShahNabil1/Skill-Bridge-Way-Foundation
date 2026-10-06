@@ -13,7 +13,8 @@ const FONT_ITALIC = "https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/lati
 const NAVY = rgb(16 / 255, 52 / 255, 112 / 255);
 const BLUE = rgb(10 / 255, 84 / 255, 222 / 255);
 const MID_BLUE = rgb(61 / 255, 92 / 255, 151 / 255);
-const PALE_BLUE = rgb(184 / 255, 196 / 255, 217 / 255);
+const CYAN = rgb(0 / 255, 168 / 255, 255 / 255);
+const ORANGE = rgb(255 / 255, 153 / 255, 0 / 255);
 const WHITE = rgb(1, 1, 1);
 const BLACK = rgb(0.035, 0.035, 0.04);
 const GREY = rgb(0.37, 0.39, 0.43);
@@ -42,21 +43,20 @@ function centered(page: PDFPage, text: string, y: number, font: PDFFont, size: n
   page.drawText(text, { x: (page.getWidth() - w) / 2, y, size: s, font, color });
 }
 
-function cornerBlocks(page: PDFPage, x: number, y: number, sx: 1 | -1, sy: 1 | -1) {
-  const blocks = [
-    { dx: 0, dy: 0, w: 38, h: 22, color: MID_BLUE },
-    { dx: 18, dy: 14, w: 38, h: 22, color: PALE_BLUE },
-    { dx: 36, dy: 28, w: 38, h: 22, color: MID_BLUE },
-  ];
-  for (const block of blocks) {
-    page.drawRectangle({
-      x: sx === 1 ? x + block.dx : x - block.dx - block.w,
-      y: sy === 1 ? y + block.dy : y - block.dy - block.h,
-      width: block.w,
-      height: block.h,
-      color: block.color,
-    });
-  }
+function cornerOrnament(page: PDFPage, x: number, y: number, sx: 1 | -1, sy: 1 | -1) {
+  const point = (dx: number, dy: number) => ({ x: x + sx * dx, y: y + sy * dy });
+  const line = (x1: number, y1: number, x2: number, y2: number, thickness: number, color = NAVY) => {
+    page.drawLine({ start: point(x1, y1), end: point(x2, y2), thickness, color });
+  };
+
+  // Refined stepped line-work: crisp in print and visually balanced at every corner.
+  line(0, 42, 0, 0, 3.2);
+  line(0, 0, 42, 0, 3.2);
+  line(7, 48, 7, 7, 1.2, CYAN);
+  line(7, 7, 48, 7, 1.2, CYAN);
+  line(15, 34, 15, 15, 1.4, MID_BLUE);
+  line(15, 15, 34, 15, 1.4, MID_BLUE);
+  line(4, 4, 11, 11, 2.2, ORANGE);
 }
 
 function signature(page: PDFPage, centerX: number, label: string, font: PDFFont) {
@@ -88,10 +88,10 @@ export async function generateCertificatePdf(d: CertificateData): Promise<Uint8A
   page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: BLUE });
   page.drawRectangle({ x: 22, y: 22, width: W - 44, height: H - 44, color: WHITE });
   page.drawRectangle({ x: 36, y: 31, width: W - 72, height: H - 62, borderColor: NAVY, borderWidth: 1, borderDashArray: [7, 3] });
-  cornerBlocks(page, 36, H - 53, 1, -1);
-  cornerBlocks(page, W - 36, H - 53, -1, -1);
-  cornerBlocks(page, 36, 31, 1, 1);
-  cornerBlocks(page, W - 36, 31, -1, 1);
+  cornerOrnament(page, 36, H - 31, 1, -1);
+  cornerOrnament(page, W - 36, H - 31, -1, -1);
+  cornerOrnament(page, 36, 31, 1, 1);
+  cornerOrnament(page, W - 36, 31, -1, 1);
 
   // Logo — large and left aligned as in the supplied reference.
   if (logoB) {
@@ -106,13 +106,28 @@ export async function generateCertificatePdf(d: CertificateData): Promise<Uint8A
   centered(page, "CERTIFICATE", 493, head, 43, NAVY, 500);
   centered(page, "OF COMPLETION", 463, italic, 22, BLACK, 360);
 
-  // Simple ornamental divider.
-  page.drawLine({ start: { x: 286, y: 432 }, end: { x: 377, y: 432 }, thickness: 1.2, color: GREY });
-  page.drawLine({ start: { x: 465, y: 432 }, end: { x: 556, y: 432 }, thickness: 1.2, color: GREY });
-  centered(page, "~  SBF  ~", 424, semi, 12, GREY, 100);
+  // Symmetrical diamond divider, matching the formal reference without a text monogram.
+  page.drawLine({ start: { x: 286, y: 432 }, end: { x: 396, y: 432 }, thickness: 1.1, color: GREY });
+  page.drawLine({ start: { x: 446, y: 432 }, end: { x: 556, y: 432 }, thickness: 1.1, color: GREY });
+  page.drawLine({ start: { x: 401, y: 432 }, end: { x: 421, y: 441 }, thickness: 1.2, color: NAVY });
+  page.drawLine({ start: { x: 421, y: 441 }, end: { x: 441, y: 432 }, thickness: 1.2, color: NAVY });
+  page.drawLine({ start: { x: 441, y: 432 }, end: { x: 421, y: 423 }, thickness: 1.2, color: NAVY });
+  page.drawLine({ start: { x: 421, y: 423 }, end: { x: 401, y: 432 }, thickness: 1.2, color: NAVY });
+  page.drawLine({ start: { x: 413, y: 432 }, end: { x: 421, y: 436 }, thickness: 1.1, color: ORANGE });
+  page.drawLine({ start: { x: 421, y: 436 }, end: { x: 429, y: 432 }, thickness: 1.1, color: ORANGE });
+  page.drawLine({ start: { x: 429, y: 432 }, end: { x: 421, y: 428 }, thickness: 1.1, color: ORANGE });
+  page.drawLine({ start: { x: 421, y: 428 }, end: { x: 413, y: 432 }, thickness: 1.1, color: ORANGE });
 
-  page.drawText("CERTIFICATE NO:", { x: 626, y: 421, size: 10, font: semi, color: BLACK });
-  page.drawText(d.serial, { x: 626, y: 402, size: 10, font: semi, color: NAVY });
+  const certificateLabel = "CERTIFICATE NO:";
+  const certificateSize = 9.5;
+  const serialSize = 9.5;
+  const gap = 6;
+  const labelWidth = semi.widthOfTextAtSize(certificateLabel, certificateSize);
+  const serialWidth = safeBold.widthOfTextAtSize(d.serial, serialSize);
+  const certificateLineWidth = labelWidth + gap + serialWidth;
+  const certificateX = W - 54 - certificateLineWidth;
+  page.drawText(certificateLabel, { x: certificateX, y: 409, size: certificateSize, font: semi, color: BLACK });
+  page.drawText(d.serial, { x: certificateX + labelWidth + gap, y: 409, size: serialSize, font: safeBold, color: NAVY });
 
   centered(page, "This certificate is proudly presented to", 379, safeBold, 15, BLACK, 500);
   centered(page, d.studentName.toUpperCase(), 329, head, 30, NAVY, 560);
