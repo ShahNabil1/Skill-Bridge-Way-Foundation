@@ -206,8 +206,11 @@ a:hover .brand-wordmark, .brand-wordmark:hover { transform: translateY(-1px); fi
   transform-origin: left;
   transition: transform 0.3s ease;
 }
-.footer-credit-link:hover { color: var(--primary); }
-.footer-credit-link:hover::after { transform: scaleX(1); }
+.footer-credit-link:hover { color: #f26202; } /* Branta Tech brand orange from the official logo */
+.footer-credit-link:hover::after {
+  transform: scaleX(1);
+  background: linear-gradient(90deg, #f26202, color-mix(in srgb, #f26202 60%, #ffb066));
+}
 
 /* Hero: ambient motion that plays on its own, no hover needed. */
 @keyframes hero-kenburns { from { transform: scale(1); } to { transform: scale(1.08); } }
