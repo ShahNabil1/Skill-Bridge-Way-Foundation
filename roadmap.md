@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Connect Google Analytics and Google Search Console fresh in the new workspace; previous workspace connections do not apply.
 - [x] Standardize the animated cyan “Bridge” and orange “way” wordmark across prominent public brand displays.
 - [x] Add the chairman's supplied portrait and verbatim message to the homepage in a polished responsive section.
 - [x] Add official Facebook, Instagram, and LinkedIn links with recognizable brand icons to the public footer, Contact page, and Partner contact area.
