@@ -291,9 +291,9 @@ async function lookupIpGeo(ip: string): Promise<{ geo: Geo | null; retriable: bo
   try {
     const res = await fetch(`https://ipwho.is/${encodeURIComponent(ip)}`, { signal: AbortSignal.timeout(4000) });
     if (!res.ok) return { geo: null, retriable: true };
-    const j = (await res.json()) as Record<string, any>;
+    const j = (await res.json()) as any;
     if (j?.success === false) return { geo: null, retriable: false }; // reserved/unroutable — terminal
-    const conn = (j?.connection ?? {}) as Record<string, any>;
+    const conn = (j?.connection ?? {}) as any;
     const geo: Geo = {
       city: j.city ?? null, region: j.region ?? null, country: j.country_code ?? null,
       continent: j.continent_code ?? null, postal_code: j.postal ?? null,
