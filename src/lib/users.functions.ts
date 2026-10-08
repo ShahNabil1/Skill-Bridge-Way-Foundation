@@ -342,7 +342,7 @@ export const sessionHeartbeat = createServerFn({ method: "POST" }).middleware([r
         ...geo.row, geo_attempted: geo.attempted,
       }, { onConflict: "auth_session_id" }).select("id").single();
       rowId = row?.id ?? null;
-    } else if (!existing.country && !existing.geo_attempted) {
+    } else if (existing && !existing.country && !existing.geo_attempted) {
       // Backfill older sessions that were saved before geo columns existed.
       const geo = await resolveGeo(existing.ip ?? null);
       if (geo.attempted) {

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { AlertCircle, ArrowLeft, Ban, Check, Clock, Copy, Globe, KeyRound, Laptop, Loader2, LogOut, MapPin, MonitorSmartphone, Pencil, Save, ShieldCheck, Smartphone, Trash2, UserCheck, UserCircle, X } from "lucide-react";
+import { AlertCircle, ArrowLeft, Ban, Check, ChevronDown, Clock, Copy, Globe, KeyRound, Laptop, Loader2, LogOut, MapPin, MonitorSmartphone, Pencil, Save, ShieldCheck, Smartphone, Trash2, UserCheck, UserCircle, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -311,7 +311,7 @@ function SessionsTab({ id, canRevoke, revoke, busy }: { id: string; canRevoke: b
         {data.map((s) => {
           const Icon = s.device === "Mobile" ? Smartphone : s.device === "Tablet" ? MonitorSmartphone : Laptop;
           const place = [s.city, s.region, s.country].filter(Boolean).join(", ");
-          const details: [string, string][] = [
+          const details = ([
             ["IP address", s.ip ?? ""],
             ["ISP / Network", s.isp ?? ""],
             ["Location", place],
@@ -319,7 +319,7 @@ function SessionsTab({ id, canRevoke, revoke, busy }: { id: string; canRevoke: b
             ["Coordinates", s.latitude != null && s.longitude != null ? `${s.latitude.toFixed(4)}, ${s.longitude.toFixed(4)}` : ""],
             ["Postal code", s.postal_code ?? ""],
             ["Continent", s.continent ?? ""],
-          ].filter(([, v]) => v);
+          ] as [string, string][]).filter(([, v]) => v);
           return (
             <div key={s.id} className={`glass rounded-xl p-4 ${s.revoked_at ? "opacity-60" : ""}`}>
               <div className="flex items-start justify-between gap-3">
