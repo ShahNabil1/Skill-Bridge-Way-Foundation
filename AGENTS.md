@@ -22,7 +22,7 @@
 - Route links preload on intent and public query data stays fresh briefly; why: repeat navigation avoids unnecessary network work while admin data remains independently refreshed.
 - Password visibility and live complexity feedback share one auth component; why: login, recovery, invitation and profile use the same validated password rules.
 - Account recovery never reveals whether an email is registered and requires explicit code entry after the generic send response; why: Supabase deliberately masks account existence.
-- Auth and profile fields share ASCII validation and digit normalization; why: consistent input feedback prevents mixed-script account details.
+- Auth fields share ASCII validation and digit normalization; profile phone rejects non-ASCII digits instead of normalizing them; why: profile input must enforce explicit English-digit entry.
 - Avatar images are cropped and resized in-browser before direct R2 upload; why: predictable square images avoid oversized media and keep the existing signed-upload boundary.
 - Supabase/R2 holds demo content; only allowlisted AI Literacy accepts test applications; why: other demos cannot enroll.
 - Admin application edits go through the `update_admission_with_log` DB function, and views/downloads/decisions go through `log_admission_activity`; why: every change is recorded with its old value and the admin's name, in one transaction.
@@ -32,3 +32,4 @@
 - The public pathway's sequence lives in `program-pathway.ts`; course details and admission stay in CMS records; why: a coherent journey preserves application history.
 - Course images use `image_keys` (1–5; first is cover), cropped 16:9; apply windows are DB-enforced; why: legacy cards work and closed intakes can't be bypassed.
 - Social profiles use `SocialLinks`; visible wordmarks use `BrandName`; why: shared brand data and styling stay consistent.
+- Profile editing uses a shared client/server schema, combines split names into `full_name`, and stores structured address JSON in the existing address text column with legacy text fallback; why: validated self-only updates preserve existing profile consumers without a schema migration.
