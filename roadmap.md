@@ -1,5 +1,6 @@
 # Roadmap
-- [ ] Upgrade profile view/edit, split names, strict Bangladesh phone, admission address, avatar preview and animated account dialogs; validate rules and available flows.
+- [x] Upgrade profile view/edit, split names, strict Bangladesh phone, admission address, avatar preview and animated account dialogs; six validation tests and build pass, signed-out guard checked.
+- [ ] Verify profile saving, avatar upload and account-change dialogs signed in; blocked by external unmanaged Supabase session unavailable to browser testing.
 - [x] Connect Google Analytics and Google Search Console fresh in the new workspace; both linked successfully.
 - [x] Standardize the animated cyan “Bridge” and orange “way” wordmark across prominent public brand displays.
 - [x] Add the chairman's supplied portrait and verbatim message to the homepage in a polished responsive section.

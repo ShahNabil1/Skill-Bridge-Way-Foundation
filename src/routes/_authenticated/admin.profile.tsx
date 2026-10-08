@@ -220,9 +220,10 @@ function ChangeEmail({ onDone }: { onDone: () => void }) {
     const a = await supabase.auth.verifyOtp({ email: user.email ?? "", token: oldCode, type: "email_change" });
     if (a.error) { setBusy(false); { toast.error(`Current email code: ${a.error.message}`); return; } }
     const b = await supabase.auth.verifyOtp({ email: newEmail.trim(), token: newCode, type: "email_change" });
+    if (b.error) { setBusy(false); toast.error(`New email code: ${b.error.message}`); return; }
+    const { error: profileError } = await supabase.from("profiles").update({ email: newEmail.trim() }).eq("id", user.id);
     setBusy(false);
-    if (b.error) { toast.error(`New email code: ${b.error.message}`); return; }
-    await supabase.from("profiles").update({ email: newEmail.trim() }).eq("id", user.id);
+    if (profileError) toast.warning("Your account email changed, but profile sync couldn't finish. Please refresh.");
     toast.success("Email changed. Sign in with your new email next time.");
     setStep("enter"); setNewEmail(""); setOldCode(""); setNewCode(""); onDone();
   }
