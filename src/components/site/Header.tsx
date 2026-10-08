@@ -38,7 +38,7 @@ export function Header() {
           </Button>
         </nav>
         <div className="flex shrink-0 items-center gap-1 sm:gap-2 lg:hidden">
-          <LangToggle className="!h-8 !w-[5.5rem] sm:!w-28" />
+          <LangToggle className="!h-8 !w-24 sm:!w-28" />
           <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}>
           {open ? <X /> : <Menu />}
         </Button>

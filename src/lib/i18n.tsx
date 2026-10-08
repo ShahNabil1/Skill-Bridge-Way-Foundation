@@ -179,7 +179,7 @@ export function LangToggle({ className = "" }: { className?: string }) {
       <span aria-hidden="true" className={`lang-toggle-indicator pointer-events-none absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-primary ${lang === "en" ? "translate-x-full" : "translate-x-0"}`} />
       {(["bn", "en"] as const).map((l) => (
         <Button variant="ghost" key={l} type="button" onClick={() => setLang(l)} aria-pressed={lang === l}
-          className={`relative z-10 h-6 w-full cursor-pointer rounded-full px-0 py-0 text-xs font-bold hover:bg-transparent ${lang === l ? "text-primary-foreground hover:text-primary-foreground" : "text-muted-foreground hover:text-primary"}`}>
+          className={`relative z-10 h-6 w-full min-w-0 cursor-pointer overflow-hidden rounded-full px-0 py-0 text-[11px] leading-none sm:text-xs font-bold hover:bg-transparent ${lang === l ? "text-primary-foreground hover:text-primary-foreground" : "text-muted-foreground hover:text-primary"}`}>
           {l === "bn" ? "বাংলা" : "EN"}
         </Button>
       ))}
