@@ -20,21 +20,47 @@ const PROMPT = {
 async function aiTranslate(texts: string[], lang: "bn" | "en"): Promise<string[]> {
   const key = process.env.LOVABLE_API_KEY;
   if (!key) throw new Error("Translation unavailable");
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
     method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    headers: { "Lovable-API-Key": key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", "X-Lovable-AIG-SDK": "fetch" },
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
-      messages: [
-        { role: "system", content: `${PROMPT[lang]} Respond ONLY with a JSON object {"t": [...]} containing exactly ${texts.length} translated strings in the same order.` },
-        { role: "user", content: JSON.stringify(texts) },
-      ],
-      response_format: { type: "json_object" },
+      model: "openai/gpt-6-astra",
+      stream: true,
+      store: false,
+      reasoning: { effort: "low" },
+      instructions: `${PROMPT[lang]} Return exactly ${texts.length} translated strings in field "t", in the same order as the input JSON array.`,
+      input: JSON.stringify(texts),
+      text: {
+        format: {
+          type: "json_schema",
+          name: "translations",
+          strict: true,
+          schema: { type: "object", properties: { t: { type: "array", items: { type: "string" } } }, required: ["t"], additionalProperties: false },
+        },
+      },
     }),
   });
-  if (!res.ok) throw new Error(`Translation failed (${res.status})`);
-  const json = await res.json();
-  const parsed = JSON.parse(json.choices?.[0]?.message?.content ?? "{}");
+  if (!res.ok || !res.body) throw new Error(`Translation failed (${res.status})`);
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let buf = "", text = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    const lines = buf.split("\n");
+    buf = lines.pop() ?? "";
+    for (const line of lines) {
+      if (!line.startsWith("data:")) continue;
+      const payload = line.slice(5).trim();
+      if (!payload || payload === "[DONE]") continue;
+      try {
+        const ev = JSON.parse(payload);
+        if (ev.type === "response.output_text.delta") text += ev.delta ?? "";
+      } catch { /* ignore partial */ }
+    }
+  }
+  const parsed = JSON.parse(text || "{}");
   const out: unknown = parsed.t;
   if (!Array.isArray(out) || out.length !== texts.length) throw new Error("Bad translation response");
   return out.map((v, i) => (typeof v === "string" && v.trim() ? v : texts[i]));
