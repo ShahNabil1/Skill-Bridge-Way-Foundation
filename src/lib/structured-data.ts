@@ -40,6 +40,7 @@ export const HOME_JSONLD = {
   "@type": "WebSite",
   "@id": `${SITE_URL}/#website`,
   name: "Skill Bridgeway Foundation",
+  alternateName: ["Skill Bridgeway", "SBF", "skillbridgeway.org"],
   url: `${SITE_URL}/`,
   inLanguage: "en",
   publisher: { "@id": ORG_ID },
