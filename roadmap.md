@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Upgrade profile view/edit, split names, strict Bangladesh phone, admission address, avatar preview and animated account dialogs; validate rules and available flows.
 - [x] Connect Google Analytics and Google Search Console fresh in the new workspace; both linked successfully.
 - [x] Standardize the animated cyan “Bridge” and orange “way” wordmark across prominent public brand displays.
 - [x] Add the chairman's supplied portrait and verbatim message to the homepage in a polished responsive section.
