@@ -69,7 +69,7 @@ function Index() {
           <Link
             to="/about"
             hash="registration"
-            className="hero-reveal hero-reveal-5 mt-6 inline-flex items-center gap-2.5 rounded-full border border-primary/40 bg-background/50 px-4 py-2 text-xs font-semibold text-foreground backdrop-blur transition-all duration-300 hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_20px_-4px_hsl(var(--primary)/0.5)] sm:px-5 sm:py-2.5 sm:text-sm"
+            className="hero-reveal hero-reveal-5 group mt-6 inline-flex items-center gap-2.5 rounded-full border border-primary/40 bg-background/50 px-4 py-2 text-xs font-semibold text-foreground backdrop-blur transition-all duration-300 hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_20px_-4px_hsl(var(--primary)/0.5)] sm:px-5 sm:py-2.5 sm:text-sm"
           >
             <ShieldCheck className="h-4 w-4 shrink-0 text-primary transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
             <span>
