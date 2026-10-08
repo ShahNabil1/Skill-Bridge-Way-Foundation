@@ -141,8 +141,8 @@ export const updateUserInfo = createServerFn({ method: "POST" }).middleware([req
     await need(context, "users.edit");
     const u = await getTarget(data.id);
     guardTarget(context, u, true);
-    const patch: Record<string, string> = { full_name: data.full_name };
-    if (data.phone !== undefined) { await need(context, "users.personal"); patch["phone"] = data.phone; }
+    const patch: { full_name: string; phone?: string } = { full_name: data.full_name };
+    if (data.phone !== undefined) { await need(context, "users.personal"); patch.phone = data.phone; }
     const sb = await admin();
     const { error } = await sb.from("profiles").update(patch).eq("id", data.id);
     if (error) throw new Error(error.message);
