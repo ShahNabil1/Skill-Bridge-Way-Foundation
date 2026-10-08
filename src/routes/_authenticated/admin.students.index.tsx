@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { BellOff, Search, X } from "lucide-react";
+import { BellOff, Loader2, RefreshCw, Search, X } from "lucide-react";
+import { toast } from "sonner";
+import { useRefreshAllCertificates } from "@/lib/use-issue-certificate";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -56,7 +58,7 @@ function StudentsList() {
 
   return (
     <>
-      <PageTitle title="Students"><Button asChild variant="outline"><Link to="/admin/attendance">Take attendance</Link></Button></PageTitle>
+      <PageTitle title="Students"><RefreshCertsButton /><Button asChild variant="outline"><Link to="/admin/attendance">Take attendance</Link></Button></PageTitle>
       <div className="glass mb-4 space-y-3 rounded-xl p-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -103,5 +105,26 @@ function StudentsList() {
         </Table>
       </div>
     </>
+  );
+}
+
+function RefreshCertsButton() {
+  const refresh = useRefreshAllCertificates();
+  const [progress, setProgress] = useState<string | null>(null);
+  const run = async () => {
+    if (!confirm("Re-create all issued certificate PDFs with the latest design and signatures? Serial numbers stay the same.")) return;
+    setProgress("0");
+    try {
+      const r = await refresh((d, t) => setProgress(`${d}/${t}`));
+      if (r.failed) toast.warning(`${r.total - r.failed} of ${r.total} certificates updated`);
+      else toast.success(`${r.total} certificates updated`);
+    } catch { toast.error("Could not update certificates"); }
+    setProgress(null);
+  };
+  return (
+    <Button variant="outline" onClick={run} disabled={progress !== null}>
+      {progress !== null ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+      {progress !== null ? `Updating ${progress}` : "Update all certificates"}
+    </Button>
   );
 }
