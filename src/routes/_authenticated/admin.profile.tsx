@@ -72,7 +72,7 @@ function BasicInfo() {
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [phoneWarning, setPhoneWarning] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Partial<Record<"first_name" | "last_name" | "phone", string>> & Record<string, string | undefined>>({});
   const changed = profileHasChanges(saved, form);
   const src = cdnUrl(profile?.avatar_key);
   function cancel() { setForm(readProfileInfo(profile ?? {})); setEditing(false); setErrors({}); setPhoneWarning(false); }
