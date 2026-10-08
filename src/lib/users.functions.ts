@@ -300,7 +300,7 @@ async function lookupIpGeo(ip: string): Promise<{ geo: Geo | null; retriable: bo
       latitude: typeof j.latitude === "number" ? j.latitude : null,
       longitude: typeof j.longitude === "number" ? j.longitude : null,
       timezone: j?.timezone?.id ?? null,
-      isp: [conn.isp, conn.org].filter(Boolean).join(" · ") || null,
+      isp: [conn.isp, conn.org].filter(Boolean).join(" · ") || undefined,
     };
     if (geoCache.size > 500) geoCache.clear();
     geoCache.set(ip, geo);
@@ -314,7 +314,7 @@ async function lookupIpGeo(ip: string): Promise<{ geo: Geo | null; retriable: bo
 async function resolveGeo(ip: string | null): Promise<{ row: Record<string, string | number>; attempted: boolean }> {
   if (ip && !isPrivateIp(ip)) {
     const fromEdge = cleanGeo(await edgeGeo());
-    if (fromEdge.city || fromEdge.region || fromEdge.country) return { row: fromEdge, attempted: true };
+    if (fromEdge["city"] || fromEdge["region"] || fromEdge["country"]) return { row: fromEdge, attempted: true };
     const r = await lookupIpGeo(ip);
     if (r.geo) return { row: cleanGeo(r.geo), attempted: true };
     if (!r.retriable) return { row: {}, attempted: true };
