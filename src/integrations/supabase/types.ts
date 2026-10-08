@@ -745,6 +745,87 @@ export type Database = {
           },
         ]
       }
+      user_activity: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          page: string | null
+          seconds: number
+          session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          page?: string | null
+          seconds?: number
+          session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          page?: string | null
+          seconds?: number
+          session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_admin_audit: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_name: string | null
+          created_at: string
+          detail: Json
+          id: string
+          target_user_id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_name?: string | null
+          created_at?: string
+          detail?: Json
+          id?: string
+          target_user_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_name?: string | null
+          created_at?: string
+          detail?: Json
+          id?: string
+          target_user_id?: string
+        }
+        Relationships: []
+      }
+      user_permissions: {
+        Row: {
+          created_at: string
+          granted_by: string | null
+          permission: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_by?: string | null
+          permission: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_by?: string | null
+          permission?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -763,14 +844,77 @@ export type Database = {
         }
         Relationships: []
       }
+      user_sessions: {
+        Row: {
+          auth_session_id: string | null
+          browser: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          device: string | null
+          id: string
+          ip: string | null
+          last_seen_at: string
+          os: string | null
+          region: string | null
+          revoke_reason: string | null
+          revoked_at: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth_session_id?: string | null
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device?: string | null
+          id?: string
+          ip?: string | null
+          last_seen_at?: string
+          os?: string | null
+          region?: string | null
+          revoke_reason?: string | null
+          revoked_at?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth_session_id?: string | null
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device?: string | null
+          id?: string
+          ip?: string | null
+          last_seen_at?: string
+          os?: string | null
+          region?: string | null
+          revoke_reason?: string | null
+          revoked_at?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
       _actor_name: { Args: { _uid: string }; Returns: string }
+      admin_end_auth_sessions: {
+        Args: { _session_id?: string; _user_id: string }
+        Returns: undefined
+      }
+      all_permission_keys: { Args: never; Returns: string[] }
       approve_admission: { Args: { _admission_id: string }; Returns: string }
       get_application_by_token: { Args: { _token: string }; Returns: Json }
+      has_permission: {
+        Args: { _perm: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -794,9 +938,14 @@ export type Database = {
         Args: { _action: string; _detail?: Json; _student_id: string }
         Returns: undefined
       }
+      my_permissions: { Args: never; Returns: string[] }
       update_admission_with_log: {
         Args: { _admission_id: string; _note?: string; _patch: Json }
         Returns: number
+      }
+      user_activity_report: {
+        Args: { _from: string; _to: string; _user_id: string }
+        Returns: Json
       }
       verify_certificate: {
         Args: { _serial: string }

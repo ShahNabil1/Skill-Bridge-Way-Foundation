@@ -87,3 +87,13 @@ export async function sendEmail(to: string, msg: { subject: string; html: string
   }
   return { sent: true };
 }
+
+/** Admin-issued temporary password. */
+export function adminPasswordResetEmail(name: string, password: string) {
+  return {
+    subject: "Your password was reset — Skill Bridgeway Foundation",
+    html: layout("Password Reset",
+      `<p>Dear ${esc(name || "team member")},</p><p>An administrator has reset your Skill Bridgeway Foundation admin account password. All your previous sessions have been signed out.</p>${highlight("Your new temporary password", password)}<p>Please sign in and change this password right away from <b style="color:#fff">My Profile → Change Password</b>. If you did not expect this, contact info@skillbridgeway.org.</p>`,
+      { label: "Sign In", href: `${SITE}/auth` }),
+  };
+}

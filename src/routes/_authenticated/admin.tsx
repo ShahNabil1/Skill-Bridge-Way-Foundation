@@ -6,7 +6,9 @@ import { BookOpen, Bell, Image, ClipboardList, Users, UserCircle, Handshake, Lay
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { seo } from "@/components/site/PageHero";
-import { useIsAdmin } from "@/components/admin/shared";
+import { usePermissions } from "@/components/admin/shared";
+import { SessionGuard } from "@/components/admin/SessionGuard";
+import { permissionForPath } from "@/lib/permissions";
 
 export const Route = createFileRoute("/_authenticated/admin")({ staticData: { sitemap: false },
   head: () => seo("Admin Dashboard | Skill Bridgeway Foundation", "Manage courses, admissions, notices, gallery and users.", { noindex: true }),
@@ -30,7 +32,7 @@ const NAV = [
 function AdminLayout() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { data: isAdmin } = useIsAdmin();
+  const { can, isLoading: permsLoading } = usePermissions();
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   useEffect(() => { setOpen(false); }, [pathname]);
@@ -83,7 +85,7 @@ function AdminLayout() {
       <div className={`fixed inset-0 top-16 z-40 bg-background/70 transition-opacity duration-300 motion-reduce:transition-none ${open ? "opacity-100" : "pointer-events-none opacity-0"}`} onClick={() => setOpen(false)} aria-hidden="true" />
       <aside id="admin-menu" aria-label="Admin menu" inert={!open} className={`fixed inset-y-0 left-0 top-16 z-50 w-[min(19rem,85vw)] overflow-y-auto overscroll-contain border-r border-border bg-sidebar p-4 shadow-xl transition-transform duration-300 ease-out motion-reduce:transition-none ${open ? "translate-x-0" : "-translate-x-full"}`}>
         <nav className="flex flex-col gap-1">
-          {NAV.filter((n) => !n.admin || isAdmin).map((n) => (
+          {NAV.filter((n) => { const p = permissionForPath(n.to); return !n.admin || !p || can(p); }).map((n) => (
             <Link key={n.to} to={n.to} preload="intent" onClick={() => setOpen(false)} activeOptions={{ exact: "exact" in n }}
               className="flex min-h-11 items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               activeProps={{ className: "bg-primary/15 !text-primary" }}>
@@ -95,7 +97,14 @@ function AdminLayout() {
           </Button>
         </nav>
       </aside>
-      <main className="mx-auto w-full max-w-7xl min-w-0 px-4 py-8 md:px-8"><Outlet /></main>
+      <SessionGuard />
+      <main className="mx-auto w-full max-w-7xl min-w-0 px-4 py-8 md:px-8">
+        {(() => {
+          const need = permissionForPath(pathname);
+          if (!need || permsLoading || can(need)) return <Outlet />;
+          return <div className="glass rounded-xl p-8 text-center"><p className="font-heading text-lg font-bold text-foreground">No access</p><p className="mt-2 text-sm text-muted-foreground">You don't have permission to open this page. Ask an administrator to grant access.</p><Button asChild variant="outline" className="mt-4"><Link to="/admin/profile">Go to My Profile</Link></Button></div>;
+        })()}
+      </main>
     </div>
   );
 }

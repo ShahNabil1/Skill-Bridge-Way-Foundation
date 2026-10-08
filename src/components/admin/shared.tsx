@@ -28,6 +28,26 @@ export function useIsAdmin() {
   });
 }
 
+/** The signed-in user's permission keys (Super Admin gets all). */
+export function usePermissions() {
+  const user = useCurrentUser();
+  const q = useQuery({
+    queryKey: ["my-permissions", user.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("my_permissions" as any);
+      if (error) throw error;
+      return new Set<string>((data as string[] | null) ?? []);
+    },
+    staleTime: 30_000,
+  });
+  return { ...q, can: (perm: string) => !!q.data?.has(perm) };
+}
+
+export function Can({ perm, children, fallback = null }: { perm: string; children: React.ReactNode; fallback?: React.ReactNode }) {
+  const { can } = usePermissions();
+  return <>{can(perm) ? children : fallback}</>;
+}
+
 export function AdminOnly({ children }: { children: React.ReactNode }) {
   const { data: isAdmin, isLoading } = useIsAdmin();
   if (isLoading) return <p className="text-muted-foreground">Checking access...</p>;
