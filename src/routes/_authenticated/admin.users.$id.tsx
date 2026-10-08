@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { ArrowLeft, Ban, Check, Clock, Copy, Globe, KeyRound, Laptop, Loader2, LogOut, MonitorSmartphone, Pencil, ShieldCheck, Smartphone, Trash2, UserCheck, X } from "lucide-react";
+import { AlertCircle, ArrowLeft, Ban, Check, Clock, Copy, Globe, KeyRound, Laptop, Loader2, LogOut, MapPin, MonitorSmartphone, Pencil, Save, ShieldCheck, Smartphone, Trash2, UserCheck, UserCircle, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,8 +13,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { confirmAction } from "@/components/ConfirmDialog";
-import { usePermissions } from "@/components/admin/shared";
-import { deleteUserAccount, getUserDetail, resetUserPassword, revokeUserSession, setUserBan, setUserPermissions, updateUserInfo } from "@/lib/users.functions";
+import { usePermissions, useMediaUpload } from "@/components/admin/shared";
+import { deleteUserAccount, getUserDetail, resetUserPassword, revokeUserSession, setUserBan, setUserPermissions, updateUserAvatar, updateUserInfo } from "@/lib/users.functions";
+import { profileInfoSchema, readProfileInfo, profileHasChanges, formatProfileAddress, strictPhoneInput, type ProfileInfo } from "@/lib/profile-schema";
+import { BdFlag } from "@/components/BdFlag";
+import { AddressPicker } from "@/components/admission/FormBits";
+import { AvatarCropper } from "@/components/auth/AvatarCropper";
+import { ValidatedField } from "@/components/auth/ValidatedField";
 import { PERMISSION_GROUPS, PRESETS, ALL_PERMISSIONS } from "@/lib/permissions";
 import { cdnUrl } from "@/lib/cdn";
 import { seo } from "@/components/site/PageHero";
@@ -131,35 +136,89 @@ type Detail = Awaited<ReturnType<typeof getUserDetail>>;
 
 function ProfileTab({ u, canEdit, onSaved }: { u: Detail; canEdit: boolean; onSaved: () => void }) {
   const save = useServerFn(updateUserInfo);
+  const saveAvatar = useServerFn(updateUserAvatar);
+  const upload = useMediaUpload();
+  const readSaved = () => readProfileInfo({ full_name: u.full_name, phone: u.phone ?? "", address: u.canPersonal ? (u.address ?? "") : "" });
+  const saved = readSaved();
+  const [form, setForm] = useState(readSaved);
   const [edit, setEdit] = useState(false);
-  const [name, setName] = useState(u.full_name);
-  const [phone, setPhone] = useState(u.phone ?? "");
-  const [saving, setSaving] = useState(false);
-  useEffect(() => { setName(u.full_name); setPhone(u.phone ?? ""); }, [u]);
-  const dirty = name.trim() !== u.full_name || (u.canPersonal && phone.trim() !== (u.phone ?? ""));
-  let address = "—";
-  if (u.address) { try { const a = JSON.parse(u.address); address = [a.village, a.union, a.upazila, a.district, a.division].filter(Boolean).join(", ") || u.address; } catch { address = u.address; } }
-  const rows: [string, string][] = [["Full name", u.full_name || "—"], ["Email", u.email], ["Email confirmed", u.email_confirmed ? "Yes" : "No"],
-    ...(u.canPersonal ? [["Phone", u.phone || "—"], ["Address", address]] as [string, string][] : []), ["Joined", dt(u.created_at)], ["Last sign-in", dt(u.last_sign_in_at)]];
+  const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [phoneWarning, setPhoneWarning] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<"first_name" | "last_name" | "phone", string>> & Record<string, string | undefined>>({});
+  const changed = profileHasChanges(saved, form);
+  const src = cdnUrl(u.avatar_key);
+  useEffect(() => { if (!edit) setForm(readSaved()); /* eslint-disable-line react-hooks/exhaustive-deps */ }, [u, edit]);
+  function cancel() { setForm(saved); setEdit(false); setErrors({}); setPhoneWarning(false); }
+  async function onAvatar(file: File) {
+    setUploading(true);
+    try {
+      const key = await upload(file, "avatars");
+      await saveAvatar({ data: { id: u.id, avatar_key: key } });
+      onSaved();
+      toast.success("Avatar updated");
+    } catch (err) { toast.error((err as Error).message); }
+    finally { setUploading(false); }
+  }
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (busy || !changed) return;
+    const schema = u.canPersonal ? profileInfoSchema : profileInfoSchema.pick({ first_name: true, last_name: true });
+    const result = schema.safeParse(form);
+    if (!result.success) {
+      setErrors(Object.fromEntries(result.error.issues.map((issue) => [issue.path.join("."), issue.message])));
+      toast.error(result.error.issues[0]?.message ?? "Check your details"); return;
+    }
+    const data = result.data as ProfileInfo;
+    setBusy(true);
+    try {
+      await save({ data: { id: u.id, first_name: data.first_name, last_name: data.last_name, ...(u.canPersonal ? { phone: data.phone, address: data.address } : {}) } });
+      toast.success("Changes saved");
+      setEdit(false); setErrors({}); setPhoneWarning(false);
+      onSaved();
+    } catch (err) { toast.error((err as Error).message); }
+    setBusy(false);
+  }
+  const rows: [string, string][] = [["First name", saved.first_name || "—"], ["Last name", saved.last_name || "—"], ["Email", u.email], ["Email confirmed", u.email_confirmed ? "Yes" : "No"],
+    ...(u.canPersonal ? [["Phone", saved.phone ? `+88 ${saved.phone}` : "—"], ["Address", formatProfileAddress(saved.address) || "—"]] as [string, string][] : []),
+    ["Joined", dt(u.created_at)], ["Last sign-in", dt(u.last_sign_in_at)]];
   return (
     <div className="glass rounded-xl p-5">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="font-heading text-sm font-bold uppercase text-foreground">Basic info</h2>
-        {canEdit && !edit && <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setEdit(true)}><Pencil className="h-4 w-4" />Edit info</Button>}
+        {canEdit && !edit && <Button size="sm" variant="outline" className="gap-1.5" onClick={() => { setForm(saved); setEdit(true); }}><Pencil className="h-4 w-4" />Edit info</Button>}
       </div>
       {!edit ? (
         <dl className="grid gap-4 sm:grid-cols-2">{rows.map(([k, v]) => <div key={k}><dt className="text-xs uppercase tracking-wide text-muted-foreground">{k}</dt><dd className="mt-1 break-words text-foreground">{v}</dd></div>)}</dl>
       ) : (
-        <form className="grid gap-4 sm:grid-cols-2" onSubmit={async (e) => {
-          e.preventDefault(); setSaving(true);
-          try { await save({ data: { id: u.id, full_name: name, ...(u.canPersonal ? { phone: phone.trim() } : {}) } }); toast.success("Changes saved"); setEdit(false); onSaved(); } catch (err) { toast.error((err as Error).message); }
-          setSaving(false);
-        }}>
-          <div className="space-y-2"><Label htmlFor="mu-name">Full name</Label><Input id="mu-name" required minLength={2} value={name} onChange={(e) => setName(e.target.value)} /></div>
-          {u.canPersonal && <div className="space-y-2"><Label htmlFor="mu-phone">Phone</Label><Input id="mu-phone" inputMode="numeric" placeholder="01XXXXXXXXX" value={phone} onChange={(e) => setPhone(e.target.value.replace(/[^0-9+]/g, ""))} /></div>}
-          <div className="flex gap-2 sm:col-span-2">
-            <Button type="submit" disabled={!dirty || saving} className="gap-1.5">{saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}Save changes</Button>
-            <Button type="button" variant="ghost" onClick={() => { setEdit(false); setName(u.full_name); setPhone(u.phone ?? ""); }}><X className="h-4 w-4" />Cancel</Button>
+        <form onSubmit={onSubmit} className="space-y-6" aria-busy={busy || uploading}>
+          <div className="flex flex-wrap items-center gap-4 border-b border-border pb-5">
+            <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-primary/40 bg-muted">
+              {src ? <img src={cdnUrl(u.avatar_key)!} alt="" className="h-full w-full object-cover" /> : <UserCircle className="!h-8 !w-8 text-primary" />}
+            </span>
+            <AvatarCropper onSave={onAvatar} disabled={busy || uploading} />
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="space-y-2"><Label htmlFor="mu-first">First Name</Label><ValidatedField id="mu-first" required autoComplete="given-name" maxLength={60} value={form.first_name} onChange={(v) => setForm({ ...form, first_name: v })} />{errors.first_name && <p className="text-xs text-destructive">{errors.first_name}</p>}</div>
+            <div className="space-y-2"><Label htmlFor="mu-last">Last Name</Label><ValidatedField id="mu-last" required autoComplete="family-name" maxLength={59} value={form.last_name} onChange={(v) => setForm({ ...form, last_name: v })} />{errors.last_name && <p className="text-xs text-destructive">{errors.last_name}</p>}</div>
+          </div>
+          {u.canPersonal && <>
+            <div className="max-w-md space-y-2"><Label htmlFor="mu-phone">Phone</Label>
+              <div className="flex overflow-hidden rounded-md border border-input focus-within:ring-2 focus-within:ring-ring">
+                <span className="flex shrink-0 items-center gap-2 border-r border-input bg-muted px-3"><BdFlag /><span>+88</span></span>
+                <Input id="mu-phone" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="017XXXXXXXX" value={form.phone} className="min-w-0 rounded-none border-0 focus-visible:ring-0" aria-invalid={!!errors.phone} onChange={(e) => { const next = strictPhoneInput(e.target.value); setPhoneWarning(next.warning); setForm({ ...form, phone: next.value }); }} />
+              </div>
+              <p className="text-xs text-muted-foreground">11 digits · starts with 013–019</p>
+              {phoneWarning && <p role="status" className="flex items-center gap-2 text-xs text-highlight"><AlertCircle className="h-4 w-4" />Use English digits only. Other characters are not accepted.</p>}
+              {errors.phone && <p role="alert" className="text-xs text-destructive">{errors.phone}</p>}
+            </div>
+            <div className="space-y-4 border-t border-border pt-5"><h3 className="flex items-center gap-2 text-sm text-primary"><MapPin className="h-4 w-4" />Address</h3>
+              <AddressPicker value={form.address} onChange={(patch) => setForm({ ...form, address: { ...form.address, ...patch } })} errors={Object.fromEntries(Object.entries(errors).filter(([key]) => key.startsWith("address.")).map(([key, value]) => [key.slice(8), value]))} />
+            </div>
+          </>}
+          <div className="flex flex-wrap gap-3 border-t border-border pt-5">
+            <Button type="submit" disabled={busy || uploading || !changed} className="gap-1.5">{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}{busy ? "Saving changes…" : "Save changes"}</Button>
+            <Button type="button" variant="ghost" disabled={busy || uploading} onClick={cancel}><X className="h-4 w-4" />Cancel</Button>
           </div>
         </form>
       )}
