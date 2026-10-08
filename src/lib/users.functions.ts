@@ -346,7 +346,7 @@ export const sessionHeartbeat = createServerFn({ method: "POST" }).middleware([r
       // Backfill older sessions that were saved before geo columns existed.
       const geo = await resolveGeo(existing.ip ?? null);
       if (geo.attempted) {
-        await sb.from("user_sessions").update({ ...geo.row, geo_attempted: geo.attempted }).eq("id", rowId);
+        await sb.from("user_sessions").update({ ...geo.row, geo_attempted: geo.attempted, last_seen_at: new Date().toISOString() }).eq("id", rowId);
       }
     } else {
       await sb.from("user_sessions").update({ last_seen_at: new Date().toISOString() }).eq("id", rowId);
