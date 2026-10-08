@@ -112,7 +112,12 @@ function RefreshCertsButton() {
   const refresh = useRefreshAllCertificates();
   const [progress, setProgress] = useState<string | null>(null);
   const run = async () => {
-    if (!confirm("Re-create all issued certificate PDFs with the latest design and signatures? Serial numbers stay the same.")) return;
+    const ok = await confirmAction({
+      title: "Update all certificates?",
+      description: "Re-create all issued certificate PDFs with the latest design and signatures. Serial numbers stay the same.",
+      confirmLabel: "Update all",
+    });
+    if (!ok) return;
     setProgress("0");
     try {
       const r = await refresh((d, t) => setProgress(`${d}/${t}`));
