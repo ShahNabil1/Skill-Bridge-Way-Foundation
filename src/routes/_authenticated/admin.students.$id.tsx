@@ -30,7 +30,7 @@ export const Route = createFileRoute("/_authenticated/admin/students/$id")({ sta
 type Cert = { id: string; serial: string; pdf_key: string | null; issued_at: string; is_revoked: boolean };
 type Enr = {
   id: string; created_at: string; completed_at: string | null; course_id: string; batch_id: string | null; progress: number; learning_status: string; absence_reminders: boolean;
-  courses: { title: string } | null; certificates: Cert[] | null; attendance: AttRow[] | null;
+  courses: { title: string } | null; certificates: Cert[] | Cert | null; attendance: AttRow[] | null;
 };
 
 function StudentProfile() {
@@ -99,7 +99,7 @@ function EnrollmentCard({ e, student, log, onChange }: { e: Enr; student: { id: 
   const sendProgress = useServerFn(sendProgressEmail);
   const { data: batches = [] } = useQuery({ queryKey: ["admin-batches"], queryFn: async () => (await supabase.from("batches").select("id, name, course_id, class_days, class_time, is_active").order("name")).data ?? [] });
   const stats = attendanceStats(e.attendance ?? []);
-  const cert = e.certificates?.[0] ?? null;
+  const cert = (Array.isArray(e.certificates) ? e.certificates[0] : e.certificates) ?? null;
   const pdf = cdnUrl(cert?.pdf_key);
   const dirty = progress !== e.progress || status !== e.learning_status || batch !== (e.batch_id ?? "");
   const course = e.courses?.title ?? "Course";
