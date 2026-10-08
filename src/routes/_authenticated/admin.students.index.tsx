@@ -24,7 +24,7 @@ type Row = {
   id: string; created_at: string; course_id: string; batch_id: string | null; progress: number; learning_status: string; absence_reminders: boolean;
   students: { id: string; full_name: string; student_code: string; email: string; phone: string | null; admissions: { document_keys: unknown } | null } | null;
   courses: { title: string } | null; batches: { name: string } | null;
-  certificates: { id: string; is_revoked: boolean }[] | null;
+  certificates: { id: string; is_revoked: boolean }[] | { id: string; is_revoked: boolean } | null;
 };
 const init = { q: "", course: "", batch: "", status: "", cert: "", reminders: "" };
 
@@ -48,7 +48,7 @@ function StudentsList() {
       if (f.course && r.course_id !== f.course) return false;
       if (f.batch && (f.batch === "none" ? r.batch_id !== null : r.batch_id !== f.batch)) return false;
       if (f.status && r.learning_status !== f.status) return false;
-      const hasCert = !!r.certificates?.some((c) => !c.is_revoked);
+      const hasCert = hasActiveCert(r.certificates);
       if (f.cert && (f.cert === "issued") !== hasCert) return false;
       if (f.reminders && (f.reminders === "on") !== r.absence_reminders) return false;
       return true;
@@ -96,7 +96,7 @@ function StudentsList() {
                 <TableCell><div className="flex items-center gap-3"><ApplicantAvatar app={{ document_keys: r.students.admissions?.document_keys ?? [], full_name: r.students.full_name }} size="h-10 w-10" /><div className="min-w-0"><p className="font-medium">{r.students.full_name}</p><p className="font-mono text-xs text-primary">{r.students.student_code}</p></div></div></TableCell>
                 <TableCell><p className="text-sm">{r.courses?.title}</p><p className="text-xs text-muted-foreground">{r.batches?.name ?? "No batch"}</p></TableCell>
                 <TableCell className="min-w-32"><div className="flex items-center gap-2"><Progress value={r.progress} className="h-2" /><span className="text-xs">{r.progress}%</span></div></TableCell>
-                <TableCell><div className="flex items-center gap-2"><span className={`inline-flex rounded-full border px-3 py-0.5 text-xs font-semibold uppercase tracking-wider ${learningBadge(r.learning_status)}`}>{r.learning_status}</span>{!r.absence_reminders && <BellOff className="h-3.5 w-3.5 text-muted-foreground" aria-label="Reminders off" />}{r.certificates?.some((c) => !c.is_revoked) && <span className="text-xs text-primary">🎓</span>}</div></TableCell>
+                <TableCell><div className="flex items-center gap-2"><span className={`inline-flex rounded-full border px-3 py-0.5 text-xs font-semibold uppercase tracking-wider ${learningBadge(r.learning_status)}`}>{r.learning_status}</span>{!r.absence_reminders && <BellOff className="h-3.5 w-3.5 text-muted-foreground" aria-label="Reminders off" />}{hasActiveCert(r.certificates) && <span className="text-xs text-primary">🎓</span>}</div></TableCell>
                 <TableCell className="text-muted-foreground">{formatDate(r.created_at)}</TableCell>
                 <TableCell className="text-right"><Button asChild size="sm" variant="outline"><Link to="/admin/students/$id" params={{ id: r.students.id }}>Open profile</Link></Button></TableCell>
               </TableRow>
@@ -127,4 +127,10 @@ function RefreshCertsButton() {
       {progress !== null ? `Updating ${progress}` : "Update all certificates"}
     </Button>
   );
+}
+
+/** A one-to-one relation comes back as an object, not an array — accept both. */
+function hasActiveCert(c: Row["certificates"]) {
+  const list = c ? (Array.isArray(c) ? c : [c]) : [];
+  return list.some((x) => !x.is_revoked);
 }
