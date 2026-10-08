@@ -33,6 +33,7 @@ import { Route as AuthenticatedAdminGalleryRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminNoticesRouteImport } from './routes/_authenticated/admin.notices'
 import { Route as AuthenticatedAdminPartnersRouteImport } from './routes/_authenticated/admin.partners'
 import { Route as AuthenticatedAdminProfileRouteImport } from './routes/_authenticated/admin.profile'
+import { Route as AuthenticatedAdminTranslationsRouteImport } from './routes/_authenticated/admin.translations'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminApplicationsIndexRouteImport } from './routes/_authenticated/admin.applications.index'
 import { Route as AuthenticatedAdminApplicationsIdRouteImport } from './routes/_authenticated/admin.applications.$id'
@@ -168,6 +169,12 @@ const AuthenticatedAdminProfileRoute =
     path: '/profile',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminTranslationsRoute =
+  AuthenticatedAdminTranslationsRouteImport.update({
+    id: '/translations',
+    path: '/translations',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -245,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/admin/notices': typeof AuthenticatedAdminNoticesRouteWithChildren
   '/admin/partners': typeof AuthenticatedAdminPartnersRoute
   '/admin/profile': typeof AuthenticatedAdminProfileRoute
+  '/admin/translations': typeof AuthenticatedAdminTranslationsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/applications/$id': typeof AuthenticatedAdminApplicationsIdRoute
@@ -276,6 +284,7 @@ export interface FileRoutesByTo {
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
   '/admin/partners': typeof AuthenticatedAdminPartnersRoute
   '/admin/profile': typeof AuthenticatedAdminProfileRoute
+  '/admin/translations': typeof AuthenticatedAdminTranslationsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/applications/$id': typeof AuthenticatedAdminApplicationsIdRoute
@@ -312,6 +321,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/notices': typeof AuthenticatedAdminNoticesRouteWithChildren
   '/_authenticated/admin/partners': typeof AuthenticatedAdminPartnersRoute
   '/_authenticated/admin/profile': typeof AuthenticatedAdminProfileRoute
+  '/_authenticated/admin/translations': typeof AuthenticatedAdminTranslationsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/applications/$id': typeof AuthenticatedAdminApplicationsIdRoute
@@ -348,6 +358,7 @@ export interface FileRouteTypes {
     | '/admin/notices'
     | '/admin/partners'
     | '/admin/profile'
+    | '/admin/translations'
     | '/admin/users'
     | '/admin/'
     | '/admin/applications/$id'
@@ -379,6 +390,7 @@ export interface FileRouteTypes {
     | '/admin/gallery'
     | '/admin/partners'
     | '/admin/profile'
+    | '/admin/translations'
     | '/admin/users'
     | '/admin'
     | '/admin/applications/$id'
@@ -414,6 +426,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/notices'
     | '/_authenticated/admin/partners'
     | '/_authenticated/admin/profile'
+    | '/_authenticated/admin/translations'
     | '/_authenticated/admin/users'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/applications/$id'
@@ -613,6 +626,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminProfileRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/translations': {
+      id: '/_authenticated/admin/translations'
+      path: '/translations'
+      fullPath: '/admin/translations'
+      preLoaderRoute: typeof AuthenticatedAdminTranslationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/users': {
       id: '/_authenticated/admin/users'
       path: '/users'
@@ -702,6 +722,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminNoticesRoute: typeof AuthenticatedAdminNoticesRouteWithChildren
   AuthenticatedAdminPartnersRoute: typeof AuthenticatedAdminPartnersRoute
   AuthenticatedAdminProfileRoute: typeof AuthenticatedAdminProfileRoute
+  AuthenticatedAdminTranslationsRoute: typeof AuthenticatedAdminTranslationsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminApplicationsIdRoute: typeof AuthenticatedAdminApplicationsIdRoute
@@ -719,6 +740,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminNoticesRoute: AuthenticatedAdminNoticesRouteWithChildren,
   AuthenticatedAdminPartnersRoute: AuthenticatedAdminPartnersRoute,
   AuthenticatedAdminProfileRoute: AuthenticatedAdminProfileRoute,
+  AuthenticatedAdminTranslationsRoute: AuthenticatedAdminTranslationsRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminApplicationsIdRoute: AuthenticatedAdminApplicationsIdRoute,

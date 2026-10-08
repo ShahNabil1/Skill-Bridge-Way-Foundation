@@ -35,7 +35,8 @@ function TranslationsAdmin() {
 
   return (
     <div>
-      <PageTitle title="Translations" subtitle="The public site translates automatically between English and Bangla. Correct any wording here — your edit is used everywhere and is never overwritten." />
+      <PageTitle title="Translations" />
+      <p className="-mt-3 mb-5 max-w-3xl text-sm text-muted-foreground">The public site translates automatically between English and Bangla. Correct any wording here — your edit is used everywhere and is never overwritten.</p>
       <div className="mb-4 flex flex-wrap gap-2">
         <div className="relative min-w-[14rem] flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
