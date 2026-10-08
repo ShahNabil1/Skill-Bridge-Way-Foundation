@@ -254,3 +254,16 @@ a:hover .brand-wordmark, .brand-wordmark:hover { transform: translateY(-1px); fi
   .public-site .editorial-item:hover { transform: none; }
   .public-site *, .site-header * { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
+
+/* Bangladesh flag: soft brand glow, gentle pulse; plays on its own. */
+.bd-flag {
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 45%, transparent),
+    0 0 8px color-mix(in srgb, var(--primary) 55%, transparent);
+  animation: bd-flag-glow 3.2s ease-in-out infinite;
+}
+.bd-flag svg { display: block; }
+@keyframes bd-flag-glow {
+  0%, 100% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 45%, transparent), 0 0 8px color-mix(in srgb, var(--primary) 55%, transparent); }
+  50% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 70%, transparent), 0 0 16px color-mix(in srgb, var(--primary) 80%, transparent); }
+}
