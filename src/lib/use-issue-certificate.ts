@@ -30,3 +30,35 @@ export function useIssueCertificate() {
     return cert.serial;
   };
 }
+
+/** Re-renders every existing certificate PDF with the current design (same serials) and re-uploads it. */
+export function useRefreshAllCertificates() {
+  const sign = useServerFn(createMediaUploadUrl);
+  return async (onProgress?: (done: number, total: number) => void) => {
+    const { data, error } = await supabase
+      .from("certificates")
+      .select("id, serial, issued_at, students(full_name, student_code), courses(title)")
+      .not("pdf_key", "is", null);
+    if (error) throw error;
+    const rows = data ?? [];
+    const { generateCertificatePdf } = await import("@/lib/certificate-pdf");
+    let done = 0;
+    let failed = 0;
+    for (const c of rows) {
+      try {
+        const s = c.students as { full_name: string; student_code: string } | null;
+        const co = c.courses as { title: string } | null;
+        if (!s || !co) throw new Error("missing data");
+        const bytes = await generateCertificatePdf({ serial: c.serial, studentName: s.full_name, studentCode: s.student_code, courseTitle: co.title, issuedAt: c.issued_at });
+        const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
+        const { uploadUrl, key } = await sign({ data: { folder: "certificates", fileName: `${c.serial}.pdf`, contentType: "application/pdf", size: blob.size } });
+        const res = await fetch(uploadUrl, { method: "PUT", body: blob, headers: { "Content-Type": "application/pdf" } }).catch(() => null);
+        if (!res?.ok) throw new Error("upload failed");
+        const { error: upErr } = await supabase.from("certificates").update({ pdf_key: key }).eq("id", c.id);
+        if (upErr) throw upErr;
+      } catch { failed++; }
+      onProgress?.(++done, rows.length);
+    }
+    return { total: rows.length, failed };
+  };
+}

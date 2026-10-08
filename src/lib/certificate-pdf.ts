@@ -1,6 +1,8 @@
-import { PDFDocument, rgb, StandardFonts, type PDFFont, type PDFPage } from "pdf-lib";
+import { PDFDocument, rgb, StandardFonts, type PDFFont, type PDFImage, type PDFPage } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import QRCode from "qrcode";
+import chairmanSig from "@/assets/signature-chairman.png.asset.json";
+import directorSig from "@/assets/signature-executive-director.png.asset.json";
 
 export const VERIFY_BASE = "https://skillbridgeway.org/verify?serial=";
 const LOGO_URL = "https://cdn.skillbridgeway.org/logo.png";
@@ -59,7 +61,14 @@ function cornerOrnament(page: PDFPage, x: number, y: number, sx: 1 | -1, sy: 1 |
   line(4, 4, 11, 11, 2.2, ORANGE);
 }
 
-function signature(page: PDFPage, centerX: number, label: string, font: PDFFont) {
+function signature(page: PDFPage, centerX: number, label: string, font: PDFFont, img?: PDFImage) {
+  if (img) {
+    // Fit inside a 165x50 box resting just above the signature line.
+    const scale = Math.min(165 / img.width, 50 / img.height);
+    const w = img.width * scale;
+    const h = img.height * scale;
+    page.drawImage(img, { x: centerX - w / 2, y: 79, width: w, height: h });
+  }
   page.drawLine({ start: { x: centerX - 78, y: 76 }, end: { x: centerX + 78, y: 76 }, thickness: 0.65, color: GREY });
   const size = label.length > 25 ? 9 : 10;
   const width = font.widthOfTextAtSize(label, size);
@@ -149,8 +158,11 @@ export async function generateCertificatePdf(d: CertificateData): Promise<Uint8A
   const scanLabel = "SCAN TO VERIFY";
   const scanLabelWidth = semi.widthOfTextAtSize(scanLabel, 7);
   page.drawText(scanLabel, { x: qrX + (q - scanLabelWidth) / 2, y: qrY - 12, size: 7, font: semi, color: NAVY });
-  signature(page, 183, "Chairman", semi);
-  signature(page, 421, "Executive Director (Operations)", semi);
+  const [chairB, edB] = await Promise.all([fetchBytes(chairmanSig.url), fetchBytes(directorSig.url)]);
+  const embedSig = async (b: Uint8Array | null) => { if (!b) return undefined; try { return await pdf.embedPng(b); } catch { return undefined; } };
+  const [chairImg, edImg] = await Promise.all([embedSig(chairB), embedSig(edB)]);
+  signature(page, 183, "Chairman", semi, chairImg);
+  signature(page, 421, "Executive Director (Operations)", semi, edImg);
   signature(page, 659, "Chief Trainer", semi);
 
   return pdf.save();
