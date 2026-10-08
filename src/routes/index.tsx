@@ -66,6 +66,17 @@ function Index() {
             <Button asChild size="lg" className="cta-shine bg-highlight text-highlight-foreground hover:bg-highlight/90"><Link to="/courses" search={{}}>Free Admission <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
             <Button asChild size="lg" variant="outline" className="cta-outline-glow border-primary bg-background/50 text-primary hover:bg-primary hover:text-primary-foreground"><Link to="/courses">Explore courses</Link></Button>
           </div>
+          <Link
+            to="/about"
+            hash="registration"
+            className="hero-reveal hero-reveal-5 group mt-6 inline-flex items-center gap-2.5 rounded-full border border-primary/40 bg-background/50 px-4 py-2 text-xs font-semibold text-foreground backdrop-blur transition-all duration-300 hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_20px_-4px_hsl(var(--primary)/0.5)] sm:px-5 sm:py-2.5 sm:text-sm"
+          >
+            <ShieldCheck className="h-4 w-4 shrink-0 text-primary transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
+            <span>
+              Registered under the Societies Registration Act, 1860 · <span translate="no" className="font-mono font-bold text-primary">RAJS-647/2026</span>
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 shrink-0 text-primary transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
+          </Link>
         </div>
       </section>
 

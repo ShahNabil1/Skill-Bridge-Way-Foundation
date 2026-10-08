@@ -247,6 +247,7 @@ a:hover .brand-wordmark, .brand-wordmark:hover { transform: translateY(-1px); fi
 .hero-reveal-2 { animation-delay: 200ms; }
 .hero-reveal-3 { animation-delay: 340ms; }
 .hero-reveal-4 { animation-delay: 480ms; }
+.hero-reveal-5 { animation-delay: 620ms; }
 @media (prefers-reduced-motion: reduce) {
   .brand-bridge, .brand-way { animation: none; }
   .brand-wordmark, a:hover .brand-wordmark, .brand-wordmark:hover, .cta-shine:hover, .cta-outline-glow:hover, .cta-shine:hover svg { transform: none; filter: none; }
