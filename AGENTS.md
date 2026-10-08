@@ -33,3 +33,4 @@
 - Course images use `image_keys` (1–5; first is cover), cropped 16:9; apply windows are DB-enforced; why: legacy cards work and closed intakes can't be bypassed.
 - Social profiles use `SocialLinks`; visible wordmarks use `BrandName`; why: shared brand data and styling stay consistent.
 - Profile editing uses a shared client/server schema, combines split names into `full_name`, and stores structured address JSON in the existing address text column with legacy text fallback; why: validated self-only updates preserve existing profile consumers without a schema migration.
+- Public pages translate EN↔BN automatically in the browser (`src/lib/i18n.tsx`) using cached AI translations from `translateTexts` stored in `site_translations`; admins correct wording at /admin/translations; elements with `translate="no"` are never translated; why: covers static and CMS content alike without per-string code or schema changes.

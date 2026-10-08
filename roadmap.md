@@ -35,3 +35,5 @@
 - [x] Admissions upgrade: structured BD address, +88 phone, education details, duplicate block, private application link + branded PDF, admin Applications list (search/filters) and full review page with edit mode, call/WhatsApp/copy, activity log
 - [x] Make course description formatting match in admin editor and public course page (public verified; signed-in editor not available to test here)
 - [x] Reconnect Google Search Console in the new workspace
+
+- [x] Bangla/English toggle with automatic two-way translation + admin Translations page
