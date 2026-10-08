@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowLeft, KeyRound } from "lucide-react";
+import { ArrowLeft, KeyRound, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
@@ -46,6 +46,10 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [inviteReady, setInviteReady] = useState(false);
   const reduceMotion = useReducedMotion();
+  const [ended, setEnded] = useState<string | null>(null);
+  useEffect(() => {
+    try { const r = sessionStorage.getItem("sbf_session_ended"); if (r) { setEnded(r); sessionStorage.removeItem("sbf_session_ended"); } } catch { /* ignore */ }
+  }, []);
 
   useEffect(() => {
     if (mode !== "invite") return;
@@ -123,6 +127,7 @@ function AuthPage() {
   return (
     <div className="bg-grid flex min-h-dvh w-full items-center justify-center px-4 py-8 sm:px-6">
       <motion.div key={mode} className="w-full max-w-[430px]" initial={reduceMotion ? false : { opacity: 0, y: 12, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: .22, ease: "easeOut" }}>
+      {ended && mode === "login" && <EndedNotice reason={ended} onClose={() => setEnded(null)} />}
       {mode === "login" && (
         <form onSubmit={login} className={card}>
           <h1 className="section-title text-2xl">Admin Sign In</h1>
@@ -193,6 +198,30 @@ function AuthPage() {
         </form>
       )}
       </motion.div>
+    </div>
+  );
+}
+
+const ENDED_COPY: Record<string, { title: string; body: string; danger?: boolean }> = {
+  revoked: { title: "You were signed out", body: "An administrator ended your session. Please sign in again to continue." },
+  password_reset: { title: "Your password was reset", body: "An administrator reset your password. Check your email for the new password, then sign in again." },
+  banned: { title: "Account suspended", body: "Your account has been suspended by an administrator. Contact info@skillbridgeway.org if you think this is a mistake.", danger: true },
+  deleted: { title: "Account removed", body: "Your account has been removed by an administrator. Contact info@skillbridgeway.org for help.", danger: true },
+  expired: { title: "Session ended", body: "Your session is no longer valid. Please sign in again." },
+};
+
+function EndedNotice({ reason, onClose }: { reason: string; onClose: () => void }) {
+  const c = ENDED_COPY[reason] ?? ENDED_COPY["revoked"]!;
+  return (
+    <div role="alert" className={`mb-4 rounded-xl border p-4 backdrop-blur ${c.danger ? "border-destructive/50 bg-destructive/10" : "border-highlight/50 bg-highlight/10"}`}>
+      <div className="flex gap-3">
+        <ShieldAlert className={`mt-0.5 h-5 w-5 shrink-0 ${c.danger ? "text-destructive" : "text-highlight"}`} aria-hidden="true" />
+        <div className="min-w-0 flex-1">
+          <p className="font-heading text-sm font-bold uppercase text-foreground">{c.title}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{c.body}</p>
+        </div>
+        <button type="button" onClick={onClose} className="text-xs text-muted-foreground hover:text-foreground" aria-label="Dismiss">✕</button>
+      </div>
     </div>
   );
 }
