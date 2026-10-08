@@ -155,7 +155,7 @@ export function PageTranslator({ rootId, active }: { rootId: string; active: boo
       if (!disposed) scan();
     }
     function scan() {
-      if (disposed || committing) return;
+      if (disposed || committing || !root) return;
       writes = [];
       walk(root);
       if (!pending.size && !inflight.size && (writes.length || document.documentElement.lang !== lang)) void commit();
