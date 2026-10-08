@@ -1,9 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { z } from "zod";
-import { UserCircle } from "lucide-react";
+import { UserCircle, Pencil, Save, X, Loader2, LockKeyhole, Mail, ArrowUpRight, Phone, MapPin, AlertCircle } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { AddressPicker } from "@/components/admission/FormBits";
+import { Input } from "@/components/ui/input";
+import { profileInfoSchema, readProfileInfo, profileHasChanges, formatProfileAddress, strictPhoneInput } from "@/lib/profile-schema";
+import { saveProfileInfo } from "@/lib/profile.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -13,95 +18,136 @@ import { checkNewPassword } from "@/lib/password";
 import { PasswordField } from "@/components/auth/PasswordField";
 import { ValidatedField } from "@/components/auth/ValidatedField";
 import { AvatarCropper } from "@/components/auth/AvatarCropper";
-import { emailSchema, englishName, englishText } from "@/lib/form-input";
+import { emailSchema } from "@/lib/form-input";
 import { seo } from "@/components/site/PageHero";
 
 export const Route = createFileRoute("/_authenticated/admin/profile")({ staticData: { sitemap: false }, head: () => seo("My Profile | Skill Bridgeway Foundation", "Private profile and account settings.", { noindex: true }), component: ProfilePage });
 
-const infoSchema = z.object({
-  full_name: z.string().trim().min(2, "Name is too short").max(120).regex(englishName, "Use English letters for your name"),
-  phone: z.string().trim().max(30).regex(/^[0-9]*$/, "Use English digits only"),
-  address: z.string().trim().max(500).regex(englishText, "Use English characters for your address"),
-});
-
 function ProfilePage() {
-  return (
-    <>
-      <PageTitle title="My Profile" />
-      <div className="grid gap-6 lg:grid-cols-2">
-        <BasicInfo />
-        <div className="space-y-6"><ChangePassword /><ChangeEmail /></div>
-      </div>
-    </>
-  );
+  return <div className="profile-settings mx-auto max-w-5xl">
+    <PageTitle title="My Profile" />
+    <BasicInfo />
+    <section className="mt-8 border-t border-border pt-7">
+      <h2 className="mb-5 text-base text-muted-foreground">Account security</h2>
+      <div className="grid gap-4 sm:grid-cols-2"><AccountAction kind="password" /><AccountAction kind="email" /></div>
+    </section>
+  </div>;
+}
+
+function AccountAction({ kind }: { kind: "password" | "email" }) {
+  const [open, setOpen] = useState(false);
+  const password = kind === "password";
+  const Icon = password ? LockKeyhole : Mail;
+  return <>
+    <Button variant="outline" className="profile-action h-auto min-h-24 w-full justify-between gap-3 whitespace-normal px-5 py-5 text-left" onClick={() => setOpen(true)}>
+      <span className="flex min-w-0 items-center gap-4"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary"><Icon className="!h-6 !w-6" /></span><span className="font-heading text-base font-bold">{password ? "Change Password" : "Change Email"}</span></span><ArrowUpRight className="text-primary" />
+    </Button>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="profile-dialog max-h-[90dvh] w-[calc(100%-2rem)] overflow-y-auto rounded-lg">
+        <DialogTitle className="pr-6">{password ? "Change Password" : "Change Email"}</DialogTitle>
+        <DialogDescription>{password ? "Confirm your identity to update your password." : "Verify your current and new email to update your account."}</DialogDescription>
+        {password ? <ChangePassword onDone={() => setOpen(false)} /> : <ChangeEmail onDone={() => setOpen(false)} />}
+      </DialogContent>
+    </Dialog>
+  </>;
 }
 
 function BasicInfo() {
   const user = useCurrentUser();
   const qc = useQueryClient();
   const upload = useMediaUpload();
-  const { data: profile } = useQuery({
+  const saveInfo = useServerFn(saveProfileInfo);
+  const { data: profile, isLoading, error: loadError } = useQuery({
     queryKey: ["profile", user.id],
-    queryFn: async () => (await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle()).data,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
+      if (error) throw error;
+      return data;
+    },
   });
-  const [form, setForm] = useState({ full_name: "", phone: "", address: "" });
-  const [avatarKey, setAvatarKey] = useState<string | null>(null);
+  const saved = readProfileInfo(profile ?? {});
+  const [form, setForm] = useState(() => readProfileInfo({}));
+  const [editing, setEditing] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
-
-  useEffect(() => {
-    if (profile) {
-      setForm({ full_name: profile.full_name ?? "", phone: profile.phone ?? "", address: profile.address ?? "" });
-      setAvatarKey(profile.avatar_key);
-    }
-  }, [profile]);
-
-  async function save(next: Partial<{ full_name: string; phone: string; address: string; avatar_key: string | null }>) {
-    const { error } = await supabase.from("profiles").upsert({ id: user.id, email: user.email ?? null, ...next });
-    if (error) throw error;
-    qc.invalidateQueries({ queryKey: ["profile", user.id] });
-  }
-
+  const [phoneWarning, setPhoneWarning] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const changed = profileHasChanges(saved, form);
+  const src = cdnUrl(profile?.avatar_key);
+  function cancel() { setForm(readProfileInfo(profile ?? {})); setEditing(false); setErrors({}); setPhoneWarning(false); }
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const r = infoSchema.safeParse(form);
-    if (!r.success) { toast.error(r.error.issues[0]?.message); return; }
+    if (busy || !changed) return;
+    const result = profileInfoSchema.safeParse(form);
+    if (!result.success) {
+      setErrors(Object.fromEntries(result.error.issues.map((issue) => [issue.path.join("."), issue.message])));
+      toast.error(result.error.issues[0]?.message ?? "Check your details"); return;
+    }
     setBusy(true);
-    try { await save(r.data); toast.success("Profile saved"); } catch (err) { toast.error((err as Error).message); }
-    setBusy(false);
+    try {
+      const updated = await saveInfo({ data: result.data });
+      qc.setQueryData(["profile", user.id], updated);
+      setForm(readProfileInfo(updated)); setEditing(false); setErrors({});
+      toast.success("Profile saved");
+    } catch (err) { toast.error((err as Error).message); }
+    finally { setBusy(false); }
   }
-
   async function onAvatar(file: File) {
     setUploading(true);
     try {
       const key = await upload(file, "avatars");
-      await save({ avatar_key: key });
-      setAvatarKey(key);
+      const { data, error } = await supabase.from("profiles").upsert({ id: user.id, avatar_key: key }).select("*").single();
+      if (error) throw error;
+      qc.setQueryData(["profile", user.id], data);
       toast.success("Avatar updated");
-    } catch (err) { throw err; }
-    finally { setUploading(false); }
+    } finally { setUploading(false); }
   }
-
-  const src = cdnUrl(avatarKey);
-  return (
-    <form onSubmit={onSubmit} className="glass space-y-4 rounded-xl p-6">
-      <h2 className="font-heading text-lg font-bold uppercase text-foreground">Basic Info</h2>
-      <div className="flex items-center gap-4">
-        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-border bg-muted">
-          {src ? <img src={src} alt="Avatar" className="h-full w-full object-cover" /> : <UserCircle className="h-10 w-10 text-muted-foreground" />}
-        </div>
-        <AvatarCropper onSave={onAvatar} disabled={uploading} />
+  if (isLoading) return <div className="flex min-h-56 items-center justify-center gap-2" role="status"><Loader2 className="h-5 w-5 animate-spin text-primary" />Loading profile…</div>;
+  if (loadError) return <p role="alert">Couldn't load your profile. Please refresh and try again.</p>;
+  return <>
+    <form onSubmit={onSubmit} className="profile-info space-y-6 border-y border-border py-6 sm:py-8" aria-busy={busy}>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="flex items-center gap-3 text-lg"><span className="h-6 w-1 rounded-full bg-primary" />Basic Info</h2>
+        {!editing && <Button type="button" className="profile-action" onClick={() => { setForm(readProfileInfo(profile ?? {})); setEditing(true); }}><Pencil />Edit Info</Button>}
       </div>
-      <div className="space-y-2"><Label>Email</Label><p className="break-all text-sm text-muted-foreground">{user.email}</p></div>
-      <div className="space-y-2"><Label htmlFor="pn">Full name</Label><ValidatedField id="pn" maxLength={120} value={form.full_name} onChange={(v) => setForm({ ...form, full_name: v })} /></div>
-      <div className="space-y-2"><Label htmlFor="pp">Phone</Label><ValidatedField id="pp" type="tel" mode="phone" maxLength={30} value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} /></div>
-      <div className="space-y-2"><Label htmlFor="pa">Address</Label><ValidatedField id="pa" multiline rows={3} maxLength={500} value={form.address} onChange={(v) => setForm({ ...form, address: v })} /></div>
-      <Button type="submit" disabled={busy}>{busy ? "Saving..." : "Save changes"}</Button>
+      <div className="flex flex-wrap items-center gap-5 border-b border-border pb-6">
+        <Button type="button" variant="ghost" aria-label="View avatar" disabled={!src || uploading} onClick={() => setAvatarOpen(true)} className="profile-avatar h-24 w-24 shrink-0 overflow-hidden rounded-full border-2 border-primary/40 bg-muted p-0">
+          {src ? <img src={src} alt="Your avatar" className="h-full w-full object-cover" /> : <UserCircle className="!h-12 !w-12 text-primary" />}
+        </Button>
+        <div className="min-w-0 space-y-2"><p className="break-words font-heading text-lg font-bold">{profile?.full_name || "My Profile"}</p><AvatarCropper onSave={onAvatar} disabled={uploading || busy} /></div>
+      </div>
+      <div><p className="mb-1 text-xs font-bold uppercase text-primary">Email</p><p className="break-all">{user.email}</p></div>
+      {editing ? <fieldset disabled={busy || uploading} className="space-y-6">
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div className="space-y-2"><Label htmlFor="first-name">First Name</Label><ValidatedField id="first-name" required autoComplete="given-name" maxLength={60} value={form.first_name} onChange={(v) => setForm({ ...form, first_name: v })} />{errors.first_name && <p className="text-xs text-destructive">{errors.first_name}</p>}</div>
+          <div className="space-y-2"><Label htmlFor="last-name">Last Name</Label><ValidatedField id="last-name" required autoComplete="family-name" maxLength={59} value={form.last_name} onChange={(v) => setForm({ ...form, last_name: v })} />{errors.last_name && <p className="text-xs text-destructive">{errors.last_name}</p>}</div>
+        </div>
+        <div className="max-w-md space-y-2"><Label htmlFor="profile-phone">Phone</Label>
+          <div className="flex overflow-hidden rounded-md border border-input focus-within:ring-2 focus-within:ring-ring">
+            <span className="flex shrink-0 items-center gap-2 border-r border-input bg-muted px-3"><span role="img" aria-label="Bangladesh">🇧🇩</span><span>+88</span></span>
+            <Input id="profile-phone" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="017XXXXXXXX" value={form.phone} className="min-w-0 rounded-none border-0 focus-visible:ring-0" aria-invalid={!!errors.phone} aria-describedby="profile-phone-hint" onChange={(e) => { const next = strictPhoneInput(e.target.value); setPhoneWarning(next.warning); setForm({ ...form, phone: next.value }); }} />
+          </div>
+          <p id="profile-phone-hint" className="text-xs text-muted-foreground">11 digits · starts with 013–019</p>
+          {phoneWarning && <p role="status" className="flex items-center gap-2 text-xs text-highlight"><AlertCircle className="h-4 w-4" />Use English digits only. Other characters are not accepted.</p>}
+          {errors.phone && <p role="alert" className="text-xs text-destructive">{errors.phone}</p>}
+        </div>
+        <div className="space-y-4 border-t border-border pt-5"><h3 className="flex items-center gap-2 text-sm text-primary"><MapPin className="h-4 w-4" />Address</h3>
+          <AddressPicker value={form.address} onChange={(patch) => setForm({ ...form, address: { ...form.address, ...patch } })} errors={Object.fromEntries(Object.entries(errors).filter(([key]) => key.startsWith("address.")).map(([key, value]) => [key.slice(8), value]))} />
+        </div>
+      </fieldset> : <dl className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+        <div><dt className="mb-1 text-xs font-bold uppercase text-primary">First Name</dt><dd>{saved.first_name || "Not added"}</dd></div>
+        <div><dt className="mb-1 text-xs font-bold uppercase text-primary">Last Name</dt><dd>{saved.last_name || "Not added"}</dd></div>
+        <div><dt className="mb-1 flex items-center gap-2 text-xs font-bold uppercase text-primary"><Phone className="h-3.5 w-3.5" />Phone</dt><dd>{saved.phone ? `+88 ${saved.phone}` : "Not added"}</dd></div>
+        <div><dt className="mb-1 flex items-center gap-2 text-xs font-bold uppercase text-primary"><MapPin className="h-3.5 w-3.5" />Address</dt><dd className="break-words">{formatProfileAddress(saved.address) || "Not added"}</dd></div>
+      </dl>}
+      {editing && <div className="flex flex-wrap gap-3 border-t border-border pt-5"><Button type="submit" className="profile-action min-w-40" disabled={busy || uploading || !changed}>{busy ? <Loader2 className="animate-spin" /> : <Save />}{busy ? "Saving changes…" : "Save Changes"}</Button><Button type="button" className="profile-action" variant="outline" onClick={cancel} disabled={busy || uploading}><X />Cancel</Button></div>}
     </form>
-  );
+    <Dialog open={avatarOpen} onOpenChange={setAvatarOpen}><DialogContent className="profile-dialog w-[calc(100%-2rem)] rounded-lg"><DialogTitle>Profile photo</DialogTitle><DialogDescription>{profile?.full_name || "Your avatar"}</DialogDescription>{src && <img src={src} alt="Your full profile photo" className="max-h-[65dvh] w-full object-contain" />}</DialogContent></Dialog>
+  </>;
 }
 
-function ChangePassword() {
+function ChangePassword({ onDone }: { onDone: () => void }) {
   const [current, setCurrent] = useState("");
   const [pw, setPw] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -122,7 +168,8 @@ function ChangePassword() {
     }
     const { error } = await supabase.auth.updateUser(attrs as { password: string });
     if (error && /reauth|nonce/i.test(error.message) && !nonceNeeded) {
-      await supabase.auth.reauthenticate();
+      const { error: reauthError } = await supabase.auth.reauthenticate();
+      if (reauthError) { setBusy(false); toast.error(reauthError.message); return; }
       setNonceNeeded(true);
       setBusy(false);
       { toast.info("For security, we emailed you a 6-digit code. Enter it to confirm."); return; }
@@ -130,22 +177,22 @@ function ChangePassword() {
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Password changed");
-    setCurrent(""); setPw(""); setConfirm(""); setNonce(""); setNonceNeeded(false);
+    setCurrent(""); setPw(""); setConfirm(""); setNonce(""); setNonceNeeded(false); onDone();
   }
 
   return (
-    <form onSubmit={onSubmit} className="glass space-y-4 rounded-xl p-6">
-      <h2 className="font-heading text-lg font-bold uppercase text-foreground">Change Password</h2>
+    <form onSubmit={onSubmit} className="space-y-4">
+      
       <PasswordField id="cp" label="Current password" autoComplete="current-password" value={current} onChange={setCurrent} />
       <PasswordField id="np" label="New password" autoComplete="new-password" strength value={pw} onChange={setPw} />
       <PasswordField id="cnp" label="Confirm new password" autoComplete="new-password" value={confirm} onChange={setConfirm} />
       {nonceNeeded && <div className="space-y-2"><Label>Verification code</Label><OtpField value={nonce} onChange={setNonce} /></div>}
-      <Button type="submit" disabled={busy}>{busy ? "Updating..." : "Update password"}</Button>
+      <div className="flex flex-wrap gap-2 pt-2"><Button type="submit" className="profile-action" disabled={busy || !current || !pw || !confirm}>{busy ? <Loader2 className="animate-spin" /> : <LockKeyhole />}{busy ? "Updating…" : "Update password"}</Button><Button type="button" variant="outline" className="profile-action" disabled={busy} onClick={onDone}>Cancel</Button></div>
     </form>
   );
 }
 
-function ChangeEmail() {
+function ChangeEmail({ onDone }: { onDone: () => void }) {
   const user = useCurrentUser();
   const [newEmail, setNewEmail] = useState("");
   const [step, setStep] = useState<"enter" | "verify">("enter");
@@ -177,24 +224,24 @@ function ChangeEmail() {
     if (b.error) { toast.error(`New email code: ${b.error.message}`); return; }
     await supabase.from("profiles").update({ email: newEmail.trim() }).eq("id", user.id);
     toast.success("Email changed. Sign in with your new email next time.");
-    setStep("enter"); setNewEmail(""); setOldCode(""); setNewCode("");
+    setStep("enter"); setNewEmail(""); setOldCode(""); setNewCode(""); onDone();
   }
 
   return step === "enter" ? (
-    <form onSubmit={request} className="glass space-y-4 rounded-xl p-6">
-      <h2 className="font-heading text-lg font-bold uppercase text-foreground">Change Email</h2>
+    <form onSubmit={request} className="space-y-4">
+      
       <p className="text-sm text-muted-foreground">Current: <span className="text-foreground">{user.email}</span></p>
       <div className="space-y-2"><Label htmlFor="ne">New email</Label><ValidatedField id="ne" type="email" mode="ascii" maxLength={255} value={newEmail} onChange={setNewEmail} /></div>
-      <Button type="submit" disabled={busy}>{busy ? "Sending..." : "Send verification codes"}</Button>
+      <div className="flex flex-wrap gap-2 pt-2"><Button type="submit" className="profile-action whitespace-normal" disabled={busy || !newEmail.trim()}>{busy ? <Loader2 className="animate-spin" /> : <Mail />}{busy ? "Sending…" : "Send verification codes"}</Button><Button type="button" variant="outline" className="profile-action" disabled={busy} onClick={onDone}>Cancel</Button></div>
     </form>
   ) : (
-    <form onSubmit={verify} className="glass space-y-4 rounded-xl p-6">
+    <form onSubmit={verify} className="space-y-4">
       <h2 className="font-heading text-lg font-bold uppercase text-foreground">Verify Email Change</h2>
       <div className="space-y-2"><Label>Code sent to {user.email}</Label><OtpField label="Current email code" value={oldCode} onChange={setOldCode} /></div>
       <div className="space-y-2"><Label>Code sent to {newEmail}</Label><OtpField label="New email code" value={newCode} onChange={setNewCode} /></div>
       <div className="flex gap-2">
-        <Button type="submit" disabled={busy}>{busy ? "Verifying..." : "Confirm change"}</Button>
-        <Button type="button" variant="ghost" onClick={() => setStep("enter")}>Cancel</Button>
+        <Button type="submit" className="profile-action" disabled={busy || oldCode.length !== 6 || newCode.length !== 6}>{busy && <Loader2 className="animate-spin" />}{busy ? "Verifying…" : "Confirm change"}</Button>
+        <Button type="button" className="profile-action" variant="outline" disabled={busy} onClick={() => setStep("enter")}>Back</Button>
       </div>
     </form>
   );
