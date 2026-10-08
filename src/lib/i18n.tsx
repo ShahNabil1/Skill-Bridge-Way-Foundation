@@ -178,7 +178,7 @@ export function LangToggle({ className = "" }: { className?: string }) {
     <div translate="no" role="group" aria-label="Language / ভাষা" className={`lang-toggle notranslate inline-flex items-center rounded-full border border-primary/40 bg-background/40 p-0.5 text-xs font-bold ${className}`}>
       {(["bn", "en"] as const).map((l) => (
         <button key={l} type="button" onClick={() => setLang(l)} aria-pressed={lang === l}
-          className={`rounded-full px-3 py-1 transition-all ${lang === l ? "bg-primary text-primary-foreground shadow-[0_0_12px_hsl(var(--primary)/0.6)]" : "text-muted-foreground hover:text-primary"}`}>
+          className={`rounded-full px-3 py-1 transition-all ${lang === l ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-primary"}`}>
           {l === "bn" ? "বাংলা" : "EN"}
         </button>
       ))}
