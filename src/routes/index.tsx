@@ -73,7 +73,7 @@ function Index() {
           >
             <ShieldCheck className="h-4 w-4 shrink-0 text-primary transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
             <span>
-              Registered under the Societies Registration Act, 1860 · <span translate="no" className="font-mono font-bold text-primary">RAJS-647/2026</span>
+              Registered under the Societies Registration Act, 1860 · <span translate="no" className="font-mono font-bold text-primary">RAJS-647/2026</span>
             </span>
             <ArrowRight className="h-3.5 w-3.5 shrink-0 text-primary transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
           </Link>
