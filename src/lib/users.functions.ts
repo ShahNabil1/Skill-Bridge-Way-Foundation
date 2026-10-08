@@ -248,24 +248,106 @@ function parseUA(ua: string) {
   return { os, browser, device };
 }
 
+type Geo = Partial<{
+  city: string; region: string; country: string; continent: string; postal_code: string;
+  latitude: number; longitude: number; timezone: string; isp: string;
+}>;
+
+// Per-instance cache of IP lookups so repeated heartbeats stay cheap.
+const geoCache = new Map<string, Geo>();
+
+function cleanGeo(g: Geo): Record<string, string | number> {
+  const out: Record<string, string | number> = {};
+  for (const [k, v] of Object.entries(g)) if (v !== null && v !== undefined && v !== "") out[k] = v;
+  return out;
+}
+
+function isPrivateIp(ip: string) {
+  return /^(::1$|f[cd][0-9a-f]{2}:|fe80:|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|0\.0\.0\.0$)/i.test(ip);
+}
+
+// Geo from the edge request itself when hosted on Cloudflare (free, all plans).
+async function edgeGeo(): Promise<Geo> {
+  try {
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const cf = (getRequest() as any).cf;
+    if (cf && (cf.country || cf.city)) {
+      return {
+        city: cf.city ?? null, region: cf.region ?? null, country: cf.country ?? null,
+        continent: cf.continent ?? null, postal_code: cf.postalCode ?? null,
+        latitude: typeof cf.latitude === "number" ? cf.latitude : null,
+        longitude: typeof cf.longitude === "number" ? cf.longitude : null,
+        timezone: cf.timezone ?? null, isp: cf.asOrganization ?? null,
+      };
+    }
+  } catch { /* not running on a worker request (dev preview) */ }
+  return {};
+}
+
+// Free HTTPS lookup fallback; retriable=true means try again on a later heartbeat.
+async function lookupIpGeo(ip: string): Promise<{ geo: Geo | null; retriable: boolean }> {
+  const cached = geoCache.get(ip);
+  if (cached) return { geo: cached, retriable: false };
+  try {
+    const res = await fetch(`https://ipwho.is/${encodeURIComponent(ip)}`, { signal: AbortSignal.timeout(4000) });
+    if (!res.ok) return { geo: null, retriable: true };
+    const j = (await res.json()) as Record<string, any>;
+    if (j?.success === false) return { geo: null, retriable: false }; // reserved/unroutable — terminal
+    const conn = (j?.connection ?? {}) as Record<string, any>;
+    const geo: Geo = {
+      city: j.city ?? null, region: j.region ?? null, country: j.country_code ?? null,
+      continent: j.continent_code ?? null, postal_code: j.postal ?? null,
+      latitude: typeof j.latitude === "number" ? j.latitude : null,
+      longitude: typeof j.longitude === "number" ? j.longitude : null,
+      timezone: j?.timezone?.id ?? null,
+      isp: [conn.isp, conn.org].filter(Boolean).join(" · ") || null,
+    };
+    if (geoCache.size > 500) geoCache.clear();
+    geoCache.set(ip, geo);
+    return { geo, retriable: false };
+  } catch {
+    return { geo: null, retriable: true };
+  }
+}
+
+// Best available geo for this request; returns row fields + whether the attempt is final.
+async function resolveGeo(ip: string | null): Promise<{ row: Record<string, string | number>; attempted: boolean }> {
+  if (ip && !isPrivateIp(ip)) {
+    const fromEdge = cleanGeo(await edgeGeo());
+    if (fromEdge.city || fromEdge.region || fromEdge.country) return { row: fromEdge, attempted: true };
+    const r = await lookupIpGeo(ip);
+    if (r.geo) return { row: cleanGeo(r.geo), attempted: true };
+    if (!r.retriable) return { row: {}, attempted: true };
+    return { row: {}, attempted: false };
+  }
+  return { row: cleanGeo(await edgeGeo()), attempted: true };
+}
+
 export const sessionHeartbeat = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ page: z.string().max(200), seconds: z.number().int().min(0).max(120), pageView: z.boolean() }).parse(d))
   .handler(async ({ data, context }) => {
     const sid = (context.claims as any)?.session_id as string | undefined;
     if (!sid) return { revoked: null as string | null, sessionRow: null as string | null };
     const sb = await admin();
-    const { data: existing } = await sb.from("user_sessions").select("id, revoked_at, revoke_reason").eq("auth_session_id", sid).maybeSingle();
+    const { data: existing } = await sb.from("user_sessions").select("id, revoked_at, revoke_reason, ip, city, region, country, geo_attempted").eq("auth_session_id", sid).maybeSingle();
     if (existing?.revoked_at) return { revoked: existing.revoke_reason ?? "revoked", sessionRow: existing.id };
     let rowId = existing?.id ?? null;
     if (!rowId) {
       const { getRequestHeader } = await import("@tanstack/react-start/server");
       const ua = getRequestHeader("user-agent") ?? "";
       const ip = getRequestHeader("cf-connecting-ip") ?? getRequestHeader("x-real-ip") ?? getRequestHeader("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
+      const geo = await resolveGeo(ip);
       const { data: row } = await sb.from("user_sessions").upsert({
         user_id: context.userId, auth_session_id: sid, ip, user_agent: ua.slice(0, 400), ...parseUA(ua),
-        city: getRequestHeader("cf-ipcity") ?? null, region: getRequestHeader("cf-region") ?? null, country: getRequestHeader("cf-ipcountry") ?? null,
+        ...geo.row, geo_attempted: geo.attempted,
       }, { onConflict: "auth_session_id" }).select("id").single();
       rowId = row?.id ?? null;
+    } else if (!existing.country && !existing.geo_attempted) {
+      // Backfill older sessions that were saved before geo columns existed.
+      const geo = await resolveGeo(existing.ip ?? null);
+      if (geo.attempted) {
+        await sb.from("user_sessions").update({ ...geo.row, geo_attempted: geo.attempted }).eq("id", rowId);
+      }
     } else {
       await sb.from("user_sessions").update({ last_seen_at: new Date().toISOString() }).eq("id", rowId);
     }
