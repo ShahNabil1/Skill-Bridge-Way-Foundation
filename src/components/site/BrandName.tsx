@@ -9,6 +9,7 @@ type BrandNameProps = HTMLAttributes<HTMLSpanElement> & {
 export function BrandName({ showFoundation = true, stacked = false, className, ...props }: BrandNameProps) {
   return (
     <span
+      translate="no"
       aria-label={showFoundation ? "Skill Bridgeway Foundation" : "Skill Bridgeway"}
       className={cn("brand-wordmark inline-flex flex-wrap items-baseline", stacked && "flex-col items-start", className)}
       {...props}
