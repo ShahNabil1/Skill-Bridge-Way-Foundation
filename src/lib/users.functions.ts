@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { profileAddressSchema } from "./profile-schema";
 import { ALL_PERMISSIONS } from "@/lib/permissions";
 
 const SUPER = "toolsai674@gmail.com";
@@ -134,19 +135,39 @@ export const setUserPermissions = createServerFn({ method: "POST" }).middleware(
 
 export const updateUserInfo = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
-    id: z.string().uuid(), full_name: z.string().trim().min(2).max(120),
-    phone: z.string().trim().max(20).regex(/^(\+?88)?01[3-9]\d{8}$|^$/, "Use a valid Bangladeshi mobile number").optional(),
+    id: z.string().uuid(),
+    first_name: z.string().max(60),
+    last_name: z.string().max(59),
+    phone: z.string().max(11).optional(),
+    address: profileAddressSchema.optional(),
   }).parse(d))
   .handler(async ({ data, context }) => {
     await need(context, "users.edit");
     const u = await getTarget(data.id);
     guardTarget(context, u, true);
-    const patch: { full_name: string; phone?: string } = { full_name: data.full_name };
-    if (data.phone !== undefined) { await need(context, "users.personal"); patch.phone = data.phone; }
+    if (data.phone !== undefined || data.address !== undefined) await need(context, "users.personal");
+    const base = profileInfoSchema.pick({ first_name: true, last_name: true, phone: true }).partial({ phone: true })
+      .parse({ first_name: data.first_name, last_name: data.last_name, phone: data.phone });
+    const patch: Record<string, string> = { full_name: `${base.first_name} ${base.last_name}` };
+    if (base.phone !== undefined) patch.phone = base.phone;
+    if (data.address !== undefined) patch.address = JSON.stringify(data.address);
     const sb = await admin();
     const { error } = await sb.from("profiles").update(patch).eq("id", data.id);
     if (error) throw new Error(error.message);
     await audit(context, data.id, "info_edited", { fields: Object.keys(patch) });
+    return { ok: true };
+  });
+
+export const updateUserAvatar = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), avatar_key: z.string().max(300).nullable() }).parse(d))
+  .handler(async ({ data, context }) => {
+    await need(context, "users.edit");
+    const u = await getTarget(data.id);
+    guardTarget(context, u, true);
+    const sb = await admin();
+    const { error } = await sb.from("profiles").update({ avatar_key: data.avatar_key }).eq("id", data.id);
+    if (error) throw new Error(error.message);
+    await audit(context, data.id, "info_edited", { fields: ["avatar_key"] });
     return { ok: true };
   });
 
