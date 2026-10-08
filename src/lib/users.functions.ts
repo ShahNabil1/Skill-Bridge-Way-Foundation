@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { profileAddressSchema } from "./profile-schema";
+import { profileInfoSchema, profileAddressSchema } from "./profile-schema";
 import { ALL_PERMISSIONS } from "@/lib/permissions";
 
 const SUPER = "toolsai674@gmail.com";
@@ -148,7 +148,7 @@ export const updateUserInfo = createServerFn({ method: "POST" }).middleware([req
     if (data.phone !== undefined || data.address !== undefined) await need(context, "users.personal");
     const base = profileInfoSchema.pick({ first_name: true, last_name: true, phone: true }).partial({ phone: true })
       .parse({ first_name: data.first_name, last_name: data.last_name, phone: data.phone });
-    const patch: Record<string, string> = { full_name: `${base.first_name} ${base.last_name}` };
+    const patch: { full_name: string; phone?: string; address?: string } = { full_name: `${base.first_name} ${base.last_name}` };
     if (base.phone !== undefined) patch.phone = base.phone;
     if (data.address !== undefined) patch.address = JSON.stringify(data.address);
     const sb = await admin();
