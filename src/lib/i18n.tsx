@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { translateTexts } from "@/lib/translate.functions";
+import { Button } from "@/components/ui/button";
 
 export type Lang = "en" | "bn";
 const COOKIE = "sbf_lang";
@@ -19,7 +20,7 @@ export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
   useEffect(() => { setLangState(readInitialLang()); }, []);
   useEffect(() => {
-    document.documentElement.lang = lang;
+    if (!document.getElementById("public-root")) document.documentElement.lang = lang;
     document.cookie = `${COOKIE}=${lang}; path=/; max-age=31536000; samesite=lax`;
   }, [lang]);
   const setLang = useCallback((l: Lang) => {
@@ -59,16 +60,15 @@ function loadCache(l: Lang): Map<string, string> {
 export function PageTranslator({ rootId, active }: { rootId: string; active: boolean }) {
   const { lang } = useLang();
   const caches = useRef<Partial<Record<Lang, Map<string, string>>>>({});
-  const [, force] = useState(0);
+  const originals = useRef({ text: new WeakMap<Text, string>(), textMine: new WeakMap<Text, string>(), attrs: new WeakMap<Element, Record<string, string>>(), attrMine: new WeakMap<Element, Record<string, string>>() });
 
   useEffect(() => {
     const root = document.getElementById(rootId);
     if (!root || !active) return;
     const dict = (caches.current[lang] ??= loadCache(lang));
-    const textOrig = new WeakMap<Text, string>();
-    const textMine = new WeakMap<Text, string>();
-    const attrOrig = new WeakMap<Element, Record<string, string>>();
-    const attrMine = new WeakMap<Element, Record<string, string>>();
+    const { text: textOrig, textMine, attrs: attrOrig, attrMine } = originals.current;
+    let writes: Array<() => void> = [];
+    let committing = false;
     const pending = new Set<string>();
     const inflight = new Set<string>();
     let timer: number | undefined;
@@ -89,8 +89,8 @@ export function PageTranslator({ rootId, active }: { rootId: string; active: boo
       if (skipped(node.parentElement)) return;
       const next = translateValue(orig);
       const value = next ?? orig;
-      if (value !== current) node.nodeValue = value;
-      textMine.set(node, value);
+      if (value !== current) writes.push(() => { node.nodeValue = value; textMine.set(node, value); });
+      else textMine.set(node, value);
     };
 
     const doAttrs = (el: Element) => {
@@ -103,8 +103,9 @@ export function PageTranslator({ rootId, active }: { rootId: string; active: boo
         if (mine[a] !== current) origs[a] = current;
         const orig = origs[a] ?? current;
         const value = translateValue(orig) ?? orig;
-        if (value !== current) el.setAttribute(a, value);
-        mine[a] = value; attrMine.set(el, mine); attrOrig.set(el, origs);
+        if (value !== current) writes.push(() => { el.setAttribute(a, value); mine[a] = value; });
+        else mine[a] = value;
+        attrMine.set(el, mine); attrOrig.set(el, origs);
       }
     };
 
@@ -122,50 +123,49 @@ export function PageTranslator({ rootId, active }: { rootId: string; active: boo
     const flush = async () => {
       const batch = Array.from(pending).slice(0, 80);
       batch.forEach((t) => { pending.delete(t); inflight.add(t); });
-      if (!batch.length) { document.documentElement.classList.remove("i18n-loading"); return; }
+      if (!batch.length) return;
       try {
         const result = await translateTexts({ data: { lang, texts: batch } });
         Object.entries(result).forEach(([k, v]) => dict.set(k, v));
         try { localStorage.setItem(CACHE_KEY(lang), JSON.stringify(Object.fromEntries(Array.from(dict).slice(-3000)))); } catch { /* full */ }
-      } catch (e) { console.warn("translation", e); }
+      } catch (e) { console.warn("translation", e); batch.forEach((t) => dict.set(t, t)); }
       batch.forEach((t) => inflight.delete(t));
       if (disposed) return;
-      walk(root);
-      if (pending.size) schedule(); else document.documentElement.classList.remove("i18n-loading");
+      scan();
     };
     function schedule() { if (pending.size && !timer) timer = window.setTimeout(() => { timer = undefined; void flush(); }, 60); }
 
-    if (lang === "bn" && dict.size < 20) {
-      document.documentElement.classList.add("i18n-loading");
-      window.setTimeout(() => document.documentElement.classList.remove("i18n-loading"), 2500);
+    async function commit() {
+      if (committing || disposed || pending.size || inflight.size) return;
+      committing = true;
+      await document.fonts.load('16px "SolaimanLipi"');
+      if (disposed) return;
+      const apply = () => {
+        if (disposed) return;
+        document.documentElement.lang = lang;
+        const ready = writes;
+        writes = [];
+        ready.forEach((write) => write());
+      };
+      const doc = document as Document & { startViewTransition?: (update: () => void) => { finished: Promise<void> } };
+      if (doc.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        try { await doc.startViewTransition(apply).finished; } catch { apply(); }
+      } else apply();
+      committing = false;
+      if (!disposed) scan();
     }
-    walk(root);
-    if (!pending.size) document.documentElement.classList.remove("i18n-loading");
+    function scan() {
+      if (disposed || committing) return;
+      writes = [];
+      walk(root);
+      if (!pending.size && !inflight.size && (writes.length || document.documentElement.lang !== lang)) void commit();
+    }
+    scan();
 
-    const obs = new MutationObserver((muts) => {
-      for (const m of muts) {
-        if (m.type === "characterData") doText(m.target as Text);
-        else if (m.type === "attributes") doAttrs(m.target as Element);
-        else m.addedNodes.forEach(walk);
-      }
-      schedule();
-    });
+    const obs = new MutationObserver(() => scan());
     obs.observe(root, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: [...ATTRS] });
     return () => {
       disposed = true; obs.disconnect(); window.clearTimeout(timer);
-      document.documentElement.classList.remove("i18n-loading");
-      // restore originals so the next language starts from source text
-      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
-      for (let n = w.nextNode(); n; n = w.nextNode()) {
-        if (n.nodeType === Node.TEXT_NODE) {
-          const t = n as Text; const o = textOrig.get(t);
-          if (o !== undefined && textMine.get(t) === t.nodeValue && o !== t.nodeValue) t.nodeValue = o;
-        } else {
-          const el = n as Element; const o = attrOrig.get(el); const mine = attrMine.get(el);
-          if (o && mine) for (const a of Object.keys(o)) if (el.getAttribute(a) === mine[a]) el.setAttribute(a, o[a]!);
-        }
-      }
-      force((x) => x);
     };
   }, [lang, active, rootId]);
 
@@ -175,12 +175,13 @@ export function PageTranslator({ rootId, active }: { rootId: string; active: boo
 export function LangToggle({ className = "" }: { className?: string }) {
   const { lang, setLang } = useLang();
   return (
-    <div translate="no" role="group" aria-label="Language / ভাষা" className={`lang-toggle notranslate inline-flex items-center rounded-full border border-primary/40 bg-background/40 p-0.5 text-xs font-bold ${className}`}>
+    <div translate="no" role="group" aria-label="Language / ভাষা" className={`lang-toggle notranslate relative inline-grid h-8 w-28 shrink-0 grid-cols-2 items-center rounded-full border border-primary/40 bg-background/40 p-0.5 text-xs font-bold ${className}`}>
+      <span aria-hidden="true" className={`lang-toggle-indicator pointer-events-none absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-primary ${lang === "en" ? "translate-x-full" : "translate-x-0"}`} />
       {(["bn", "en"] as const).map((l) => (
-        <button key={l} type="button" onClick={() => setLang(l)} aria-pressed={lang === l}
-          className={`rounded-full px-3 py-1 transition-all ${lang === l ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-primary"}`}>
+        <Button variant="ghost" key={l} type="button" onClick={() => setLang(l)} aria-pressed={lang === l}
+          className={`relative z-10 h-6 w-full cursor-pointer rounded-full px-0 py-0 text-xs font-bold hover:bg-transparent ${lang === l ? "text-primary-foreground hover:text-primary-foreground" : "text-muted-foreground hover:text-primary"}`}>
           {l === "bn" ? "বাংলা" : "EN"}
-        </button>
+        </Button>
       ))}
     </div>
   );
