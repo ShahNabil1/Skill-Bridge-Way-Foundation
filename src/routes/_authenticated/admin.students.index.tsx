@@ -14,6 +14,7 @@ import { ApplicantAvatar } from "@/components/admission/ApplicationParts";
 import { LEARNING_STATUSES, learningBadge } from "@/lib/student";
 import { formatDate } from "@/lib/public-data";
 import { seo } from "@/components/site/PageHero";
+import { confirmAction } from "@/components/ConfirmDialog";
 
 export const Route = createFileRoute("/_authenticated/admin/students/")({ staticData: { sitemap: false },
   head: () => seo("Students | Skill Bridgeway Foundation", "Private student records and certificates.", { noindex: true }),
@@ -115,7 +116,7 @@ function RefreshCertsButton() {
     const ok = await confirmAction({
       title: "Update all certificates?",
       description: "Re-create all issued certificate PDFs with the latest design and signatures. Serial numbers stay the same.",
-      confirmLabel: "Update all",
+      confirmText: "Update all",
     });
     if (!ok) return;
     setProgress("0");
