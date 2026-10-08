@@ -48,6 +48,8 @@
 }
 
 :root {
+  --profile-glow: 0 0 24px -8px color-mix(in oklch, var(--primary) 55%, transparent);
+  --profile-glow-hover: 0 8px 30px -12px color-mix(in oklch, var(--primary) 75%, transparent);
   --radius: 0.75rem;
   --background: #0A192F;
   --foreground: #FFFFFF;
@@ -119,6 +121,22 @@
 }
 
 /* Rich course description — identical in editor preview and on the public site */
+@keyframes profile-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.profile-settings { animation: profile-enter 400ms ease-out; }
+.profile-action { position: relative; transition: transform 180ms ease, box-shadow 220ms ease, border-color 220ms ease, background-color 220ms ease; box-shadow: var(--profile-glow); }
+.profile-action:not(:disabled):hover { transform: translateY(-3px); box-shadow: var(--profile-glow-hover); border-color: var(--primary); }
+.profile-action:not(:disabled):active { transform: translateY(1px) scale(0.97); }
+.profile-action svg { transition: transform 180ms ease; }
+.profile-action:not(:disabled):hover svg:not(.animate-spin) { transform: rotate(-8deg); }
+.profile-avatar { box-shadow: var(--profile-glow); transition: transform 200ms ease, border-color 200ms ease; }
+.profile-avatar:hover { transform: scale(1.04); border-color: var(--primary); }
+.profile-dialog { border-color: color-mix(in oklch, var(--primary) 40%, var(--border)); box-shadow: var(--profile-glow-hover); }
+@media (prefers-reduced-motion: reduce) {
+  .profile-settings { animation: none; }
+  .profile-action, .profile-action svg, .profile-avatar { transition: none; }
+  .profile-action:not(:disabled):hover, .profile-action:not(:disabled):active, .profile-action:not(:disabled):hover svg:not(.animate-spin), .profile-avatar:hover { transform: none; }
+}
+
 .rich-content { color: var(--color-foreground); line-height: 1.75; overflow-wrap: anywhere; }
 .rich-content > * + * { margin-top: 0.9em; }
 .rich-content h1, .rich-content h2, .rich-content h3 { font-family: var(--font-heading, Montserrat, sans-serif); font-weight: 800; line-height: 1.25; margin-top: 1.4em; }
