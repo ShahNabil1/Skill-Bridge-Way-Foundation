@@ -68,7 +68,7 @@ async function aiTranslate(texts: string[], lang: "bn" | "en"): Promise<string[]
 
 /** Public: returns cached translations, translating and caching any misses. */
 export const translateTexts = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => inputSchema.parse(d))
+  .validator((d: unknown) => inputSchema.parse(d))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const db = supabaseAdmin as any;
