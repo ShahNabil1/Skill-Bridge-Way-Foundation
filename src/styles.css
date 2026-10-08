@@ -274,3 +274,4 @@ html.i18n-loading #public-root main { opacity: 0.15; transition: opacity 0.2s; }
 html[lang="bn"] body { line-height: 1.7; }
 html[lang="bn"] h1, html[lang="bn"] h2, html[lang="bn"] h3 { line-height: 1.35; }
 .lang-toggle button:active { transform: scale(0.94); }
+html[lang="bn"] #public-root * { letter-spacing: normal !important; }
