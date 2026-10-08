@@ -44,7 +44,7 @@ function AccountAction({ kind }: { kind: "password" | "email" }) {
       <span className="flex min-w-0 items-center gap-4"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary"><Icon className="!h-6 !w-6" /></span><span className="font-heading text-base font-bold">{password ? "Change Password" : "Change Email"}</span></span><ArrowUpRight className="text-primary" />
     </Button>
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="profile-dialog max-h-[90dvh] w-[calc(100%-2rem)] overflow-y-auto rounded-lg">
+      <DialogContent className="profile-dialog max-h-[90dvh] w-[calc(100%-2rem)] overflow-y-auto rounded-lg" onInteractOutside={(e) => e.preventDefault()}>
         <DialogTitle className="pr-6">{password ? "Change Password" : "Change Email"}</DialogTitle>
         <DialogDescription>{password ? "Confirm your identity to update your password." : "Verify your current and new email to update your account."}</DialogDescription>
         {password ? <ChangePassword onDone={() => setOpen(false)} /> : <ChangeEmail onDone={() => setOpen(false)} />}
