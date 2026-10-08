@@ -47,7 +47,7 @@ export function needsTranslation(text: string, lang: Lang) {
 function skipped(el: Element | null) {
   for (let e = el; e; e = e.parentElement) {
     if (SKIP_TAGS.has(e.tagName.toUpperCase())) return true;
-    if (e.getAttribute("translate") === "no" || e.classList.contains("notranslate") || e.isContentEditable) return true;
+    if (e.getAttribute("translate") === "no" || e.classList.contains("notranslate") || (e as HTMLElement).isContentEditable) return true;
   }
   return false;
 }
@@ -162,7 +162,7 @@ export function PageTranslator({ rootId, active }: { rootId: string; active: boo
           if (o !== undefined && textMine.get(t) === t.nodeValue && o !== t.nodeValue) t.nodeValue = o;
         } else {
           const el = n as Element; const o = attrOrig.get(el); const mine = attrMine.get(el);
-          if (o && mine) for (const a of Object.keys(o)) if (el.getAttribute(a) === mine[a]) el.setAttribute(a, o[a]);
+          if (o && mine) for (const a of Object.keys(o)) if (el.getAttribute(a) === mine[a]) el.setAttribute(a, o[a]!);
         }
       }
       force((x) => x);

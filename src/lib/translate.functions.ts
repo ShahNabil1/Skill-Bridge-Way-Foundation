@@ -18,7 +18,7 @@ const PROMPT = {
 };
 
 async function aiTranslate(texts: string[], lang: "bn" | "en"): Promise<string[]> {
-  const key = process.env.LOVABLE_API_KEY;
+  const key = process.env["LOVABLE_API_KEY"];
   if (!key) throw new Error("Translation unavailable");
   const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
     method: "POST",
@@ -63,7 +63,7 @@ async function aiTranslate(texts: string[], lang: "bn" | "en"): Promise<string[]
   const parsed = JSON.parse(text || "{}");
   const out: unknown = parsed.t;
   if (!Array.isArray(out) || out.length !== texts.length) throw new Error("Bad translation response");
-  return out.map((v, i) => (typeof v === "string" && v.trim() ? v : texts[i]));
+  return out.map((v, i) => (typeof v === "string" && v.trim() ? v : texts[i]!));
 }
 
 /** Public: returns cached translations, translating and caching any misses. */
@@ -83,17 +83,18 @@ export const translateTexts = createServerFn({ method: "POST" })
     const result: Record<string, string> = {};
     const missing: { text: string; hash: string }[] = [];
     unique.forEach((text, i) => {
-      const hit = cached.get(hashes[i]);
+      const h = hashes[i]!;
+      const hit = cached.get(h);
       if (hit !== undefined) result[text] = hit;
-      else missing.push({ text, hash: hashes[i] });
+      else missing.push({ text, hash: h });
     });
     for (let i = 0; i < missing.length; i += 40) {
       const chunk = missing.slice(i, i + 40);
       try {
         const translated = await aiTranslate(chunk.map((m) => m.text), data.lang);
-        const insert = chunk.map((m, j) => ({ source_hash: m.hash, source: m.text, lang: data.lang, translated: translated[j] }));
+        const insert = chunk.map((m, j) => ({ source_hash: m.hash, source: m.text, lang: data.lang, translated: translated[j]! }));
         await db.from("site_translations").upsert(insert, { onConflict: "source_hash,lang", ignoreDuplicates: true });
-        chunk.forEach((m, j) => (result[m.text] = translated[j]));
+        chunk.forEach((m, j) => (result[m.text] = translated[j]!));
       } catch (e) {
         console.error("translate", e);
       }

@@ -64,7 +64,7 @@ function TRow({ row, onChanged }: { row: Row; onChanged: () => void }) {
     setBusy("save");
     const { error } = await (supabase as any).from("site_translations").update({ translated: value.trim(), manual: true, updated_at: new Date().toISOString() }).eq("id", row.id);
     setBusy(null);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Translation saved"); onChanged();
   }
   async function reset() {
@@ -72,7 +72,7 @@ function TRow({ row, onChanged }: { row: Row; onChanged: () => void }) {
     setBusy("reset");
     const { error } = await (supabase as any).from("site_translations").delete().eq("id", row.id);
     setBusy(null);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Will be re-translated"); onChanged();
   }
   return (
