@@ -249,8 +249,8 @@ function parseUA(ua: string) {
 }
 
 type Geo = Partial<{
-  city: string; region: string; country: string; continent: string; postal_code: string;
-  latitude: number; longitude: number; timezone: string; isp: string;
+  city: string | null; region: string | null; country: string | null; continent: string | null; postal_code: string | null;
+  latitude: number | null; longitude: number | null; timezone: string | null; isp: string | null;
 }>;
 
 // Per-instance cache of IP lookups so repeated heartbeats stay cheap.
@@ -300,7 +300,7 @@ async function lookupIpGeo(ip: string): Promise<{ geo: Geo | null; retriable: bo
       latitude: typeof j.latitude === "number" ? j.latitude : null,
       longitude: typeof j.longitude === "number" ? j.longitude : null,
       timezone: j?.timezone?.id ?? null,
-      isp: [conn.isp, conn.org].filter(Boolean).join(" · ") || undefined,
+      isp: [conn.isp, conn.org].filter(Boolean).join(" · ") || null,
     };
     if (geoCache.size > 500) geoCache.clear();
     geoCache.set(ip, geo);
