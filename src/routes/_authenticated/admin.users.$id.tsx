@@ -311,6 +311,15 @@ function SessionsTab({ id, canRevoke, revoke, busy }: { id: string; canRevoke: b
         {data.map((s) => {
           const Icon = s.device === "Mobile" ? Smartphone : s.device === "Tablet" ? MonitorSmartphone : Laptop;
           const place = [s.city, s.region, s.country].filter(Boolean).join(", ");
+          const details: [string, string][] = [
+            ["IP address", s.ip ?? ""],
+            ["ISP / Network", s.isp ?? ""],
+            ["Location", place],
+            ["Timezone", s.timezone ?? ""],
+            ["Coordinates", s.latitude != null && s.longitude != null ? `${s.latitude.toFixed(4)}, ${s.longitude.toFixed(4)}` : ""],
+            ["Postal code", s.postal_code ?? ""],
+            ["Continent", s.continent ?? ""],
+          ].filter(([, v]) => v);
           return (
             <div key={s.id} className={`glass rounded-xl p-4 ${s.revoked_at ? "opacity-60" : ""}`}>
               <div className="flex items-start justify-between gap-3">
@@ -318,7 +327,7 @@ function SessionsTab({ id, canRevoke, revoke, busy }: { id: string; canRevoke: b
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary"><Icon className="h-5 w-5" /></div>
                   <div className="min-w-0">
                     <p className="font-medium text-foreground">{s.browser ?? "Browser"} on {s.os ?? "Unknown"} <span className="text-xs text-muted-foreground">· {s.device}</span></p>
-                    <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground" translate="no"><Globe className="h-3 w-3" />{s.ip ?? "IP unavailable"}{place ? ` · ${place}` : ""}</p>
+                    <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground" translate="no"><Globe className="h-3 w-3 shrink-0" />{place || (s.geo_attempted === false ? "Detecting location..." : "Location unavailable")}</p>
                   </div>
                 </div>
                 {s.revoked_at ? <Badge variant="secondary">Ended{s.revoke_reason ? ` · ${s.revoke_reason.replace("_", " ")}` : ""}</Badge>
