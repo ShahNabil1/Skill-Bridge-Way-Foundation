@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BarChart3, Eye, Handshake, Lightbulb, MapPin, Scale, Sprout, Target, Users } from "lucide-react";
+import { BarChart3, Eye, FileText, ExternalLink, Handshake, Lightbulb, MapPin, Scale, ShieldCheck, Sprout, Target, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { seo } from "@/components/site/PageHero";
 import { SectionHeading } from "@/components/site/ui-bits";
 import { BrandName } from "@/components/site/BrandName";
 import workshop from "@/assets/learning-workshop.jpg";
+import registrationCertificate from "@/assets/registration-certificate.pdf.asset.json";
+import registrationPreview from "@/assets/registration-preview.jpg.asset.json";
 
 export const Route = createFileRoute("/about")({ staticData: { sitemap: true },
   head: () => seo(
@@ -51,6 +53,30 @@ function About() {
           <p>We work to bridge the gap between traditional education and the rapidly changing demands of the modern workforce. Our programmes focus on digital skills, artificial intelligence (AI) literacy, freelancing, entrepreneurship, and essential human-centred skills that enable individuals to adapt, participate and succeed in an increasingly technology-driven economy.</p>
           <p>With a particular focus on rural youth, madrasah students and communities with limited access to skills-development opportunities, we aim to create accessible pathways from learning to employment, self-employment and entrepreneurship.</p>
           <p>We believe technology should expand opportunity rather than deepen inequality. Through locally led programmes and partnerships with government institutions, development partners, educational institutions, civil society and the private sector, we seek to build practical skills, strengthen employability and support sustainable livelihoods across Bangladesh.</p>
+        </div>
+      </section>
+
+      <section id="registration" aria-labelledby="registration-title" className="scroll-mt-24 border-y bg-grid">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,.8fr)] lg:items-center lg:gap-20 lg:py-24">
+          <div className="min-w-0">
+            <p className="editorial-kicker"><ShieldCheck className="mr-2 inline-block h-4 w-4" aria-hidden="true" />Registration & transparency</p>
+            <h2 id="registration-title" className="section-title mt-5 text-2xl sm:text-3xl">Official registration</h2>
+            <p className="mt-5 max-w-2xl text-muted-foreground">Skill Bridgeway Foundation is registered with the Registrar of Joint Stock Companies &amp; Firms, Bangladesh, under the Societies Registration Act, 1860.</p>
+            <dl className="mt-8 grid gap-x-8 sm:grid-cols-2">
+              <div className="border-t py-5"><dt className="text-sm text-muted-foreground">Registration number</dt><dd translate="no" className="mt-2 break-words font-mono text-lg font-semibold text-primary">RAJS-647/2026</dd></div>
+              <div className="border-t py-5"><dt className="text-sm text-muted-foreground">Registration date</dt><dd className="mt-2 font-semibold">8 October 2026</dd></div>
+              <div className="border-t py-5"><dt className="text-sm text-muted-foreground">Legal basis</dt><dd className="mt-2 font-semibold">Societies Registration Act, 1860<br /><span className="text-sm font-normal text-muted-foreground">Act XXI of 1860</span></dd></div>
+              <div className="border-t py-5"><dt className="text-sm text-muted-foreground">Place of registration</dt><dd className="mt-2 font-semibold">Rajshahi, Bangladesh</dd></div>
+            </dl>
+            <Button asChild size="lg" className="mt-5 max-w-full whitespace-normal text-center"><a href={registrationCertificate.url} target="_blank" rel="noopener noreferrer"><FileText aria-hidden="true" />View original certificate (PDF)<ExternalLink aria-hidden="true" /></a></Button>
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">The certificate states that it is digitally signed. Use the original PDF to check the signature; the image preview is for reference.</p>
+          </div>
+          <figure className="mx-auto w-full max-w-sm lg:max-w-md">
+            <a href={registrationCertificate.url} target="_blank" rel="noopener noreferrer" aria-label="Open original registration certificate PDF in a new tab" className="group block border border-border transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <img src={registrationPreview.url} alt="Skill Bridgeway Foundation Certificate of Registration of Societies, RAJS-647/2026, issued 8 October 2026" width={1236} height={1600} loading="lazy" className="h-auto w-full object-contain" />
+            </a>
+            <figcaption className="mt-3 flex items-center justify-between gap-3 text-xs text-muted-foreground"><span>Certificate of Registration of Societies</span><span translate="no" className="shrink-0 font-mono">RJSC · 2026</span></figcaption>
+          </figure>
         </div>
       </section>
 

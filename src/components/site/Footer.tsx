@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Mail, MapPin } from "lucide-react";
+import { Mail, MapPin, ShieldCheck } from "lucide-react";
 import { NAV } from "./Header";
 import logo from "@/assets/sbf-logo.jpeg.asset.json";
 import { CONTACT_EMAIL, OFFICES } from "@/lib/site-info";
@@ -16,6 +16,9 @@ export function Footer() {
           <p className="mt-4 text-sm text-muted-foreground">
             An RJSC-registered non-profit expanding access to practical, future-relevant skills and economic opportunities for young people and underserved communities in Bangladesh.
           </p>
+          <Link to="/about" hash="registration" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary underline-offset-4 hover:underline">
+            <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden="true" />Registration certificate
+          </Link>
           <div className="mt-6"><SocialLinks /></div>
         </div>
         <div>
