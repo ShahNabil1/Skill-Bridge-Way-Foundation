@@ -639,6 +639,36 @@ export type Database = {
         }
         Relationships: []
       }
+      site_translations: {
+        Row: {
+          id: string
+          lang: string
+          manual: boolean
+          source: string
+          source_hash: string
+          translated: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          lang: string
+          manual?: boolean
+          source: string
+          source_hash: string
+          translated: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          lang?: string
+          manual?: boolean
+          source?: string
+          source_hash?: string
+          translated?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       student_activity: {
         Row: {
           action: string

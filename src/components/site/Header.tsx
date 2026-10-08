@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BrandName } from "@/components/site/BrandName";
+import { LangToggle } from "@/lib/i18n";
 import logo from "@/assets/sbf-logo.jpeg.asset.json";
 
 export const NAV = [
@@ -31,13 +32,17 @@ export function Header() {
               {n.label}
             </Link>
           ))}
+          <LangToggle />
           <Button asChild className="cta-shine bg-highlight text-highlight-foreground hover:bg-highlight/90">
             <Link to="/courses" search={{}}>Apply Free</Link>
           </Button>
         </nav>
-        <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <div className="flex items-center gap-2 lg:hidden">
+        <LangToggle />
+        <Button variant="ghost" size="icon" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}>
           {open ? <X /> : <Menu />}
         </Button>
+        </div>
       </div>
       {open && (
         <nav className="site-mobile-nav flex flex-col gap-1 border-t px-4 py-3 lg:hidden">

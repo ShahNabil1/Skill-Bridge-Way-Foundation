@@ -21,6 +21,7 @@ import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { ConfirmHost } from "@/components/ConfirmDialog";
 import { Button } from "@/components/ui/button";
+import { LangProvider, PageTranslator } from "@/lib/i18n";
 
 function NotFoundComponent() {
   return (
@@ -98,7 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap",
       },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
@@ -153,13 +154,16 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col">
+      <LangProvider>
+      <PageTranslator rootId="public-root" active={!isPrivate} />
+      <div id={isPrivate ? undefined : "public-root"} className="flex min-h-screen flex-col">
         {!isPrivate && <Header />}
         <main className={isPrivate ? "flex-1" : "public-site flex-1"}>
           <Outlet />
         </main>
         {!isPrivate && !isCourseDetail && <Footer />}
       </div>
+      </LangProvider>
       <Toaster />
       <ConfirmHost />
     </QueryClientProvider>
