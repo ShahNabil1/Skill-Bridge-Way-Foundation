@@ -21,10 +21,10 @@ export function Header() {
   const [open, setOpen] = useState(false);
   return (
     <header className="site-header sticky top-0 z-50 glass border-x-0 border-t-0">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-        <Link to="/" className="flex min-w-0 items-center gap-3">
-          <img src={logo.url} alt="Skill Bridgeway Foundation logo" width={40} height={40} className="h-10 w-10 shrink-0 rounded-full" />
-          <BrandName stacked className="min-w-0 font-heading text-sm font-extrabold uppercase leading-tight" />
+      <div className="mx-auto grid h-16 max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 sm:gap-4 sm:px-4 lg:flex lg:justify-between">
+        <Link to="/" className="flex min-w-0 items-center gap-2 sm:gap-3">
+          <img src={logo.url} alt="Skill Bridgeway Foundation logo" width={40} height={40} className="h-9 w-9 shrink-0 rounded-full sm:h-10 sm:w-10" />
+          <BrandName stacked className="min-w-0 font-heading text-[11px] font-extrabold sm:text-sm uppercase leading-tight" />
         </Link>
         <nav className="hidden items-center gap-5 lg:flex">
           {NAV.map((n) => (
@@ -37,9 +37,9 @@ export function Header() {
             <Link to="/courses" search={{}}>Apply Free</Link>
           </Button>
         </nav>
-        <div className="flex items-center gap-2 lg:hidden">
-        <LangToggle />
-        <Button variant="ghost" size="icon" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2 lg:hidden">
+          <LangToggle className="!h-8 !w-24 sm:!w-28" />
+          <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}>
           {open ? <X /> : <Menu />}
         </Button>
         </div>
