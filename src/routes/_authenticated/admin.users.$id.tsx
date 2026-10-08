@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { AlertCircle, ArrowLeft, Ban, Check, Clock, Copy, Globe, KeyRound, Laptop, Loader2, LogOut, MapPin, MonitorSmartphone, Pencil, Save, ShieldCheck, Smartphone, Trash2, UserCheck, UserCircle, X } from "lucide-react";
+import { AlertCircle, ArrowLeft, Ban, Check, ChevronDown, Clock, Copy, Globe, KeyRound, Laptop, Loader2, LogOut, MapPin, MonitorSmartphone, Pencil, Save, ShieldCheck, Smartphone, Trash2, UserCheck, UserCircle, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -311,7 +311,7 @@ function SessionsTab({ id, canRevoke, revoke, busy }: { id: string; canRevoke: b
         {data.map((s) => {
           const Icon = s.device === "Mobile" ? Smartphone : s.device === "Tablet" ? MonitorSmartphone : Laptop;
           const place = [s.city, s.region, s.country].filter(Boolean).join(", ");
-          const details: [string, string][] = [
+          const details = ([
             ["IP address", s.ip ?? ""],
             ["ISP / Network", s.isp ?? ""],
             ["Location", place],
@@ -319,7 +319,7 @@ function SessionsTab({ id, canRevoke, revoke, busy }: { id: string; canRevoke: b
             ["Coordinates", s.latitude != null && s.longitude != null ? `${s.latitude.toFixed(4)}, ${s.longitude.toFixed(4)}` : ""],
             ["Postal code", s.postal_code ?? ""],
             ["Continent", s.continent ?? ""],
-          ].filter(([, v]) => v);
+          ] as [string, string][]).filter(([, v]) => v);
           return (
             <div key={s.id} className={`glass rounded-xl p-4 ${s.revoked_at ? "opacity-60" : ""}`}>
               <div className="flex items-start justify-between gap-3">
@@ -441,7 +441,24 @@ function ActivityTab({ id }: { id: string }) {
               ))}
             </ol>
           )}
-          {data.timeline.length > shown && <Button size="sm" variant="outline" className="mt-3" onClick={() => setShown((n) => n + 20)}>See more</Button>}
+          {data.timeline.length > shown && (
+            <div className="mt-4 flex flex-col items-center gap-1.5">
+              <Button
+                size="sm"
+                variant="outline"
+                className="group gap-2 rounded-full border-primary/40 px-5 text-primary shadow-[0_0_14px_-4px] shadow-primary/40 transition-all hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_20px_-2px] hover:shadow-primary/50"
+                onClick={() => setShown((n) => n + 20)}
+              >
+                <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
+                View more
+                <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold">+{Math.min(20, data.timeline.length - shown)}</span>
+              </Button>
+              <p className="text-[11px] text-muted-foreground">Showing {Math.min(shown, data.timeline.length)} of {data.timeline.length}</p>
+            </div>
+          )}
+          {data.timeline.length > 20 && data.timeline.length <= shown && (
+            <p className="mt-4 text-center text-[11px] text-muted-foreground">All {data.timeline.length} actions shown</p>
+          )}
         </div>
       </>}
     </div>

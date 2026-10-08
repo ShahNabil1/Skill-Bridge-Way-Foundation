@@ -249,8 +249,8 @@ function parseUA(ua: string) {
 }
 
 type Geo = Partial<{
-  city: string; region: string; country: string; continent: string; postal_code: string;
-  latitude: number; longitude: number; timezone: string; isp: string;
+  city: string | null; region: string | null; country: string | null; continent: string | null; postal_code: string | null;
+  latitude: number | null; longitude: number | null; timezone: string | null; isp: string | null;
 }>;
 
 // Per-instance cache of IP lookups so repeated heartbeats stay cheap.
@@ -291,9 +291,9 @@ async function lookupIpGeo(ip: string): Promise<{ geo: Geo | null; retriable: bo
   try {
     const res = await fetch(`https://ipwho.is/${encodeURIComponent(ip)}`, { signal: AbortSignal.timeout(4000) });
     if (!res.ok) return { geo: null, retriable: true };
-    const j = (await res.json()) as Record<string, any>;
+    const j = (await res.json()) as any;
     if (j?.success === false) return { geo: null, retriable: false }; // reserved/unroutable — terminal
-    const conn = (j?.connection ?? {}) as Record<string, any>;
+    const conn = (j?.connection ?? {}) as any;
     const geo: Geo = {
       city: j.city ?? null, region: j.region ?? null, country: j.country_code ?? null,
       continent: j.continent_code ?? null, postal_code: j.postal ?? null,
@@ -314,7 +314,7 @@ async function lookupIpGeo(ip: string): Promise<{ geo: Geo | null; retriable: bo
 async function resolveGeo(ip: string | null): Promise<{ row: Record<string, string | number>; attempted: boolean }> {
   if (ip && !isPrivateIp(ip)) {
     const fromEdge = cleanGeo(await edgeGeo());
-    if (fromEdge.city || fromEdge.region || fromEdge.country) return { row: fromEdge, attempted: true };
+    if (fromEdge["city"] || fromEdge["region"] || fromEdge["country"]) return { row: fromEdge, attempted: true };
     const r = await lookupIpGeo(ip);
     if (r.geo) return { row: cleanGeo(r.geo), attempted: true };
     if (!r.retriable) return { row: {}, attempted: true };
@@ -342,7 +342,7 @@ export const sessionHeartbeat = createServerFn({ method: "POST" }).middleware([r
         ...geo.row, geo_attempted: geo.attempted,
       }, { onConflict: "auth_session_id" }).select("id").single();
       rowId = row?.id ?? null;
-    } else if (!existing.country && !existing.geo_attempted) {
+    } else if (existing && !existing.country && !existing.geo_attempted) {
       // Backfill older sessions that were saved before geo columns existed.
       const geo = await resolveGeo(existing.ip ?? null);
       if (geo.attempted) {
