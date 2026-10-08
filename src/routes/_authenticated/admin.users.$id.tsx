@@ -441,7 +441,24 @@ function ActivityTab({ id }: { id: string }) {
               ))}
             </ol>
           )}
-          {data.timeline.length > shown && <Button size="sm" variant="outline" className="mt-3" onClick={() => setShown((n) => n + 20)}>See more</Button>}
+          {data.timeline.length > shown && (
+            <div className="mt-4 flex flex-col items-center gap-1.5">
+              <Button
+                size="sm"
+                variant="outline"
+                className="group gap-2 rounded-full border-primary/40 px-5 text-primary shadow-[0_0_14px_-4px] shadow-primary/40 transition-all hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_20px_-2px] hover:shadow-primary/50"
+                onClick={() => setShown((n) => n + 20)}
+              >
+                <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
+                View more
+                <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold">+{Math.min(20, data.timeline.length - shown)}</span>
+              </Button>
+              <p className="text-[11px] text-muted-foreground">Showing {Math.min(shown, data.timeline.length)} of {data.timeline.length}</p>
+            </div>
+          )}
+          {data.timeline.length > 20 && data.timeline.length <= shown && (
+            <p className="mt-4 text-center text-[11px] text-muted-foreground">All {data.timeline.length} actions shown</p>
+          )}
         </div>
       </>}
     </div>
