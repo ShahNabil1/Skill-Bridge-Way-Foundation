@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { confirmAction } from "@/components/ConfirmDialog";
 import { usePermissions, useMediaUpload } from "@/components/admin/shared";
 import { deleteUserAccount, getUserDetail, resetUserPassword, revokeUserSession, setUserBan, setUserPermissions, updateUserAvatar, updateUserInfo } from "@/lib/users.functions";
-import { profileInfoSchema, readProfileInfo, profileHasChanges, formatProfileAddress, strictPhoneInput } from "@/lib/profile-schema";
+import { profileInfoSchema, readProfileInfo, profileHasChanges, formatProfileAddress, strictPhoneInput, type ProfileInfo } from "@/lib/profile-schema";
 import { BdFlag } from "@/components/BdFlag";
 import { AddressPicker } from "@/components/admission/FormBits";
 import { AvatarCropper } from "@/components/auth/AvatarCropper";
@@ -169,7 +169,7 @@ function ProfileTab({ u, canEdit, onSaved }: { u: Detail; canEdit: boolean; onSa
       setErrors(Object.fromEntries(result.error.issues.map((issue) => [issue.path.join("."), issue.message])));
       toast.error(result.error.issues[0]?.message ?? "Check your details"); return;
     }
-    const data = result.data as z.infer<typeof profileInfoSchema>;
+    const data = result.data as ProfileInfo;
     setBusy(true);
     try {
       await save({ data: { id: u.id, first_name: data.first_name, last_name: data.last_name, ...(u.canPersonal ? { phone: data.phone, address: data.address } : {}) } });
