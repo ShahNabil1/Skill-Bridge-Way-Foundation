@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Smooth language switching, local SolaimanLipi, stable toggle sizing and pointer cursor.
 - [x] Upgrade profile view/edit, split names, strict Bangladesh phone, admission address, avatar preview and animated account dialogs; six validation tests and build pass, signed-out guard checked.
 - [ ] Verify profile saving, avatar upload and account-change dialogs signed in; blocked by external unmanaged Supabase session unavailable to browser testing.
 - [x] Connect Google Analytics and Google Search Console fresh in the new workspace; both linked successfully.
