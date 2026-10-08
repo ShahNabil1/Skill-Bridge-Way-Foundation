@@ -333,6 +333,16 @@ function SessionsTab({ id, canRevoke, revoke, busy }: { id: string; canRevoke: b
                 {s.revoked_at ? <Badge variant="secondary">Ended{s.revoke_reason ? ` · ${s.revoke_reason.replace("_", " ")}` : ""}</Badge>
                   : online(s) ? <Badge className="gap-1 bg-primary/15 text-primary hover:bg-primary/15"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />Online</Badge> : <Badge variant="outline">Idle</Badge>}
               </div>
+              {details.length > 0 && (
+                <div className="mt-3 grid gap-x-6 gap-y-1.5 rounded-lg bg-muted/40 p-3 text-xs sm:grid-cols-2" translate="no">
+                  {details.map(([label, value]) => (
+                    <div key={label} className="flex min-w-0 items-baseline justify-between gap-3">
+                      <span className="shrink-0 text-muted-foreground">{label}</span>
+                      <span className="min-w-0 truncate text-right text-foreground">{value}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
                 <span>Started {dt(s.created_at)} · Last active {dt(s.last_seen_at)}</span>
                 {canRevoke && !s.revoked_at && <Button size="sm" variant="ghost" className="h-7 gap-1 text-destructive hover:bg-destructive/10" disabled={!!busy} onClick={() => revoke(s.id)}>{busy === s.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <LogOut className="h-3 w-3" />}Sign out</Button>}
