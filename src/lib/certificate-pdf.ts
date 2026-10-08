@@ -63,8 +63,8 @@ function cornerOrnament(page: PDFPage, x: number, y: number, sx: 1 | -1, sy: 1 |
 
 function signature(page: PDFPage, centerX: number, label: string, font: PDFFont, img?: PDFImage) {
   if (img) {
-    // Fit inside a 140x46 box resting just above the signature line.
-    const scale = Math.min(140 / img.width, 46 / img.height);
+    // Fit inside a 165x50 box resting just above the signature line.
+    const scale = Math.min(165 / img.width, 50 / img.height);
     const w = img.width * scale;
     const h = img.height * scale;
     page.drawImage(img, { x: centerX - w / 2, y: 79, width: w, height: h });
