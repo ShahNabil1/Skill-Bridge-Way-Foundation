@@ -125,7 +125,7 @@ function BasicInfo() {
         </div>
         <div className="max-w-md space-y-2"><Label htmlFor="profile-phone">Phone</Label>
           <div className="flex overflow-hidden rounded-md border border-input focus-within:ring-2 focus-within:ring-ring">
-            <span className="flex shrink-0 items-center gap-2 border-r border-input bg-muted px-3"><span role="img" aria-label="Bangladesh">🇧🇩</span><span>+88</span></span>
+            <span className="flex shrink-0 items-center gap-2 border-r border-input bg-muted px-3"><BdFlag /><span>+88</span></span>
             <Input id="profile-phone" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="017XXXXXXXX" value={form.phone} className="min-w-0 rounded-none border-0 focus-visible:ring-0" aria-invalid={!!errors.phone} aria-describedby="profile-phone-hint" onChange={(e) => { const next = strictPhoneInput(e.target.value); setPhoneWarning(next.warning); setForm({ ...form, phone: next.value }); }} />
           </div>
           <p id="profile-phone-hint" className="text-xs text-muted-foreground">11 digits · starts with 013–019</p>
