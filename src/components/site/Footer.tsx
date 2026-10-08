@@ -47,7 +47,7 @@ export function Footer() {
           </Link>
         </div>
       </div>
-      <div className="border-t">
+      <div translate="no" lang="en" className="border-t">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-5 text-xs text-muted-foreground">
           <span className="flex flex-wrap items-center gap-x-2">
             <span>© {new Date().getFullYear()}</span><BrandName className="font-heading font-bold uppercase" /><span>All rights reserved.</span>
