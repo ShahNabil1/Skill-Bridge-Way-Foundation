@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
-import { ImagePlus, RotateCcw } from "lucide-react";
+import { ImagePlus, RotateCcw, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { IMAGE_TYPES, MAX_DOC_BYTES } from "@/lib/r2.functions";
@@ -29,7 +29,7 @@ export function AvatarCropper({ onSave, disabled }: { onSave: (file: File) => Pr
   const close = () => { if (!busy) setUrl(null); };
   return <>
     <label className="inline-flex min-h-10 cursor-pointer items-center gap-2 text-sm text-primary transition-colors hover:text-foreground">
-      <ImagePlus className="h-4 w-4" />{disabled ? "Uploading..." : "Change avatar"}
+      {disabled ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}{disabled ? "Uploading..." : "Change avatar"}
       <input aria-label="Choose avatar image" type="file" accept={IMAGE_TYPES.join(",")} className="sr-only" disabled={disabled} onChange={(e) => {
         const file = e.target.files?.[0]; e.target.value = "";
         if (!file) return;
@@ -51,7 +51,7 @@ export function AvatarCropper({ onSave, disabled }: { onSave: (file: File) => Pr
           setBusy(true);
           try { await onSave(await cropImage(url, area)); setUrl(null); } catch (error) { toast.error((error as Error).message); }
           finally { setBusy(false); }
-        }}>{busy ? "Saving..." : "Save avatar"}</Button></div>
+        }}>{busy && <Loader2 className="h-4 w-4 animate-spin" />}{busy ? "Saving..." : "Save avatar"}</Button></div>
       </DialogContent>
     </Dialog>
   </>;
