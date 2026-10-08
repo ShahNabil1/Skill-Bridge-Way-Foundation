@@ -849,16 +849,23 @@ export type Database = {
           auth_session_id: string | null
           browser: string | null
           city: string | null
+          continent: string | null
           country: string | null
           created_at: string
           device: string | null
+          geo_attempted: boolean
           id: string
           ip: string | null
+          isp: string | null
           last_seen_at: string
+          latitude: number | null
+          longitude: number | null
           os: string | null
+          postal_code: string | null
           region: string | null
           revoke_reason: string | null
           revoked_at: string | null
+          timezone: string | null
           user_agent: string | null
           user_id: string
         }
@@ -866,16 +873,23 @@ export type Database = {
           auth_session_id?: string | null
           browser?: string | null
           city?: string | null
+          continent?: string | null
           country?: string | null
           created_at?: string
           device?: string | null
+          geo_attempted?: boolean
           id?: string
           ip?: string | null
+          isp?: string | null
           last_seen_at?: string
+          latitude?: number | null
+          longitude?: number | null
           os?: string | null
+          postal_code?: string | null
           region?: string | null
           revoke_reason?: string | null
           revoked_at?: string | null
+          timezone?: string | null
           user_agent?: string | null
           user_id: string
         }
@@ -883,16 +897,23 @@ export type Database = {
           auth_session_id?: string | null
           browser?: string | null
           city?: string | null
+          continent?: string | null
           country?: string | null
           created_at?: string
           device?: string | null
+          geo_attempted?: boolean
           id?: string
           ip?: string | null
+          isp?: string | null
           last_seen_at?: string
+          latitude?: number | null
+          longitude?: number | null
           os?: string | null
+          postal_code?: string | null
           region?: string | null
           revoke_reason?: string | null
           revoked_at?: string | null
+          timezone?: string | null
           user_agent?: string | null
           user_id?: string
         }
