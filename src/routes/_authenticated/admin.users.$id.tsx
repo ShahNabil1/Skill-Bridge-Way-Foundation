@@ -287,7 +287,7 @@ function SessionsTab({ id, canRevoke, revoke, busy }: { id: string; canRevoke: b
     queryFn: async () => {
       const { data, error } = await (supabase.from("user_sessions" as any) as any).select("*").eq("user_id", id).order("last_seen_at", { ascending: false }).limit(50);
       if (error) throw error;
-      return data as { id: string; ip: string | null; device: string | null; browser: string | null; os: string | null; city: string | null; region: string | null; country: string | null; created_at: string; last_seen_at: string; revoked_at: string | null; revoke_reason: string | null }[];
+      return data as { id: string; ip: string | null; device: string | null; browser: string | null; os: string | null; city: string | null; region: string | null; country: string | null; continent: string | null; postal_code: string | null; latitude: number | null; longitude: number | null; timezone: string | null; isp: string | null; geo_attempted: boolean | null; created_at: string; last_seen_at: string; revoked_at: string | null; revoke_reason: string | null }[];
     },
     refetchInterval: 30_000,
   });
