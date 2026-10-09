@@ -1,7 +1,5 @@
 # Skill Bridge Way Foundation
 
-Implement exactly the screenshot and nothing else
-
 This project was built by Shahriar Nabil (https://shahnabil.com/).
 
 **Live app**: https://skillbridgeway.org/
