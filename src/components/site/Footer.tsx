@@ -38,7 +38,7 @@ export function Footer() {
               </li>
             ))}
             <li className="flex gap-2"><Mail className="h-4 w-4 shrink-0 text-primary" />
-              <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-primary">{CONTACT_EMAIL}</a>
+              <a href={`mailto:${CONTACT_EMAIL}`} className="footer-nav-link hover:text-primary">{CONTACT_EMAIL}</a>
             </li>
           </ul>
         </div>
