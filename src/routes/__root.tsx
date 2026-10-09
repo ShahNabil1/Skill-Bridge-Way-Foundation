@@ -170,7 +170,7 @@ function RootComponent() {
         {!isPrivate && !isCourseDetail && <Footer />}
       </div>
       </LangProvider>
-      <TawkChat visible={!isPrivate} />
+      <TawkChat visible={!isPrivate && !/^\/admission\/?$/.test(pathname)} />
       <Toaster />
       <ConfirmHost />
     </QueryClientProvider>

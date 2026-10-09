@@ -16,16 +16,16 @@ export function Footer() {
           <p className="mt-4 text-sm text-muted-foreground">
             An RJSC-registered non-profit expanding access to practical, future-relevant skills and economic opportunities for young people and underserved communities in Bangladesh.
           </p>
-          <Link to="/about" hash="registration" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary underline-offset-4 hover:underline">
+          <Link to="/about" hash="registration" className="footer-nav-link mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">
             <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden="true" />Registration certificate
           </Link>
           <div className="mt-6"><SocialLinks /></div>
         </div>
         <div>
           <p className="section-title text-sm">Explore</p>
-          <nav className="mt-4 grid gap-2 text-sm">
+          <nav className="mt-4 grid justify-items-start gap-2 text-sm">
             {NAV.map((n) => (
-              <Link key={n.to} to={n.to} className="text-muted-foreground hover:text-primary">{n.label}</Link>
+              <Link key={n.to} to={n.to} className="footer-nav-link text-muted-foreground transition-colors hover:text-primary">{n.label}</Link>
             ))}
           </nav>
         </div>
