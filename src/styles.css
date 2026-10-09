@@ -234,7 +234,7 @@ html.chat-open, html.chat-open body { overflow: hidden !important; overscroll-be
   transform-origin: left;
   transition: transform 0.3s ease;
 }
-.footer-credit-link:hover { color: #f26202; } /* Branta Tech brand orange from the official logo */
+.footer-credit-link:hover { color: #f26202; text-shadow: 0 0 0.55em color-mix(in srgb, #f26202 45%, transparent); } /* Branta Tech brand orange from the official logo */
 .footer-credit-link:hover::after {
   transform: scaleX(1);
   background: linear-gradient(90deg, #f26202, color-mix(in srgb, #f26202 60%, #ffb066));
