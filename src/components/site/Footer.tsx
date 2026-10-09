@@ -51,17 +51,17 @@ export function Footer() {
         </div>
       </div>
       <div translate="no" lang="en" className="border-t">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-5 text-xs text-muted-foreground">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-6 text-[13px] sm:text-sm text-muted-foreground">
           <span className="flex flex-wrap items-center gap-x-2">
             <span>© {new Date().getFullYear()}</span><BrandName className="font-heading font-bold uppercase" /><span>All rights reserved.</span>
           </span>
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-2 font-medium tracking-wide text-foreground/85">
             <span>Design &amp; Developed By</span>
             <a
               href="https://brantatech.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="footer-credit-link font-heading font-bold uppercase tracking-wide"
+              className="footer-credit-link font-heading text-base font-extrabold uppercase tracking-wide sm:text-lg"
             >
               Branta Tech
             </a>
