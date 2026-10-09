@@ -208,6 +208,10 @@ a:hover .brand-wordmark, .brand-wordmark:hover { transform: translateY(-1px); fi
 .site-header nav a.nav-link-mobile:active::after, .site-header nav a.nav-link-mobile.nav-link-active::after { transform: scaleX(1); }
 .site-mobile-nav { animation: editorial-rise 220ms ease-out both; background: var(--background); }
 .site-footer { border-top-color: color-mix(in srgb, var(--primary) 35%, transparent); }
+/* Leave room under the footer so the floating live-chat button never covers the credit line. */
+.site-footer { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+/* While the live chat is open, the page behind it must not scroll. */
+html.chat-open, html.chat-open body { overflow: hidden !important; overscroll-behavior: none; touch-action: none; }
 
 .footer-credit-link {
   position: relative;
