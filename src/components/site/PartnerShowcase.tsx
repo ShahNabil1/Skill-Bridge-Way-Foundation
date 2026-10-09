@@ -43,7 +43,7 @@ export function PartnerShowcase({ compact = false }: { compact?: boolean }) {
         <span className="flex h-12 w-12 items-center justify-center rounded-full border border-primary/50 text-primary"><Plus className="h-5 w-5" /></span>
         <p className="font-heading text-lg font-bold">Your organization could be featured here</p>
         <p className="max-w-md text-sm text-muted-foreground">Join as our first founding partner and be recognized alongside our mission to build a digitally skilled Bangladesh.</p>
-        <Link to="/partner" className="text-sm font-semibold text-primary hover:underline">Become a founding partner →</Link>
+        <Link to="/partner" className="footer-nav-link text-sm font-semibold text-primary hover:text-primary">Become a founding partner →</Link>
       </div>
     );
   }
