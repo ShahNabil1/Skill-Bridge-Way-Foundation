@@ -208,6 +208,11 @@ a:hover .brand-wordmark, .brand-wordmark:hover { transform: translateY(-1px); fi
 .site-header nav a.nav-link-mobile:active::after, .site-header nav a.nav-link-mobile.nav-link-active::after { transform: scaleX(1); }
 .site-mobile-nav { animation: editorial-rise 220ms ease-out both; background: var(--background); }
 .site-footer { border-top-color: color-mix(in srgb, var(--primary) 35%, transparent); }
+.footer-nav-link { position: relative; width: fit-content; }
+.footer-nav-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: -0.25rem; height: 2px; border-radius: 9999px; background: linear-gradient(90deg, var(--primary), color-mix(in srgb, var(--highlight) 55%, transparent)); transform: scaleX(0); transform-origin: left; transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1); }
+.footer-nav-link:hover::after { transform: scaleX(1); }
+.footer-nav-link:hover { text-shadow: 0 0 0.55em color-mix(in srgb, var(--primary) 45%, transparent); }
+@media (prefers-reduced-motion: reduce) { .footer-nav-link::after { transition: none; } }
 /* While the live chat is open, the page behind it must not scroll. */
 html.chat-open, html.chat-open body { overflow: hidden !important; overscroll-behavior: none; touch-action: none; }
 
