@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouterState } from "@tanstack/react-router";
 
 const TAWK_SRC = "https://embed.tawk.to/6ac93df8a0c07d34c6278e4e/1k4h1k58t";
 
@@ -39,13 +40,33 @@ export function TawkChat({ visible }: { visible: boolean }) {
 
   useEffect(() => { if (!visible) lockPage(false); }, [visible]);
 
+  // Tuck the chat button away while the footer credit line is on screen so the credit stays clickable;
+  // it returns as soon as the visitor scrolls back up. Never hidden while a chat is open.
+  const [creditInView, setCreditInView] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   useEffect(() => {
-    const api = window.Tawk_API;
-    if (!api) return;
-    const apply = () => (visible ? api.showWidget?.() : api.hideWidget?.());
+    setCreditInView(false);
+    if (!visible) return;
+    let io: IntersectionObserver | undefined;
+    const t = window.setTimeout(() => {
+      const el = document.querySelector(".footer-credit-link");
+      if (!el) return;
+      io = new IntersectionObserver(([e]) => setCreditInView(!!e?.isIntersecting), { rootMargin: "0px 0px 40px 0px" });
+      io.observe(el);
+    }, 300);
+    return () => { window.clearTimeout(t); io?.disconnect(); };
+  }, [visible, pathname]);
+
+  const show = visible && !creditInView;
+  useEffect(() => {
+    const api = (window.Tawk_API = window.Tawk_API || {});
+    const apply = () => {
+      if (show) api.showWidget?.();
+      else if (!document.documentElement.classList.contains("chat-open") || !visible) api.hideWidget?.();
+    };
     if (api.hideWidget) apply();
-    else api.onLoad = apply;
-  }, [visible]);
+    api.onLoad = apply;
+  }, [show, visible]);
 
   return null;
 }
