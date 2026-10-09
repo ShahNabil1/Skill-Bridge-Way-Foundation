@@ -18,6 +18,7 @@ import { ORGANIZATION_JSONLD } from "../lib/structured-data";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { TawkChat } from "@/components/site/TawkChat";
 import { Toaster } from "@/components/ui/sonner";
 import { ConfirmHost } from "@/components/ConfirmDialog";
 import { Button } from "@/components/ui/button";
@@ -169,6 +170,7 @@ function RootComponent() {
         {!isPrivate && !isCourseDetail && <Footer />}
       </div>
       </LangProvider>
+      <TawkChat visible={!isPrivate} />
       <Toaster />
       <ConfirmHost />
     </QueryClientProvider>
