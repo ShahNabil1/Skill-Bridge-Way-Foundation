@@ -56,7 +56,7 @@ function Index() {
   return (
     <>
       <section className="relative isolate flex min-h-[610px] items-end overflow-hidden border-b sm:min-h-[660px]">
-        <img src={workshop} srcSet={`${workshopSm} 800w, ${workshop} 1600w`} sizes="100vw" fetchPriority="high" decoding="async" alt="Young Bangladeshi learners working together on digital skills" width={1600} height={900} className="hero-img absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+        <img src={workshop} srcSet={`${workshopSm} 800w, ${workshop} 1600w`} sizes="100vw" fetchPriority="high" alt="Young Bangladeshi learners working together on digital skills" width={1600} height={900} className="hero-img absolute inset-0 -z-20 h-full w-full object-cover object-center" />
         <div className="absolute inset-0 -z-10 bg-background/75" />
         <div className="hero-orb hero-orb-a -z-10" aria-hidden="true" />
         <div className="hero-orb hero-orb-b -z-10" aria-hidden="true" />
