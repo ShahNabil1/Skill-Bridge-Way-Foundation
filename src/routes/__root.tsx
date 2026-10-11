@@ -111,7 +111,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       // Google Fonts load without blocking first paint (text shows in a fallback, then swaps).
-      { children: `(function(){var l=document.createElement('link');l.rel='stylesheet';l.href=${JSON.stringify(GOOGLE_FONTS_CSS)};document.head.appendChild(l);})();` },
+      { children: `(function(){var l=document.createElement('link');l.rel='stylesheet';l.href=${JSON.stringify(GOOGLE_FONTS_CSS)};document.head.appendChild(l);addEventListener('load',function(){['normal','bold'].forEach(function(w){var p=document.createElement('link');p.rel='prefetch';p.as='font';p.type='font/woff2';p.crossOrigin='anonymous';p.href='/fonts/solaimanlipi-'+w+'.woff2';document.head.appendChild(p);});});})();` },
       { type: "application/ld+json", children: JSON.stringify(ORGANIZATION_JSONLD) },
     ],
   }),
