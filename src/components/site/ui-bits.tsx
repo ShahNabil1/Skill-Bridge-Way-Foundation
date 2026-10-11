@@ -44,7 +44,7 @@ export function CourseCard({ c }: { c: CourseCardData }) {
     <Link to="/courses/$slug" params={{ slug: c.slug }} className="glass editorial-item group flex flex-col overflow-hidden rounded-md transition-all duration-300 hover:border-primary/60">
       <div className="bg-grid relative aspect-video overflow-hidden border-b">
         {img ? (
-          <img src={img} alt={c.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <img {...cdnImageSet(c.cover_image_key)} alt={c.title} loading="lazy" decoding="async" width={640} height={360} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
         ) : (
           <div className="flex h-full items-center justify-center">
             <span className="section-title px-6 text-center text-lg text-primary/80">{c.category ?? "Course"}</span>
