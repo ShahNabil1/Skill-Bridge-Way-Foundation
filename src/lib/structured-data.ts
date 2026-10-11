@@ -1,5 +1,6 @@
 import { SITE_URL } from "@/components/site/PageHero";
 import { CONTACT_EMAIL, OFFICES, SOCIAL_LINKS } from "@/lib/site-info";
+import { siteMedia } from "@/lib/site-media";
 
 const ORG_ID = `${SITE_URL}/#organization`;
 
@@ -16,7 +17,14 @@ export const ORGANIZATION_JSONLD = {
   telephone: "+8801717224952",
   description:
     "RJSC-registered non-profit in Bangladesh providing free, practical AI literacy, digital, freelancing and entrepreneurship skills training for rural youth, madrasah students and underserved communities.",
-  nonprofitStatus: "Nonprofit",
+  // schema.org's nonprofitStatus only lists US/UK/EU/NL legal statuses (no Bangladesh option),
+  // so the Bangladesh society registration is expressed as an identifier instead.
+  identifier: {
+    "@type": "PropertyValue",
+    propertyID: "Societies Registration Act, 1860 (Bangladesh) registration number",
+    value: "RAJS-647/2026",
+  },
+  image: siteMedia.homeHero.src,
   areaServed: { "@type": "Country", name: "Bangladesh" },
   knowsAbout: ["Artificial intelligence literacy", "Digital skills", "Freelancing", "Digital marketing", "Entrepreneurship", "Web development"],
   address: {
