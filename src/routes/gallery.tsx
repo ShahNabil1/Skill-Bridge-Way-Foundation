@@ -16,7 +16,8 @@ export const Route = createFileRoute("/gallery")({ staticData: { sitemap: true }
 });
 
 function Gallery() {
-  const { data, isLoading } = useQuery(galleryQuery());
+  const initial = Route.useLoaderData();
+  const { data, isLoading } = useQuery({ ...galleryQuery(), initialData: initial });
   const items = (data ?? []).map((g) => ({ ...g, url: mediaUrl(g.image_key) })).filter((g): g is typeof g & { url: string } => !!g.url);
   const [open, setOpen] = useState<number | null>(null);
 
