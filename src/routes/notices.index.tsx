@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHero, seo } from "@/components/site/PageHero";
 import { EmptyState } from "@/components/site/ui-bits";
-import { cdnUrl } from "@/lib/cdn";
+import { cdnImageSet } from "@/lib/cdn";
 import { formatDate, noticesQuery } from "@/lib/public-data";
 
 const TABS = [["all", "All"], ["notice", "Notices"], ["event", "Events"]] as const;
@@ -36,7 +36,7 @@ function Notices() {
             const Icon = n.type === "event" ? CalendarDays : Megaphone;
             return <article key={n.id} className="editorial-item group flex min-w-0 flex-col border-b border-border pb-6 transition-colors hover:border-primary">
               <Link to="/notices/$slug" params={{ slug: n.slug }} className="block overflow-hidden rounded-md bg-muted" aria-label={`Read ${n.title}`}>
-                {n.cover_image_key ? <img src={cdnUrl(n.cover_image_key) ?? ""} alt={n.title} loading="lazy" className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105" /> : <div className="flex aspect-video items-center justify-center bg-grid"><Icon className="h-12 w-12 text-primary" /></div>}
+                {n.cover_image_key ? <img {...cdnImageSet(n.cover_image_key)} alt={n.title} loading="lazy" decoding="async" width={640} height={360} className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105" /> : <div className="flex aspect-video items-center justify-center bg-grid"><Icon className="h-12 w-12 text-primary" /></div>}
               </Link>
               <p className="mt-5 flex items-center gap-2 text-xs font-semibold uppercase text-primary"><Icon className="h-4 w-4" />{n.type} · {formatDate(n.event_date ?? n.created_at)}</p>
               <h2 className="mt-2 text-lg leading-snug"><Link to="/notices/$slug" params={{ slug: n.slug }} className="hover:text-primary">{n.title}</Link></h2>

@@ -7,14 +7,17 @@ import { Button } from "@/components/ui/button";
 import { PageHero, seo } from "@/components/site/PageHero";
 import { EmptyState } from "@/components/site/ui-bits";
 import { galleryQuery, mediaUrl } from "@/lib/public-data";
+import { cdnImageSet } from "@/lib/cdn";
 
 export const Route = createFileRoute("/gallery")({ staticData: { sitemap: true },
   head: () => seo("Photo Gallery | Skill Bridgeway Foundation", "Moments from our classes, events and graduations across Bangladesh.", { path: "/gallery" }),
+  loader: async ({ context }) => { try { return await context.queryClient.ensureQueryData(galleryQuery()); } catch { return []; } },
   component: Gallery,
 });
 
 function Gallery() {
-  const { data, isLoading } = useQuery(galleryQuery());
+  const initial = Route.useLoaderData();
+  const { data, isLoading } = useQuery({ ...galleryQuery(), initialData: initial });
   const items = (data ?? []).map((g) => ({ ...g, url: mediaUrl(g.image_key) })).filter((g): g is typeof g & { url: string } => !!g.url);
   const [open, setOpen] = useState<number | null>(null);
 
@@ -57,7 +60,7 @@ function Gallery() {
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
             {items.map((g, i) => (
               <Button key={g.id} variant="ghost" onClick={() => setOpen(i)} aria-label={`View ${g.title ?? "gallery photo"}`} className="editorial-item group relative aspect-square h-auto w-full overflow-hidden rounded-md border p-0 focus-visible:ring-2 focus-visible:ring-ring">
-                <img src={g.url} alt={g.title ?? "Skill Bridgeway Foundation training activity"} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <img {...cdnImageSet(g.image_key, [320, 480, 720], "(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw")} alt={g.title ?? "Skill Bridgeway Foundation training activity"} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 {g.title && <span className="absolute inset-x-0 bottom-0 bg-background/80 p-2 text-left text-xs backdrop-blur transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100">{g.title}</span>}
               </Button>
             ))}
