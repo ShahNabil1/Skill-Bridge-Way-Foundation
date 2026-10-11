@@ -24,6 +24,7 @@
 - The public pathway's sequence lives in `program-pathway.ts`; course details and admission stay in CMS records; why: a coherent journey preserves application history.
 - Course images use `image_keys` (1–5; first is cover), cropped 16:9; apply windows are DB-enforced; why: legacy cards work and closed intakes can't be bypassed.
 - Social profiles use `SocialLinks`; visible wordmarks use `BrandName`; why: shared brand data and styling stay consistent.
+- Organization and office location JSON-LD use the structured postal addresses in `site-info.ts`; why: shared verified address data avoids divergent or invented postal details.
 - Public translations use cached AI results with admin corrections; retain source text and commit batches atomically under a reduced-motion-aware crossfade with preloaded local Unicode fonts; skip translate="no"; why: avoids staggered reflow and preserves English styling.
 - Admin access is granular: keys live in `src/lib/permissions.ts` and must match DB `all_permission_keys()`; RLS/DB functions check `has_permission(uid, key)`, and the `admin` role row only marks admin-panel access (kept in sync by `setUserPermissions`); why: per-action access is enforced in the database, not just hidden in the UI.
 - Session geo comes from the Cloudflare `request.cf` object on the published worker with an HTTPS `ipwho.is` lookup fallback, cached per IP and retried only until first success (`geo_attempted`); why: cf-* headers are unreliable outside Cloudflare and per-heartbeat lookups would be wasteful.
