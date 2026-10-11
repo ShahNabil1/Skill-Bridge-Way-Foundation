@@ -165,7 +165,6 @@
 @keyframes editorial-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes editorial-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes brand-glint { from { transform: translateY(0.25em); } to { transform: translateY(0); } }
-}
 .brand-wordmark { letter-spacing: 0; isolation: isolate; transition: transform 280ms ease, filter 280ms ease; }
 .brand-skill, .brand-foundation { color: var(--foreground); }
 .brand-bridge, .brand-way { display: inline-block; animation: brand-glint 1.2s ease-out 0.2s 1 both; }
