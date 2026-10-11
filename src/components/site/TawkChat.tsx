@@ -32,9 +32,12 @@ export function TawkChat({ visible }: { visible: boolean }) {
       s.charset = "UTF-8";
       document.body.appendChild(s);
     };
-    const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number };
-    if (w.requestIdleCallback) w.requestIdleCallback(load, { timeout: 4000 });
-    else window.setTimeout(load, 2500);
+    // Load only after a real visitor interacts (scroll/tap/key). Speed-test bots never interact,
+    // so tawk.to's bot-blocking 403 never hits the console and the page stays light.
+    const events = ["pointerdown", "touchstart", "keydown", "scroll", "mousemove"] as const;
+    const trigger = () => { events.forEach((e) => window.removeEventListener(e, trigger)); load(); };
+    events.forEach((e) => window.addEventListener(e, trigger, { once: true, passive: true }));
+    return () => events.forEach((e) => window.removeEventListener(e, trigger));
   }, [visible]);
 
   useEffect(() => { if (!visible) lockPage(false); }, [visible]);
