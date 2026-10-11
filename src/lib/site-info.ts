@@ -1,7 +1,16 @@
 export const OFFICES = [
-  { label: "Head Office", address: "SP Banglo Lane, Malotinagar, Bogura Sadar" },
-  { label: "Training Center", address: "Infront of Sajahanpur Upzilla Parishad, Sajapur, Bogura" },
-  { label: "UK Office", address: "London, United Kingdom" },
+  {
+    label: "Head Office", address: "SP Banglo Lane, Malotinagar, Bogura Sadar",
+    postalAddress: { "@type": "PostalAddress", streetAddress: "SP Banglo Lane, Malotinagar, Bogura Sadar", addressLocality: "Bogura", addressRegion: "Rajshahi", postalCode: "5800", addressCountry: "BD" },
+  },
+  {
+    label: "Training Center", address: "Infront of Sajahanpur Upzilla Parishad, Sajapur, Bogura",
+    postalAddress: { "@type": "PostalAddress", streetAddress: "Infront of Sajahanpur Upzilla Parishad, Sajapur", addressLocality: "Shajahanpur, Bogura", addressRegion: "Rajshahi", addressCountry: "BD" },
+  },
+  {
+    label: "UK Office", address: "London, United Kingdom",
+    postalAddress: { "@type": "PostalAddress", addressLocality: "London", addressCountry: "GB" },
+  },
 ] as const;
 
 export const CONTACT_EMAIL = "info@skillbridgeway.org";

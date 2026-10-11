@@ -27,13 +27,8 @@ export const ORGANIZATION_JSONLD = {
   image: siteMedia.homeHero.src,
   areaServed: { "@type": "Country", name: "Bangladesh" },
   knowsAbout: ["Artificial intelligence literacy", "Digital skills", "Freelancing", "Digital marketing", "Entrepreneurship", "Web development"],
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: OFFICES[0].address,
-    addressLocality: "Bogura",
-    addressCountry: "BD",
-  },
-  location: OFFICES.map((o) => ({ "@type": "Place", name: o.label, address: o.address })),
+  address: OFFICES[0].postalAddress,
+  location: OFFICES.map((o) => ({ "@type": "Place", name: o.label, address: o.postalAddress })),
   contactPoint: [
     { "@type": "ContactPoint", contactType: "admissions", email: "admission@skillbridgeway.org", availableLanguage: ["en", "bn"] },
     { "@type": "ContactPoint", contactType: "customer support", email: CONTACT_EMAIL, telephone: "+8801717224952", availableLanguage: ["en", "bn"] },
