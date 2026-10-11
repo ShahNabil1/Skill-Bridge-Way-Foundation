@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { seo } from "@/components/site/PageHero";
 import { PROGRAM } from "@/lib/program-pathway";
 import { coursesQuery } from "@/lib/public-data";
-import workshop from "@/assets/digital-skills-program.jpg";
+import { siteMedia } from "@/lib/site-media";
 
 export const Route = createFileRoute("/courses/")({ staticData: { sitemap: true },
   loader: async ({ context }) => {
@@ -69,7 +69,7 @@ function Courses() {
   return (
     <>
       <section className="page-intro relative isolate overflow-hidden border-b">
-        <img src={workshop} alt="Bangladeshi learners practising digital skills together in a classroom" width={1600} height={900} className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+        <img src={siteMedia.coursesHero.src} srcSet={siteMedia.coursesHero.srcSet} sizes={siteMedia.coursesHero.sizes} fetchPriority="high" alt="Bangladeshi learners practising digital skills together in a classroom" width={1600} height={900} className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
         <div className="absolute inset-0 -z-10 bg-background/85" />
         <div className="mx-auto max-w-7xl px-4 py-14 md:py-20">
           <p className="editorial-kicker">Free admission / 75-day practical program</p>
