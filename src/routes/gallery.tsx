@@ -11,6 +11,7 @@ import { cdnImageSet } from "@/lib/cdn";
 
 export const Route = createFileRoute("/gallery")({ staticData: { sitemap: true },
   head: () => seo("Photo Gallery | Skill Bridgeway Foundation", "Moments from our classes, events and graduations across Bangladesh.", { path: "/gallery" }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(galleryQuery()),
   component: Gallery,
 });
 
