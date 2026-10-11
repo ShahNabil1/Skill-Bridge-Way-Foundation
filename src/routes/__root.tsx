@@ -24,6 +24,8 @@ import { ConfirmHost } from "@/components/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { LangProvider, PageTranslator } from "@/lib/i18n";
 
+const GOOGLE_FONTS_CSS = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800&display=swap";
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -102,17 +104,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://cdn.skillbridgeway.org" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800&display=swap",
-      },
+      { rel: "preload", as: "style", href: GOOGLE_FONTS_CSS },
       { rel: "stylesheet", href: appCss },
-      { rel: "preload", href: "/fonts/solaimanlipi-normal.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
-      { rel: "preload", href: "/fonts/solaimanlipi-bold.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
     ],
-    scripts: [{ type: "application/ld+json", children: JSON.stringify(ORGANIZATION_JSONLD) }],
+    scripts: [
+      // Google Fonts load without blocking first paint (text shows in a fallback, then swaps).
+      { children: `(function(){var l=document.createElement('link');l.rel='stylesheet';l.href=${JSON.stringify(GOOGLE_FONTS_CSS)};document.head.appendChild(l);})();` },
+      { type: "application/ld+json", children: JSON.stringify(ORGANIZATION_JSONLD) },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,

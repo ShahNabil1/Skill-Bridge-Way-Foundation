@@ -19,10 +19,21 @@ function load() {
     // eslint-disable-next-line prefer-rest-params -- gtag.js needs the Arguments object
     window.dataLayer.push(arguments);
   };
-  const s = document.createElement("script");
-  s.async = true;
-  s.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-  document.head.appendChild(s);
+  // Events queue in dataLayer immediately; the heavy gtag.js file loads after the page
+  // has finished loading (or on first interaction) so it never competes with first paint.
+  let injected = false;
+  const inject = () => {
+    if (injected) return;
+    injected = true;
+    const s = document.createElement("script");
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+    document.head.appendChild(s);
+  };
+  ["pointerdown", "keydown", "scroll", "touchstart"].forEach((e) => window.addEventListener(e, inject, { once: true, passive: true }));
+  const later = () => window.setTimeout(inject, 3500);
+  if (document.readyState === "complete") later();
+  else window.addEventListener("load", later, { once: true });
   window.gtag("set", "developer_id.dZjgwMW", true);
   window.gtag("js", new Date());
   // Page views are sent manually on route change (SPA).
