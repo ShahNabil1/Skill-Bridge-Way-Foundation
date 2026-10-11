@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { BookOpen, Clock, BarChart3 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { isPreviewOnlyCourse, mediaUrl } from "@/lib/public-data";
+import { cdnImageSet } from "@/lib/cdn";
 
 export function SectionHeading({ eyebrow, title, children }: { eyebrow?: string; title: string; children?: ReactNode }) {
   return (
