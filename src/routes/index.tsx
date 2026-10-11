@@ -7,7 +7,7 @@ import { seo } from "@/components/site/PageHero";
 import { CardSkeletonGrid, CourseCard, EmptyState, SectionHeading } from "@/components/site/ui-bits";
 import { BrandName } from "@/components/site/BrandName";
 import { coursesQuery, formatDate, noticesQuery } from "@/lib/public-data";
-import { cdnUrl } from "@/lib/cdn";
+import { cdnImageSet } from "@/lib/cdn";
 import { whatsappChatLink } from "@/lib/site-info";
 import { HOME_JSONLD } from "@/lib/structured-data";
 import { PARTNER_TIERS } from "@/lib/partners";
@@ -240,7 +240,7 @@ function Index() {
                       <Link to="/notices/$slug" params={{ slug: featured.slug }} className="group glass block overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-elegant">
                         {featured.cover_image_key && (
                           <div className="relative aspect-[16/9] overflow-hidden">
-                            <img src={cdnUrl(featured.cover_image_key) ?? undefined} alt={featured.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            <img {...cdnImageSet(featured.cover_image_key, [480, 800, 1200], "(min-width: 1024px) 50vw, 100vw")} alt={featured.title} loading="lazy" decoding="async" width={800} height={450} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                             <span className="absolute left-4 top-4 rounded-full bg-highlight px-3 py-1 font-heading text-xs font-bold uppercase tracking-wider text-highlight-foreground">{featured.type === "event" ? "Event" : "Notice"}</span>
                           </div>
                         )}

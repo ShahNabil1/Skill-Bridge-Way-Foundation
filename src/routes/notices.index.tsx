@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHero, seo } from "@/components/site/PageHero";
 import { EmptyState } from "@/components/site/ui-bits";
-import { cdnUrl } from "@/lib/cdn";
+import { cdnImageSet } from "@/lib/cdn";
 import { formatDate, noticesQuery } from "@/lib/public-data";
 
 const TABS = [["all", "All"], ["notice", "Notices"], ["event", "Events"]] as const;
