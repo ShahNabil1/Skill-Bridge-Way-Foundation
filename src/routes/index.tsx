@@ -12,15 +12,12 @@ import { whatsappChatLink } from "@/lib/site-info";
 import { HOME_JSONLD } from "@/lib/structured-data";
 import { PARTNER_TIERS } from "@/lib/partners";
 import { PartnerShowcase } from "@/components/site/PartnerShowcase";
-import workshop from "@/assets/learning-workshop-1600.webp";
-import workshopSm from "@/assets/learning-workshop-800.webp";
-import chairmanPortrait from "@/assets/md-saiful-azam-chairman.webp.asset.json";
-import teamPortrait from "@/assets/ziaul-haque-manik.webp.asset.json";
+import { siteMedia } from "@/lib/site-media";
 
 export const Route = createFileRoute("/")({ staticData: { sitemap: true },
   head: () => ({
     ...seo("Skill Bridgeway Foundation — AI, Digital & Freelancing Skills in Bangladesh", "Non-profit building AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities in Bangladesh.", { path: "/" }),
-    links: [{ rel: "preload", as: "image", href: workshop, imageSrcSet: `${workshopSm} 800w, ${workshop} 1600w`, imageSizes: "100vw", fetchPriority: "high" }],
+    links: [{ rel: "preload", as: "image", href: siteMedia.homeHero.src, imageSrcSet: siteMedia.homeHero.srcSet, imageSizes: siteMedia.homeHero.sizes, fetchPriority: "high" }],
     scripts: [{ type: "application/ld+json", children: JSON.stringify(HOME_JSONLD) }],
   }),
   component: Index,
@@ -56,7 +53,7 @@ function Index() {
   return (
     <>
       <section className="relative isolate flex min-h-[610px] items-end overflow-hidden border-b sm:min-h-[660px]">
-        <img src={workshop} srcSet={`${workshopSm} 800w, ${workshop} 1600w`} sizes="100vw" fetchPriority="high" alt="Young Bangladeshi learners working together on digital skills" width={1600} height={900} className="hero-img absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+        <img src={siteMedia.homeHero.src} srcSet={siteMedia.homeHero.srcSet} sizes={siteMedia.homeHero.sizes} fetchPriority="high" alt="Young Bangladeshi learners working together on digital skills" width={1600} height={900} className="hero-img absolute inset-0 -z-20 h-full w-full object-cover object-center" />
         <div className="absolute inset-0 -z-10 bg-background/75" />
         <div className="hero-orb hero-orb-a -z-10" aria-hidden="true" />
         <div className="hero-orb hero-orb-b -z-10" aria-hidden="true" />
@@ -126,7 +123,7 @@ function Index() {
                 <figure className="relative overflow-hidden border border-border bg-card">
                   <div className="bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--primary)_18%,transparent),transparent_70%)] px-6 pt-6 sm:px-8 sm:pt-8">
                     <img
-                      src={chairmanPortrait.url}
+                      src={siteMedia.chairmanPortrait}
                       alt="Md Saiful Azam, Chairman of Skill Bridgeway Foundation"
                       width={768}
                       height={963}
@@ -186,7 +183,7 @@ function Index() {
               <figure className="relative overflow-hidden border border-border bg-card editorial-item">
                 <div className="bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--primary)_18%,transparent),transparent_70%)] px-6 pt-6 sm:px-8 sm:pt-8">
                   <img
-                    src={teamPortrait.url}
+                    src={siteMedia.directorPortrait}
                     alt="Md. Ziaul Haque Manik, Executive Director (Operations) of Skill Bridgeway Foundation"
                     width={768}
                     height={963}

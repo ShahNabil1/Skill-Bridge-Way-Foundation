@@ -1,0 +1,5 @@
+- Password visibility and live complexity feedback share one auth component; why: login, recovery, invitation and profile use the same validated password rules.
+- Account recovery never reveals whether an email is registered and requires explicit code entry after the generic send response; why: Supabase deliberately masks account existence.
+- Auth fields share ASCII validation and digit normalization; profile phone rejects non-ASCII digits instead of normalizing them; why: profile input must enforce explicit English-digit entry.
+- Avatar images are cropped and resized in-browser before direct R2 upload; why: predictable square images avoid oversized media and keep the existing signed-upload boundary.
+- Profile editing uses a shared client/server schema, combines split names into `full_name`, and stores structured address JSON in the existing address text column with legacy text fallback; why: validated self-only updates preserve existing profile consumers without a schema migration.

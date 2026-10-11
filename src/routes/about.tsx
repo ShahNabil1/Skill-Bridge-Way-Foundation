@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { seo } from "@/components/site/PageHero";
 import { SectionHeading } from "@/components/site/ui-bits";
 import { BrandName } from "@/components/site/BrandName";
-import workshop from "@/assets/learning-workshop.jpg";
+import { siteMedia } from "@/lib/site-media";
 import registrationCertificate from "@/assets/registration-certificate.pdf.asset.json";
 import registrationPreview from "@/assets/registration-preview.jpg.asset.json";
 
@@ -31,7 +31,7 @@ function About() {
   return (
     <>
       <section className="relative isolate flex min-h-[520px] items-end overflow-hidden border-b sm:min-h-[580px]">
-        <img src={workshop} alt="Young people collaborating on digital skills in a learning space" width={1600} height={900} className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+        <img src={siteMedia.aboutHero.src} srcSet={siteMedia.aboutHero.srcSet} sizes={siteMedia.aboutHero.sizes} fetchPriority="high" alt="Young people collaborating on digital skills in a learning space" width={1600} height={900} className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
         <div className="absolute inset-0 -z-10 bg-background/75" />
         <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 pb-12 pt-28 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.7fr)] lg:items-end lg:pb-16">
           <div className="min-w-0">

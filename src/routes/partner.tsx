@@ -6,7 +6,7 @@ import { SocialLinks } from "@/components/site/SocialLinks";
 import { BrandName } from "@/components/site/BrandName";
 import { whatsappChatLink } from "@/lib/site-info";
 import { PartnerShowcase } from "@/components/site/PartnerShowcase";
-import workshop from "@/assets/partner-workshop.jpg";
+import { siteMedia } from "@/lib/site-media";
 
 export const Route = createFileRoute("/partner")({
   staticData: { sitemap: true },
@@ -44,7 +44,7 @@ function PartnerPage() {
   return (
     <>
       <section className="relative isolate flex min-h-[570px] items-end overflow-hidden border-b sm:min-h-[620px] lg:min-h-[660px]">
-        <img src={workshop} alt="Young learners collaborating around laptops in a digital skills workshop" width={1600} height={1000} className="absolute inset-0 -z-20 h-full w-full object-cover object-[60%_center]" />
+        <img src={siteMedia.partnerHero.src} srcSet={siteMedia.partnerHero.srcSet} sizes={siteMedia.partnerHero.sizes} fetchPriority="high" alt="Young learners collaborating around laptops in a digital skills workshop" width={1600} height={1000} className="absolute inset-0 -z-20 h-full w-full object-cover object-[60%_center]" />
         <div className="absolute inset-0 -z-10 bg-background/65 lg:bg-background/55" />
         <div className="mx-auto w-full max-w-7xl px-4 pb-14 pt-32 sm:pb-20 lg:pb-24">
           <p className="editorial-kicker mb-5">Partner With Us / Sponsor Us</p>
