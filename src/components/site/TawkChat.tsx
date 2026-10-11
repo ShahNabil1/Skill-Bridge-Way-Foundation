@@ -30,7 +30,6 @@ export function TawkChat({ visible }: { visible: boolean }) {
       s.async = true;
       s.src = TAWK_SRC;
       s.charset = "UTF-8";
-      s.setAttribute("crossorigin", "*");
       document.body.appendChild(s);
     };
     const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number };

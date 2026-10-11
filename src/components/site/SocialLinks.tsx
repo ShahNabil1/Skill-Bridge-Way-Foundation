@@ -6,7 +6,7 @@ const icons = { Facebook: FaFacebookF, Instagram: FaInstagram, LinkedIn: FaLinke
 
 export function SocialLinks({ labeled = false }: { labeled?: boolean }) {
   return (
-    <div className="flex flex-wrap items-center gap-3" aria-label="Skill Bridgeway Foundation social media">
+    <nav className="flex flex-wrap items-center gap-3" aria-label="Skill Bridgeway Foundation social media">
       {SOCIAL_LINKS.map(({ name, href }) => {
         const Icon = icons[name];
         return (
@@ -18,6 +18,6 @@ export function SocialLinks({ labeled = false }: { labeled?: boolean }) {
           </Button>
         );
       })}
-    </div>
+    </nav>
   );
 }

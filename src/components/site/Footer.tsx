@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, MapPin, ShieldCheck } from "lucide-react";
 import { NAV } from "./Header";
-import logo from "@/assets/sbf-logo.jpeg.asset.json";
+import logo from "@/assets/sbf-logo.webp.asset.json";
 import { CONTACT_EMAIL, OFFICES } from "@/lib/site-info";
 import { SocialLinks } from "./SocialLinks";
 import { BrandName } from "./BrandName";
