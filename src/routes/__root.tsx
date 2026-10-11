@@ -104,14 +104,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://cdn.skillbridgeway.org" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "preload", as: "style", href: GOOGLE_FONTS_CSS },
+      // Bangla glyphs (e.g. the language toggle) need this file on every page; preloading breaks the HTML → CSS → font chain.
+      { rel: "preload", as: "font", type: "font/woff2", href: "/fonts/solaimanlipi-bold.woff2", crossOrigin: "anonymous" },
+      { rel: "stylesheet", href: GOOGLE_FONTS_CSS },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
     ],
     scripts: [
-      // Google Fonts load without blocking first paint (text shows in a fallback, then swaps).
-      { children: `(function(){var l=document.createElement('link');l.rel='stylesheet';l.href=${JSON.stringify(GOOGLE_FONTS_CSS)};document.head.appendChild(l);addEventListener('load',function(){['normal','bold'].forEach(function(w){var p=document.createElement('link');p.rel='prefetch';p.as='font';p.type='font/woff2';p.crossOrigin='anonymous';p.href='/fonts/solaimanlipi-'+w+'.woff2';document.head.appendChild(p);});});})();` },
       { type: "application/ld+json", children: JSON.stringify(ORGANIZATION_JSONLD) },
     ],
   }),
