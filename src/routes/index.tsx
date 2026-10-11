@@ -12,13 +12,15 @@ import { whatsappChatLink } from "@/lib/site-info";
 import { HOME_JSONLD } from "@/lib/structured-data";
 import { PARTNER_TIERS } from "@/lib/partners";
 import { PartnerShowcase } from "@/components/site/PartnerShowcase";
-import workshop from "@/assets/learning-workshop.jpg";
-import chairmanPortrait from "@/assets/md-saiful-azam-chairman.png.asset.json";
-import teamPortrait from "@/assets/ziaul-haque-manik.png.asset.json";
+import workshop from "@/assets/learning-workshop-1600.webp";
+import workshopSm from "@/assets/learning-workshop-800.webp";
+import chairmanPortrait from "@/assets/md-saiful-azam-chairman.webp.asset.json";
+import teamPortrait from "@/assets/ziaul-haque-manik.webp.asset.json";
 
 export const Route = createFileRoute("/")({ staticData: { sitemap: true },
   head: () => ({
     ...seo("Skill Bridgeway Foundation — AI, Digital & Freelancing Skills in Bangladesh", "Non-profit building AI literacy, digital, freelancing and entrepreneurship skills for rural youth, madrasah students and underserved communities in Bangladesh.", { path: "/" }),
+    links: [{ rel: "preload", as: "image", href: workshop, imageSrcSet: `${workshopSm} 800w, ${workshop} 1600w`, imageSizes: "100vw", fetchPriority: "high" }],
     scripts: [{ type: "application/ld+json", children: JSON.stringify(HOME_JSONLD) }],
   }),
   component: Index,
@@ -54,7 +56,7 @@ function Index() {
   return (
     <>
       <section className="relative isolate flex min-h-[610px] items-end overflow-hidden border-b sm:min-h-[660px]">
-        <img src={workshop} alt="Young Bangladeshi learners working together on digital skills" width={1600} height={900} className="hero-img absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+        <img src={workshop} srcSet={`${workshopSm} 800w, ${workshop} 1600w`} sizes="100vw" fetchPriority="high" alt="Young Bangladeshi learners working together on digital skills" width={1600} height={900} className="hero-img absolute inset-0 -z-20 h-full w-full object-cover object-center" />
         <div className="absolute inset-0 -z-10 bg-background/75" />
         <div className="hero-orb hero-orb-a -z-10" aria-hidden="true" />
         <div className="hero-orb hero-orb-b -z-10" aria-hidden="true" />
