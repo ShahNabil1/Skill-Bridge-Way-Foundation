@@ -48,6 +48,28 @@ export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const handler = await getServerEntry();
+      const url = new URL(request.url);
+      const wantsMd =
+        request.method === "GET" &&
+        /text\/markdown/i.test(request.headers.get("accept") ?? "") &&
+        !/^\/(admin|auth|application|api|_serverFn|assets)/.test(url.pathname) &&
+        !/\.[a-z0-9]+$/i.test(url.pathname);
+      if (wantsMd) {
+        const headers = new Headers(request.headers);
+        headers.set("accept", "text/html");
+        const htmlRes = await handler.fetch(new Request(request, { headers }), env, ctx);
+        if (!htmlRes.headers.get("content-type")?.includes("text/html")) return htmlRes;
+        const { htmlToMarkdown } = await import("./lib/html-to-markdown");
+        const md = htmlToMarkdown(await htmlRes.text(), url.origin);
+        return new Response(md, {
+          status: htmlRes.status,
+          headers: {
+            "content-type": "text/markdown; charset=utf-8",
+            vary: "Accept",
+            "x-markdown-tokens": String(Math.ceil(md.length / 4)),
+          },
+        });
+      }
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {

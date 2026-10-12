@@ -25,34 +25,7 @@ const csrfMiddleware = createCsrfMiddleware({
   filter: (ctx) => ctx.handlerType === "serverFn",
 });
 
-// AI agents requesting `Accept: text/markdown` get a Markdown version of
-// public pages; browsers keep receiving HTML.
-const markdownMiddleware = createMiddleware().server(async ({ request, next }) => {
-  const result = await next();
-  const accept = request.headers.get("accept") ?? "";
-  const url = new URL(request.url);
-  const wantsMd =
-    request.method === "GET" &&
-    /text\/markdown/i.test(accept) &&
-    !/^\/(admin|auth|application|api|_serverFn)/.test(url.pathname);
-  const res = result.response;
-  if (!wantsMd || !res?.headers.get("content-type")?.includes("text/html")) return result;
-  const { htmlToMarkdown } = await import("./lib/html-to-markdown");
-  const md = htmlToMarkdown(await res.text(), url.origin);
-  return {
-    ...result,
-    response: new Response(md, {
-      status: res.status,
-      headers: {
-        "content-type": "text/markdown; charset=utf-8",
-        vary: "Accept",
-        "x-markdown-tokens": String(Math.ceil(md.length / 4)),
-      },
-    }),
-  };
-});
-
 export const startInstance = createStart(() => ({
-  requestMiddleware: [errorMiddleware, csrfMiddleware, markdownMiddleware],
+  requestMiddleware: [errorMiddleware, csrfMiddleware],
   functionMiddleware: [attachSupabaseAuth],
 }));
