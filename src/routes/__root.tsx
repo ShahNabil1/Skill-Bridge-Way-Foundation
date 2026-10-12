@@ -24,7 +24,8 @@ import { ConfirmHost } from "@/components/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { LangProvider, PageTranslator } from "@/lib/i18n";
 
-const GOOGLE_FONTS_CSS = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800&display=swap";
+import interRegular from "@fontsource/inter/files/inter-latin-400-normal.woff2?url";
+import montserratHeavy from "@fontsource/montserrat/files/montserrat-latin-800-normal.woff2?url";
 
 function NotFoundComponent() {
   return (
@@ -121,11 +122,10 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
-        {/* Preconnects and the font stylesheet are plain tags (no precedence) so React keeps this order instead of hoisting the stylesheet above them. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://cdn.skillbridgeway.org" />
-        <link rel="stylesheet" href={GOOGLE_FONTS_CSS} />
+        {/* Preload the self-hosted fonts used above the fold so they don't wait for the CSS (no request chain). */}
+        <link rel="preload" as="font" type="font/woff2" href={interRegular} crossOrigin="anonymous" />
+        <link rel="preload" as="font" type="font/woff2" href={montserratHeavy} crossOrigin="anonymous" />
         <HeadContent />
       </head>
       <body>
