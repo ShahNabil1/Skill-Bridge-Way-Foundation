@@ -10,7 +10,6 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-import { preconnect } from "react-dom";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -104,7 +103,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       // Bangla glyphs (e.g. the language toggle) need this file on every page; preloading breaks the HTML → CSS → font chain.
       { rel: "preload", as: "font", type: "font/woff2", href: "/fonts/solaimanlipi-bold.woff2", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: GOOGLE_FONTS_CSS },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
@@ -120,13 +118,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
-  // React 19 emits ReactDOM.preconnect hints ahead of hoisted stylesheets/preloads; plain <link> tags land after them.
-  preconnect("https://fonts.googleapis.com");
-  preconnect("https://fonts.gstatic.com", { crossOrigin: "anonymous" });
-  preconnect("https://cdn.skillbridgeway.org");
   return (
     <html lang="en">
       <head>
+        {/* Preconnects and the font stylesheet are plain tags (no precedence) so React keeps this order instead of hoisting the stylesheet above them. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdn.skillbridgeway.org" />
+        <link rel="stylesheet" href={GOOGLE_FONTS_CSS} />
         <HeadContent />
       </head>
       <body>
