@@ -57,7 +57,7 @@ export default {
       if (wantsMd) {
         const headers = new Headers(request.headers);
         headers.set("accept", "text/html");
-        const htmlRes = await handler.fetch(new Request(request, { headers }), env, ctx);
+        const htmlRes = await handler.fetch(new Request(request.url, { method: "GET", headers }), env, ctx);
         if (!htmlRes.headers.get("content-type")?.includes("text/html")) return htmlRes;
         const { htmlToMarkdown } = await import("./lib/html-to-markdown");
         const md = htmlToMarkdown(await htmlRes.text(), url.origin);
