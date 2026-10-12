@@ -101,12 +101,15 @@
   --grid-line: color-mix(in srgb, #00A8FF 7%, transparent);
 }
 
+/* Bangla mode: SolaimanLipi leads; English keeps Montserrat/Inter first.
+   Unlayered on purpose: :root above is unlayered, so a layered override would lose the cascade. */
+html[lang="bn"] {
+  --app-font-heading: "SolaimanLipi", "Montserrat", "Montserrat Fallback", ui-sans-serif, system-ui, sans-serif;
+  --app-font-sans: "SolaimanLipi", "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
+}
+
 @layer base {
-  /* Bangla mode: SolaimanLipi leads; English keeps Montserrat/Inter first. */
-  html[lang="bn"] {
-    --app-font-heading: "SolaimanLipi", "Montserrat", "Montserrat Fallback", ui-sans-serif, system-ui, sans-serif;
-    --app-font-sans: "SolaimanLipi", "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
-  }
+  
   * { border-color: var(--color-border); }
   body {
     background-color: var(--color-background);
