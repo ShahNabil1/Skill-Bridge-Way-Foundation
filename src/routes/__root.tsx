@@ -10,6 +10,7 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { preconnect } from "react-dom";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -119,13 +120,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  // React 19 emits ReactDOM.preconnect hints ahead of hoisted stylesheets/preloads; plain <link> tags land after them.
+  preconnect("https://fonts.googleapis.com");
+  preconnect("https://fonts.gstatic.com", { crossOrigin: "anonymous" });
+  preconnect("https://cdn.skillbridgeway.org");
   return (
     <html lang="en">
       <head>
-        {/* Rendered before HeadContent: React hoists stylesheets above route links, so preconnects must lead the head. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://cdn.skillbridgeway.org" />
         <HeadContent />
       </head>
       <body>
