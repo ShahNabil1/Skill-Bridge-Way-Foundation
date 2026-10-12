@@ -101,12 +101,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "geo.placename", content: "Bogura, Bangladesh" },
     ],
     links: [
-      { rel: "preconnect", href: "https://cdn.skillbridgeway.org" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       // Bangla glyphs (e.g. the language toggle) need this file on every page; preloading breaks the HTML → CSS → font chain.
       { rel: "preload", as: "font", type: "font/woff2", href: "/fonts/solaimanlipi-bold.woff2", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: GOOGLE_FONTS_CSS },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
@@ -125,6 +121,11 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        {/* Preconnects and the font stylesheet are plain tags (no precedence) so React keeps this order instead of hoisting the stylesheet above them. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdn.skillbridgeway.org" />
+        <link rel="stylesheet" href={GOOGLE_FONTS_CSS} />
         <HeadContent />
       </head>
       <body>
