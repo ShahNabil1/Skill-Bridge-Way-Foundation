@@ -13,9 +13,8 @@ const key = `site/${SITE_MEDIA_VERSION}/`;
 const sized = (file: string, w: number) => `${CDN_BASE}cdn-cgi/image/width=${w},format=auto,quality=75,fit=scale-down/${key}${file}`;
 
 function hero(name: string) {
-  const sm = `${base}${name}-800.webp`;
   const lg = `${base}${name}-1600.webp`;
-  return { src: lg, srcSet: `${sized(`${name}-800.webp`, 480)} 480w, ${sized(`${name}-800.webp`, 640)} 640w, ${sm} 800w, ${lg} 1600w`, sizes: "100vw" };
+  return { src: lg, srcSet: `${sized(`${name}-800.webp`, 480)} 480w, ${sized(`${name}-800.webp`, 640)} 640w, ${sized(`${name}-800.webp`, 800)} 800w, ${sized(`${name}-1600.webp`, 1200)} 1200w, ${lg} 1600w`, sizes: "100vw" };
 }
 
 function portrait(file: string) {
