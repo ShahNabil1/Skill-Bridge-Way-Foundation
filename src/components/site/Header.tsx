@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BrandName } from "@/components/site/BrandName";
 import { LangToggle } from "@/lib/i18n";
-import logo from "@/assets/sbf-logo.webp.asset.json";
+import logo from "@/assets/sbf-logo-96.webp.asset.json";
 
 export const NAV = [
   { to: "/", label: "Home" },

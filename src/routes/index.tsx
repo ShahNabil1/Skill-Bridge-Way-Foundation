@@ -123,7 +123,7 @@ function Index() {
                 <figure className="relative overflow-hidden border border-border bg-card">
                   <div className="bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--primary)_18%,transparent),transparent_70%)] px-6 pt-6 sm:px-8 sm:pt-8">
                     <img
-                      src={siteMedia.chairmanPortrait}
+                      src={siteMedia.chairmanPortrait.src} srcSet={siteMedia.chairmanPortrait.srcSet} sizes={siteMedia.chairmanPortrait.sizes}
                       alt="Md Saiful Azam, Chairman of Skill Bridgeway Foundation"
                       width={768}
                       height={963}
@@ -183,7 +183,7 @@ function Index() {
               <figure className="relative overflow-hidden border border-border bg-card editorial-item">
                 <div className="bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--primary)_18%,transparent),transparent_70%)] px-6 pt-6 sm:px-8 sm:pt-8">
                   <img
-                    src={siteMedia.directorPortrait}
+                    src={siteMedia.directorPortrait.src} srcSet={siteMedia.directorPortrait.srcSet} sizes={siteMedia.directorPortrait.sizes}
                     alt="Md. Ziaul Haque Manik, Executive Director (Operations) of Skill Bridgeway Foundation"
                     width={768}
                     height={963}
