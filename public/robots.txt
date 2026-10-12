@@ -2,6 +2,7 @@
 # Private areas (admin, sign-in, personal application links) are excluded.
 
 User-agent: *
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /admin/
 Disallow: /auth
@@ -17,6 +18,7 @@ User-agent: Google-Extended
 User-agent: Applebot-Extended
 User-agent: Bingbot
 User-agent: Googlebot
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /admin/
 Disallow: /auth
