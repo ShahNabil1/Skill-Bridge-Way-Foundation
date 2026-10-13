@@ -6,10 +6,11 @@ describe("Verified office postal addresses", () => {
     expect(OFFICES[0].postalAddress.postalCode).toBe("5800");
     expect(OFFICES[0].postalAddress.addressCountry).toBe("BD");
   });
-  it("does not invent a postcode or street for the London office", () => {
-    expect(OFFICES[2].postalAddress.addressLocality).toBe("London");
-    expect(OFFICES[2].postalAddress.addressCountry).toBe("GB");
-    expect(OFFICES[2].postalAddress).not.toHaveProperty("postalCode");
-    expect(OFFICES[2].postalAddress).not.toHaveProperty("streetAddress");
+  it("lists the registered address & training center without inventing a postcode", () => {
+    expect(OFFICES[1].label).toBe("Registered Address & Training Center");
+    expect(OFFICES[1].postalAddress.addressLocality).toBe("Shahjahanpur, Bogura");
+    expect(OFFICES[1].postalAddress.addressCountry).toBe("BD");
+    expect(OFFICES[1].postalAddress).not.toHaveProperty("postalCode");
+    expect(OFFICES).toHaveLength(2);
   });
 });
