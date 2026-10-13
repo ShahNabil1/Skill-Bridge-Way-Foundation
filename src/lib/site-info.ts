@@ -4,12 +4,8 @@ export const OFFICES = [
     postalAddress: { "@type": "PostalAddress", streetAddress: "SP Banglo Lane, Malotinagar, Bogura Sadar", addressLocality: "Bogura", addressRegion: "Rajshahi", postalCode: "5800", addressCountry: "BD" },
   },
   {
-    label: "Training Center", address: "Infront of Sajahanpur Upzilla Parishad, Sajapur, Bogura",
-    postalAddress: { "@type": "PostalAddress", streetAddress: "Infront of Sajahanpur Upzilla Parishad, Sajapur", addressLocality: "Shajahanpur, Bogura", addressRegion: "Rajshahi", addressCountry: "BD" },
-  },
-  {
-    label: "UK Office", address: "London, United Kingdom",
-    postalAddress: { "@type": "PostalAddress", addressLocality: "London", addressCountry: "GB" },
+    label: "Registered Address & Training Center", address: "Sahjapur (Opposite the Upzilla Livestock Office) Mazhira, Shahjahanpur, Bogura, Bangladesh",
+    postalAddress: { "@type": "PostalAddress", streetAddress: "Sahjapur (Opposite the Upzilla Livestock Office), Mazhira", addressLocality: "Shahjahanpur, Bogura", addressRegion: "Rajshahi", addressCountry: "BD" },
   },
 ] as const;
 
