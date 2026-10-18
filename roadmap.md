@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Add reference-style visitor counters above Application Pipeline, backed only by authenticated GA4 reporting; verify available states and report any Google access blocker.
 - [x] Publish registration proof on About with original PDF access and a footer shortcut.
 - [x] Smooth language switching, local SolaimanLipi, stable toggle sizing and pointer cursor.
 - [x] Upgrade profile view/edit, split names, strict Bangladesh phone, admission address, avatar preview and animated account dialogs; six validation tests and build pass, signed-out guard checked.
