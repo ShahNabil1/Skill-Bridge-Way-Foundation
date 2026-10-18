@@ -9,8 +9,7 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Admission documents upload directly from the browser to Cloudflare R2 via short-lived presigned PUT URLs from `src/lib/r2.functions.ts`; why: files never pass through app servers and R2 keys stay server-side.
-- Admin/site media and avatars upload via `createMediaUploadUrl` (auth-required; non-avatar folders need admin); why: same direct-to-R2 pattern with server-side permission checks.
+- Admission and media uploads use short-lived R2 PUT URLs from `r2.functions.ts`; media needs auth and non-avatar folders need admin; why: files bypass app servers and keys remain private.
 - Admission approval runs in the `approve_admission` DB function; why: student record + ID + enrollment are created atomically and admin-checked in SQL.
 - Accounts are invite-only (admin `inviteUser` server fn); the Super Admin email is enforced in DB triggers; why: no public sign-up, and the owner's admin role can't be removed.
 - Certificates: DB `issue_certificate` creates the serial atomically; the PDF is generated in the admin browser (`src/lib/certificate-pdf.ts`) and uploaded straight to R2 under `certificates/`; why: no PDF rendering on the edge worker, and serials stay unique.
@@ -32,3 +31,4 @@
 - Uploaded R2 photos on public pages render via `cdnImageSet()`/`cdnImage()` (Cloudflare `/cdn-cgi/image` resizing); why: phones get small AVIF/WebP instead of originals.
 - Inter/Montserrat are self-hosted via `@fontsource` Latin subsets imported in `styles.css` (key weights preloaded in `__root.tsx`) and SolaimanLipi from `/fonts/`; no Google Fonts or JS font injection; English stacks lead with Montserrat/Inter plus metric-matched fallbacks and `html[lang="bn"]` switches to SolaimanLipi first; why: no request chains, forced reflow or font-swap layout shift.
 - `Accept: text/markdown` on public pages returns Markdown via `src/server.ts`; browsers get HTML; why: agent readiness without a separate pipeline.
+- Visitor reports require dashboard.view and match the measurement ID to a GA4 stream through the server-side Google Cloud connector; why: secrets stay private and other streams are excluded.
