@@ -1,11 +1,22 @@
 import { z } from "zod";
 
+export const visitorProperty = "properties/555969434";
+
 export const visitorRanges = [
   { key: "today", label: "Today", startDate: "today", endDate: "today", note: "Today · property time zone" },
   { key: "week", label: "Last Week", startDate: "7daysAgo", endDate: "yesterday", note: "Previous 7 complete days" },
   { key: "month", label: "Last Month", startDate: "30daysAgo", endDate: "yesterday", note: "Previous 30 complete days" },
   { key: "total", label: "Total", startDate: "2015-08-14", endDate: "today", note: "Available GA4 history" },
 ] as const;
+
+export function visitorReportRequest() {
+  return {
+    dateRanges: visitorRanges.map(({ key, startDate, endDate }) => ({ name: key, startDate, endDate })),
+    metrics: [{ name: "totalUsers" }],
+    // Google otherwise omits zero-valued periods from a multi-range report.
+    keepEmptyRows: true,
+  };
+}
 
 const reportSchema = z.object({
   dimensionHeaders: z.array(z.object({ name: z.string() })).optional(),
