@@ -31,4 +31,4 @@
 - Uploaded R2 photos on public pages render via `cdnImageSet()`/`cdnImage()` (Cloudflare `/cdn-cgi/image` resizing); why: phones get small AVIF/WebP instead of originals.
 - Inter/Montserrat are self-hosted via `@fontsource` Latin subsets imported in `styles.css` (key weights preloaded in `__root.tsx`) and SolaimanLipi from `/fonts/`; no Google Fonts or JS font injection; English stacks lead with Montserrat/Inter plus metric-matched fallbacks and `html[lang="bn"]` switches to SolaimanLipi first; why: no request chains, forced reflow or font-swap layout shift.
 - `Accept: text/markdown` on public pages returns Markdown via `src/server.ts`; browsers get HTML; why: agent readiness without a separate pipeline.
-- Visitor reports require dashboard.view and match the measurement ID to a GA4 stream through the server-side Google Cloud connector; why: secrets stay private and other streams are excluded.
+- Visitor reports require dashboard.view and query the configured GA4 property via the server-side Google Cloud connector with keepEmptyRows and report timezone; why: property Viewer access needs no Admin API discovery.
