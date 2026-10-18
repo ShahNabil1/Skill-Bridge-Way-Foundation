@@ -1,7 +1,7 @@
 # Roadmap
-- [ ] Use the supplied GA4 property directly through the Data API and verify actual visitor counts without account/data-stream discovery.
+- [x] Use the supplied GA4 property directly through the Data API without account/data-stream discovery; Google returned Today 0, previous 7 days 36, previous 30 days 85, total 85 (Asia/Dhaka); seven tests pass.
 - [x] Add reference-style visitor counters above Application Pipeline with protected GA4 web-stream reporting; five parser tests pass, isolated desktop/mobile unavailable-state layout verified, build OK.
-- [ ] Verify live GA4 counters signed in; blocked by Google Analytics Admin API SERVICE_DISABLED in Google Cloud project 1016829086524 and external unmanaged Supabase (no test session). Enable Analytics Admin/Data APIs and Analytics read-only scope, grant service-account GA4 Viewer access, then verify the real report.
+- [ ] Verify live GA4 counters signed in; actual Google Data API response verified, but authenticated admin UI verification remains blocked by external unmanaged Supabase (no test session).
 - [x] Publish registration proof on About with original PDF access and a footer shortcut.
 - [x] Smooth language switching, local SolaimanLipi, stable toggle sizing and pointer cursor.
 - [x] Upgrade profile view/edit, split names, strict Bangladesh phone, admission address, avatar preview and animated account dialogs; six validation tests and build pass, signed-out guard checked.
