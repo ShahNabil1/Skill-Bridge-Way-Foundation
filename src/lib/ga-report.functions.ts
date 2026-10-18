@@ -15,7 +15,7 @@ export const getVisitorReport = createServerFn({ method: "GET" }).middleware([re
   const gatewayKey = process.env["LOVABLE_API_KEY"];
   const connectionKey = process.env["GOOGLE_CLOUD_PLATFORM_API_KEY"];
   const measurementId = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY"];
-  const unavailable = (message: string, providerStatus?: number): VisitorReport => ({ status: "unavailable", message, checkedAt: new Date().toISOString(), providerStatus });
+  const unavailable = (message: string, providerStatus?: number): VisitorReport => ({ status: "unavailable", message, checkedAt: new Date().toISOString(), ...(providerStatus === undefined ? {} : { providerStatus }) });
   if (!gatewayKey || !connectionKey || !measurementId) return unavailable("Google Analytics reporting access is not configured. Tracking alone cannot provide visitor reports.");
   let providerStatus: number | undefined;
   let providerReason = "";
@@ -23,7 +23,7 @@ export const getVisitorReport = createServerFn({ method: "GET" }).middleware([re
     const response = await fetch(`${GATEWAY_URL}${path}`, {
       method: body ? "POST" : "GET",
       headers: { Authorization: `Bearer ${gatewayKey}`, "X-Connection-Api-Key": connectionKey ?? "", "Content-Type": "application/json" },
-      body: body ? JSON.stringify(body) : undefined,
+      body: body ? JSON.stringify(body) : null,
       signal: AbortSignal.timeout(15_000),
     });
     if (!response.ok) {

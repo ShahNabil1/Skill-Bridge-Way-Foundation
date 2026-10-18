@@ -11,7 +11,7 @@ export function VisitorCounters() {
   return <VisitorCountersView report={query.data} pending={query.isPending} fetching={query.isFetching} failed={query.isError} refresh={() => { void query.refetch(); }} />;
 }
 
-export function VisitorCountersView({ report, pending, fetching, failed, refresh }: { report?: VisitorReport; pending: boolean; fetching: boolean; failed: boolean; refresh: () => void }) {
+export function VisitorCountersView({ report, pending, fetching, failed, refresh }: { report: VisitorReport | undefined; pending: boolean; fetching: boolean; failed: boolean; refresh: () => void }) {
   const ready = !failed && report?.status === "ready" ? report : undefined;
   return <section aria-labelledby="visitor-heading" className="visitor-module relative overflow-hidden border-y border-border px-4 pb-5 pt-12 sm:px-6">
     <svg className="visitor-wave pointer-events-none absolute inset-x-0 top-0 h-9 w-full" viewBox="0 0 1200 45" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1200V18C970 60 900 0 660 25S300 50 0 15Z" /></svg>
