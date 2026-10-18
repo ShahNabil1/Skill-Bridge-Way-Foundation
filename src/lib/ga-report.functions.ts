@@ -6,7 +6,7 @@ import { parseVisitorReport, visitorRanges, type VisitorReport } from "./ga-repo
 
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/google_cloud_platform";
 const summariesSchema = z.object({ accountSummaries: z.array(z.object({ propertySummaries: z.array(z.object({ property: z.string().regex(/^properties\/\d+$/), displayName: z.string() })).optional() })).optional(), nextPageToken: z.string().optional() });
-const streamsSchema = z.object({ dataStreams: z.array(z.object({ webStreamData: z.object({ measurementId: z.string() }).optional() })).optional(), nextPageToken: z.string().optional() });
+const streamsSchema = z.object({ dataStreams: z.array(z.object({ name: z.string(), webStreamData: z.object({ measurementId: z.string() }).optional() })).optional(), nextPageToken: z.string().optional() });
 
 export const getVisitorReport = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).handler(async ({ context }): Promise<VisitorReport> => {
   setResponseHeader("Cache-Control", "private, no-store");
@@ -47,12 +47,17 @@ export const getVisitorReport = createServerFn({ method: "GET" }).middleware([re
       properties.push(...(result.accountSummaries ?? []).flatMap((a) => a.propertySummaries ?? []));
       token = result.nextPageToken;
     } while (token);
-    const matches: typeof properties = [];
+    const matches: { property: string; displayName: string; streamId: string }[] = [];
     for (const property of properties) {
       let streamToken: string | undefined;
       do {
         const streams = streamsSchema.parse(await request(`/analyticsadmin/v1beta/${property.property}/dataStreams?pageSize=200${streamToken ? `&pageToken=${encodeURIComponent(streamToken)}` : ""}`));
-        if (streams.dataStreams?.some((s) => s.webStreamData?.measurementId === measurementId)) matches.push(property);
+        for (const stream of streams.dataStreams ?? []) {
+          if (stream.webStreamData?.measurementId === measurementId) {
+            const streamId = stream.name.split("/").at(-1);
+            if (streamId && /^\d+$/.test(streamId)) matches.push({ ...property, streamId });
+          }
+        }
         streamToken = streams.nextPageToken;
       } while (streamToken);
     }
@@ -62,7 +67,7 @@ export const getVisitorReport = createServerFn({ method: "GET" }).middleware([re
     const result = parseVisitorReport(await request(`/analyticsdata/v1beta/${property.property}:runReport`, {
       dateRanges: visitorRanges.map(({ key, startDate, endDate }) => ({ name: key, startDate, endDate })),
       metrics: [{ name: "totalUsers" }],
-      dimensionFilter: { filter: { fieldName: "streamId", inListFilter: { values: [] } } },
+      dimensionFilter: { filter: { fieldName: "streamId", stringFilter: { matchType: "EXACT", value: property.streamId } } },
     }));
     return { status: "ready", ...result, fetchedAt: new Date().toISOString(), timeZone: settings.timeZone, propertyName: property.displayName, propertyId: property.property.split("/")[1] ?? "" };
   } catch {

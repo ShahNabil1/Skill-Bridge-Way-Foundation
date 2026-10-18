@@ -301,6 +301,28 @@ html.chat-open, html.chat-open body { overflow: hidden !important; overscroll-be
 
 /* Commit translations together with a gentle crossfade. */
 html { scrollbar-gutter: stable; }
+.visitor-module {
+  --visitor-surface: #F4F6F8;
+  --visitor-ink: #172338;
+  --visitor-muted: #445065;
+  --visitor-red: #D52F35;
+  --visitor-orange: #FF9900;
+  --visitor-label-ink: #FFFFFF;
+  --visitor-shadow: 0 8px 20px -14px color-mix(in srgb, var(--visitor-ink) 45%, transparent);
+  background: var(--visitor-surface);
+  color: var(--visitor-ink);
+}
+.visitor-wave { fill: var(--visitor-orange); }
+.visitor-label { background: var(--visitor-red); color: var(--visitor-label-ink); }
+.visitor-value { background: var(--visitor-orange); color: var(--visitor-ink); }
+.visitor-note { color: var(--visitor-muted); }
+.visitor-counter { transition: transform 220ms ease, box-shadow 220ms ease; }
+.visitor-counter:hover { transform: translateY(-3px); box-shadow: var(--visitor-shadow); }
+.visitor-refresh { color: var(--visitor-ink); }
+.visitor-refresh:hover { background: color-mix(in srgb, var(--visitor-ink) 8%, transparent); color: var(--visitor-ink); }
+.visitor-loading { background: color-mix(in srgb, var(--visitor-ink) 20%, transparent); }
+.visitor-number { animation: profile-enter 350ms ease-out; }
+@media (prefers-reduced-motion: reduce) { .visitor-counter { transition: none; } .visitor-counter:hover { transform: none; } .visitor-number { animation: none; } }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 240ms; animation-timing-function: ease-in-out; }
 .lang-toggle-indicator { transition: transform 220ms ease; }
 .lang-toggle button { cursor: pointer; }

@@ -10,6 +10,7 @@ import { formatDate } from "@/lib/public-data";
 import { refOf } from "@/lib/application";
 import { todayISO, weekdayOf } from "@/lib/student";
 import { seo } from "@/components/site/PageHero";
+import { VisitorCounters } from "@/components/admin/VisitorCounters";
 
 export const Route = createFileRoute("/_authenticated/admin/")({ staticData: { sitemap: false },
   head: () => seo("Admin Overview | Skill Bridgeway Foundation", "Private administrative overview.", { noindex: true }),
@@ -88,6 +89,8 @@ function Overview() {
           <div className="mt-2 flex items-center justify-between gap-2 text-xs text-muted-foreground"><span>{item.suffix}</span><ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden="true" /></div>
         </Link>)}
       </section>
+
+      <VisitorCounters />
 
       <section aria-labelledby="board-heading">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
